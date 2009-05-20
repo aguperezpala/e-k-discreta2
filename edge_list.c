@@ -36,10 +36,38 @@ el != NULL
 */
 void el_destroy (edgeList_t * el)
 {
-	edgeList aux = NULL;
+	struct edgeCeld * aux = NULL;
+	struct edgeCeld * delCeld = NULL;
+	
 	ASSERT (el != NULL)
 	
+	aux = el->first.next;
+	/* borramos todas las celdas */
+	while (aux != NULL){
+		delCeld = aux;
+		aux = aux->next;
+		free(delCeld);
+	}
+	/* borramos la estructura */
+	free (el);
+}
 
+
+void el_normal_destroy (edgeList_t * el)
+{
+	struct edgeCeld * aux = NULL;
+	struct edgeCeld * delCeld = NULL;
+	
+	ASSERT (el != NULL)
+	
+	aux = el->first.next;
+	/* borramos todas las celdas */
+	while (aux != NULL){
+		delCeld = aux;
+		aux = aux->next;
+		free(delCeld);
+	}
+}
 
 /* Funcion que obtiene el edge acutal al que actualmente la lista 
 REQUIRES:
