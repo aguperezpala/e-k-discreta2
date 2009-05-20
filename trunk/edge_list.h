@@ -10,6 +10,8 @@
 #define EDGE_LIST_H
 
 #include <stdlib.h>
+
+#include "consts.h"
 #include "node.h"	/* edge */
 
 /* definimos el tipo */
