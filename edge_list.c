@@ -91,40 +91,90 @@ n	!= NULL
 void el_add_edge (edgeList_t * el, unsigned int flow, unsigned int capacity, node_t * n)
 {
 	struct edgeCeld * celd = (struct edgeCeld *) calloc (1,sizeof (struct edgeCeld));
-	
+	struct edgeCeld * aux;	/* no inicializamos pa ahorrar 1 instruccion xD */
 	/* pre */
 	ASSERT (el != NULL)
 	ASSERT (n != NULL)
 	
+	/*! estamos accediendo de forma directa a la estructura... verificar como
+	 * arreglar esto */
 	celd->edge.flow = flow;
 	celd->edge.capacity = capacity;
-	/* ahora lo agregamos a la lista, al ultimo de si */
+	
+	/* ahora lo agregamos a la lista, comienzo de si */
+	aux = el->si->next;
+	celd->next = aux;
+	el->si->next = celd;
+}
+
 	
 	
 	
 /*NOTE:la misma que antes solo que inicializa el flow en 0 */
-void el_add_edge_no_flow (edgeList_t * el,  unsigned int capacity, node_t * n);
+void el_add_edge_no_flow (edgeList_t * el,  unsigned int capacity, node_t * n)
+{
+	struct edgeCeld * celd = (struct edgeCeld *) calloc (1,sizeof (struct edgeCeld));
+	struct edgeCeld * aux;	/* no inicializamos pa ahorrar 1 instruccion xD */
+	/* pre */
+	ASSERT (el != NULL)
+	ASSERT (n != NULL)
+	
+	/*! estamos accediendo de forma directa a la estructura... verificar como
+	* arreglar esto */
+	celd->edge.capacity = capacity;
+	
+	/* ahora lo agregamos a la lista, comienzo de si */
+	aux = el->si->next;
+	celd->next = aux;
+	el->si->next = celd;
+}
 
 
 /* Funcion que devuelve el tamaño de la lista, osea delta
 REQUIRES:
 el != NULL
 */
-unsigned int el_get_size (edgeList_t * el);
+unsigned int el_get_size (edgeList_t * el)
+{
+	ASSERT (el != NULL)
+	return el->size;
+}
 
 
 /* Funcion que manda el edge actual de la parte SI a la parte NO
 REQUIRES:
 el != NULL
 */
-void el_swap_to_si_edge (edgeList_t * el);
+void el_swap_to_si_edge (edgeList_t * el)
+{
+	struct edgeCeld * aux;
+	ASSERT (el != NULL);
+	
+	/* hacemos el "swap" */
+	aux = el->actual->next;
+	/*! debemos tener en cuenta que el visor nunca se puede caer (ser null) */
+	el->actual->next = aux->next;
+	aux->next = el->si->next;
+	el->si->next = aux;
+}
 
 
 /* Funcion que manda el edge actual de la parte NO a la parte SI
 REQUIRES:
 el != NULL
 */
-void el_swap_to_no_edge (edgeList_t * el);
+void el_swap_to_no_edge (edgeList_t * el)
+{
+	struct edgeCeld * aux;
+	ASSERT (el != NULL);
+	
+	/* hacemos el "swap" */
+	aux = el->actual->next;
+	/*! debemos tener en cuenta que el visor nunca se puede caer (ser null) */
+	el->actual->next = aux->next;
+	aux->next = el->no->next;
+	el->no->next = aux;
+}
 
 
 /* Funcion que obtiene un elemento de la lista "NO"
