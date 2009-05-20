@@ -78,7 +78,9 @@ edge 	cc
 */
 edge_t * el_get_actual (edgeList_t * el)
 {
-	
+	ASSERT (el != NULL)
+	return el->actual.edge;
+}
 
 /* Funcion que agrega un elemento al edge_list. Vamos a usar estructuras fijas,
 * NO dinamicas (por eficiencia...) 
@@ -86,7 +88,20 @@ REQUIRES:
 el	!= NULL
 n	!= NULL
 */
-void el_add_edge (edgeList_t * el, unsigned int flow, unsigned int capacity, node_t * n);
+void el_add_edge (edgeList_t * el, unsigned int flow, unsigned int capacity, node_t * n)
+{
+	struct edgeCeld * celd = (struct edgeCeld *) calloc (1,sizeof (struct edgeCeld));
+	
+	/* pre */
+	ASSERT (el != NULL)
+	ASSERT (n != NULL)
+	
+	celd->edge.flow = flow;
+	celd->edge.capacity = capacity;
+	/* ahora lo agregamos a la lista, al ultimo de si */
+	
+	
+	
 /*NOTE:la misma que antes solo que inicializa el flow en 0 */
 void el_add_edge_no_flow (edgeList_t * el,  unsigned int capacity, node_t * n);
 
@@ -110,6 +125,44 @@ REQUIRES:
 el != NULL
 */
 void el_swap_to_no_edge (edgeList_t * el);
+
+
+/* Funcion que obtiene un elemento de la lista "NO"
+REQUIRES:
+el != NULL
+RETURNS:
+NULL si no hay elemento
+edget_t * si existe
+*/
+edge_t * el_get_no_edge (edgeList_t * el);
+
+
+/* Funcion que obtiene un elemento de la lista "SI"
+REQUIRES:
+el != NULL
+RETURNS:
+NULL si no hay elemento
+edget_t * si existe
+*/
+edge_t * el_get_si_edge (edgeList_t * el);
+
+
+/* Funcion que manda el primero de la lista NO a la lista SI (lo pone al principio
+* de la lista SI)
+REQUIRES:
+el != NULL
+exista elemento en NO
+*/
+void el_send_no_to_si (edgeList_t * el);
+
+
+/* Funcion que manda el primero de la lista SI a la lista NO (lo pone al principio
+* de la lista NO)
+REQUIRES:
+el != NULL
+exista elemento en SI
+*/
+void el_send_no_to_si (edgeList_t * el);
 
 
 
