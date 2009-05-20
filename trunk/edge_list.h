@@ -2,7 +2,10 @@
 
 /*! Practicamente lo que es esta lista consta de 4 punteros y un entero (tamaño)
  * El primer puntero señala el comienzo de la lista, el 2 señala el final de los
- * "NO", el 3 el final de los SI  y el 4 el elemento "actual".
+ * "NO", el 3 el comienzo de los SI  y el 4 el elemento "actual".
+ * <podriamos utilizar solo 2 punteros (ya que el comienzo de NO es el comienzo
+ * de la lista en si, y el comienzo de la lista si es el final + 1 de la lista
+ * NO>
  * Tanto en el momento de la creacion como cuando se agregan elementos, estos son
  * puestos en la cola de "SI".
 */
@@ -53,7 +56,7 @@ void el_normal_destroy (edgeList_t * el);
 edge_t * el_get_actual (edgeList_t * el);
 
 /* Funcion que agrega un elemento al edge_list. Vamos a usar estructuras fijas,
- * NO dinamicas (por eficiencia...) 
+ * NO dinamicas (por eficiencia...). Agregamos al comienzo de la lista "SI"
 	REQUIRES:
 		el	!= NULL
 		n	!= NULL
