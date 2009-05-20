@@ -70,20 +70,58 @@ void el_add_edge_no_flow (edgeList_t * el,  unsigned int capacity, node_t * n);
 unsigned int el_get_size (edgeList_t * el);
 
 
-/* Funcion que manda el edge actual de la parte SI a la parte NO
+/* Funcion que manda el edge actual (el que apunta el visor) de la parte SI a la
+ * parte NO
 	REQUIRES:
 		el != NULL
 */
 void el_swap_to_si_edge (edgeList_t * el);
 
 
-/* Funcion que manda el edge actual de la parte NO a la parte SI
+/* Funcion que manda el edge actual (el que apunta el visor) de la parte NO a la
+ * parte SI
 	REQUIRES:
 		el != NULL
 */
 void el_swap_to_no_edge (edgeList_t * el);
 
 
+/* Funcion que obtiene un elemento de la lista "NO"
+	REQUIRES:
+		el != NULL
+	RETURNS:
+		NULL si no hay elemento
+		edget_t * si existe
+*/
+edge_t * el_get_no_edge (edgeList_t * el);
+
+
+/* Funcion que obtiene un elemento de la lista "SI"
+	REQUIRES:
+		el != NULL
+	RETURNS:
+		NULL si no hay elemento
+		edget_t * si existe
+*/
+edge_t * el_get_si_edge (edgeList_t * el);
+
+
+/* Funcion que manda el primero de la lista NO a la lista SI (lo pone al principio
+ * de la lista SI)
+	REQUIRES:
+		el != NULL
+		exista elemento en NO
+*/
+void el_send_no_to_si (edgeList_t * el);
+
+
+/* Funcion que manda el primero de la lista SI a la lista NO (lo pone al principio
+* de la lista NO)
+	REQUIRES:
+		el != NULL
+		exista elemento en SI
+*/
+void el_send_no_to_si (edgeList_t * el);
 
 
 #endif

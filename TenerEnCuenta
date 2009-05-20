@@ -1,3 +1,5 @@
 ***********	COSAS PA TENE EN CUENTA!	************
 * Flags de compilacion (algunos acelera otro hacen mas lento el programa).
 * Funciones inline (o definir "macros" y estructuras visibles).
+* Fijarse que con calloc inicializa todo en '\0' (si sirve tanto para inicializar
+  punteros como para inicializar tamaños?) o si no nos sirve un choripan.
