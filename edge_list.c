@@ -5,7 +5,6 @@
 struct edgeCeld {
 	struct edgeCeld * next;
 	edge_t edge;		/* no lo definimos como puntero por "eficiencia" */
-	unsigned int size;
 }
 
 
@@ -14,6 +13,7 @@ struct s_edgeList {
 	struct edgeCeld * actual;	/* el visor, en realidad es el anterior */
 	struct edgeCeld * si;		/* el puntero al "anterior" del SI */
 	struct edgeCeld * no;		/* el puntero al "anterior" del NO */
+	unsigned int size;
 };
 
 
@@ -21,14 +21,24 @@ struct s_edgeList {
 edgeList_t * el_create (void)
 {
 	edgeList_t * list = (edgeList_t) calloc (1, sizeof (struct s_edgeList));
-	list->size = 0;
+	/*! en teoria calloc rellena todo con 0 (size = 0)*/
+	list->actual = list->first;
+	list->si = list->first;
+	list->no = list->first;
+	
+	return list;
+}
 	
 
 /* destructor 
 REQUIRES:
 el != NULL
 */
-void el_destroy (edgeList_t * el);
+void el_destroy (edgeList_t * el)
+{
+	edgeList aux = NULL;
+	ASSERT (el != NULL)
+	
 
 
 /* Funcion que obtiene el edge acutal al que actualmente la lista 
