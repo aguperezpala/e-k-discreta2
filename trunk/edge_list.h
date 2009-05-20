@@ -19,7 +19,9 @@ typedef struct s_edgeList edgeList_t;
 
 
 /*!<<debemos pasar todas las funciones a inline o hacer visible la estructura y
- * usamos #defines para definir las funciones (Algunas)
+ * usamos #defines para definir las funciones (Algunas).
+ * Si vamos a definir inline fijarse que alomejor en el .c deben estar declaradas
+ * como "static inline ....".
  */
 
 /* Funcion que crea una lista (en caso de que usemos dinamica) 

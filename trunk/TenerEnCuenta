@@ -1,0 +1,3 @@
+***********	COSAS PA TENE EN CUENTA!	************
+* Flags de compilacion (algunos acelera otro hacen mas lento el programa).
+* Funciones inline (o definir "macros" y estructuras visibles).
