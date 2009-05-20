@@ -76,7 +76,9 @@ RETURNS:
 NULL 	si no hay elemento
 edge 	cc
 */
-edge_t * el_get_actual (edgeList_t * el);
+edge_t * el_get_actual (edgeList_t * el)
+{
+	
 
 /* Funcion que agrega un elemento al edge_list. Vamos a usar estructuras fijas,
 * NO dinamicas (por eficiencia...) 
