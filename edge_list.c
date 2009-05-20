@@ -22,6 +22,7 @@ edgeList_t * el_create (void)
 {
 	edgeList_t * list = (edgeList_t) calloc (1, sizeof (struct s_edgeList));
 	list->size = 0;
+	
 
 /* destructor 
 REQUIRES:
