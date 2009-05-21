@@ -79,7 +79,7 @@ edge 	cc
 edge_t * el_get_actual (edgeList_t * el)
 {
 	ASSERT (el != NULL)
-	return el->actual.edge;
+	return &(el->actual->next.edge);
 }
 
 /* Funcion que agrega un elemento al edge_list. Vamos a usar estructuras fijas,
@@ -96,6 +96,7 @@ void el_add_edge (edgeList_t * el, unsigned int flow, unsigned int capacity, nod
 	ASSERT (el != NULL)
 	ASSERT (n != NULL)
 	
+	el->size++;
 	/*! estamos accediendo de forma directa a la estructura... verificar como
 	 * arreglar esto */
 	celd->edge.flow = flow;
@@ -119,6 +120,7 @@ void el_add_edge_no_flow (edgeList_t * el,  unsigned int capacity, node_t * n)
 	ASSERT (el != NULL)
 	ASSERT (n != NULL)
 	
+	el->size++;
 	/*! estamos accediendo de forma directa a la estructura... verificar como
 	* arreglar esto */
 	celd->edge.capacity = capacity;
@@ -148,7 +150,8 @@ el != NULL
 void el_swap_to_si_edge (edgeList_t * el)
 {
 	struct edgeCeld * aux;
-	ASSERT (el != NULL);
+	
+	ASSERT (el != NULL)
 	
 	/* hacemos el "swap" */
 	aux = el->actual->next;
@@ -166,7 +169,7 @@ el != NULL
 void el_swap_to_no_edge (edgeList_t * el)
 {
 	struct edgeCeld * aux;
-	ASSERT (el != NULL);
+	ASSERT (el != NULL)
 	
 	/* hacemos el "swap" */
 	aux = el->actual->next;
@@ -184,7 +187,11 @@ RETURNS:
 NULL si no hay elemento
 edget_t * si existe
 */
-edge_t * el_get_no_edge (edgeList_t * el);
+edge_t * el_get_no_edge (edgeList_t * el)
+{
+	ASSERT (el != NULL)
+	return &(el->no->next.edge);
+}
 
 
 /* Funcion que obtiene un elemento de la lista "SI"
@@ -194,8 +201,11 @@ RETURNS:
 NULL si no hay elemento
 edget_t * si existe
 */
-edge_t * el_get_si_edge (edgeList_t * el);
-
+edge_t * el_get_si_edge (edgeList_t * el)
+{
+	ASSERT (el != NULL)
+	return &(el->si->next.edge);
+}
 
 /* Funcion que manda el primero de la lista NO a la lista SI (lo pone al principio
 * de la lista SI)
@@ -203,7 +213,22 @@ REQUIRES:
 el != NULL
 exista elemento en NO
 */
-void el_send_no_to_si (edgeList_t * el);
+void el_send_no_to_si (edgeList_t * el)
+{
+	struct edgeCeld * aux;
+	
+	ASSERT (el != NULL)
+	
+	/* hacemos el "swap" */
+	/* NOTE: podriamos hacerlo mas eficiente metiendolo como precondicion
+	 * alomejor... (si es que no habria que chequearlo arriba */
+	if ((aux = el->no->next) != NULL){
+		/*! debemos tener en cuenta que el visor nunca se puede caer (ser null) */
+		el->no->next = aux->next;
+		aux->next = el->si->next;
+		el->si->next = aux;
+	}
+}
 
 
 /* Funcion que manda el primero de la lista SI a la lista NO (lo pone al principio
@@ -212,7 +237,53 @@ REQUIRES:
 el != NULL
 exista elemento en SI
 */
-void el_send_no_to_si (edgeList_t * el);
+void el_send_no_to_si (edgeList_t * el)
+{
+	struct edgeCeld * aux;
+	
+	ASSERT (el != NULL)
+	
+	/* hacemos el "swap" */
+	/* NOTE: podriamos hacerlo mas eficiente metiendolo como precondicion
+	* alomejor... (si es que no habria que chequearlo arriba */
+	if ((aux = el->si->next) != NULL){
+		/*! debemos tener en cuenta que el visor nunca se puede caer (ser null) */
+		el->si->next = aux->next;
+		aux->next = el->no->next;
+		el->no->next = aux;
+	}
+}
+
+
+/*! Funciones para chequear si las listas estan vacias (tienen la misma pre/pos)
+REQUIRES:
+el != NULL
+RETURNS:
+true 	si esta vacia
+false 	caso contrario
+*/
+/* global list */
+bool el_is_empty (edgeList_t * el)
+{
+	/* pre */
+	ASSERT (el != NULL)
+	return (el->size == 0);
+}
+/* SI list */
+bool el_si_is_empty (edgeList_t * el)
+{
+	/* pre */
+	ASSERT (el != NULL)
+	return (el->si->next == NULL);
+}
+/* NO list */
+bool el_no_is_empty (edgeList_t * el)
+{
+	/* pre */
+	ASSERT (el != NULL)
+	return (el->no->next == NULL);
+}
+
 
 
 
