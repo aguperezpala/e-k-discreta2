@@ -3,3 +3,5 @@
 * Funciones inline (o definir "macros" y estructuras visibles).
 * Fijarse que con calloc inicializa todo en '\0' (si sirve tanto para inicializar
   punteros como para inicializar tamaños?) o si no nos sirve un choripan.
+  
+* Sacar el flag __DEBUG (para quitar los ASSERTS y otras verduras)
