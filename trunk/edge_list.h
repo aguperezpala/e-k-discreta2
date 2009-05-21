@@ -13,6 +13,7 @@
 #define EDGE_LIST_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "consts.h"
 #include "node.h"	/* edge */
@@ -125,6 +126,23 @@ void el_send_no_to_si (edgeList_t * el);
 		exista elemento en SI
 */
 void el_send_no_to_si (edgeList_t * el);
+
+
+
+/*! Funciones para chequear si las listas estan vacias (tienen la misma pre/pos)
+	REQUIRES:
+		el != NULL
+	RETURNS:
+		true 	si esta vacia
+		false 	caso contrario
+*/
+/* global list */
+bool el_is_empty (edgeList_t * el);
+/* SI list */
+bool el_si_is_empty (edgeList_t * el);
+/* NO list */
+bool el_no_is_empty (edgeList_t * el);
+
 
 
 #endif
