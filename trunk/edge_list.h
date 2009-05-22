@@ -37,35 +37,37 @@ INLINE edgeList_t * el_create (void);
 	REQUIRES:
 		el != NULL
 */
-void el_dinamic_destroy (edgeList_t * el);
+INLINE void el_dinamic_destroy (edgeList_t * el);
 
 /* destructor para la lista NO allocada dinamicamente, osea practicamente libera
- * todas las celdas de la lista, menos la estructura misma de la celda */
-REQUIRES:
-el != NULL
+ * todas las celdas de la lista, menos la estructura misma de la celda
+	REQUIRES:
+		el != NULL
 */
-void el_normal_destroy (edgeList_t * el);
+INLINE void el_normal_destroy (edgeList_t * el);
 
 
-/* Funcion que obtiene el edge acutal al que actualmente la lista 
+/* Funcion que obtiene el edge acutal al que actualmente apunta la lista 
 	REQUIRES:
 		el != NULL
 	RETURNS:
 		NULL 	si no hay elemento
 		edge 	cc
 */
-edge_t * el_get_actual (edgeList_t * el);
+INLINE edge_t * el_get_actual (edgeList_t * el);
 
-/* Funcion que agrega un elemento al edge_list. Vamos a usar estructuras fijas,
- * NO dinamicas (por eficiencia...). Agregamos al comienzo de la lista "SI"
+/* Funcion que agrega un elemento al edge_list "el" del nodo "n".
+ * Vamos a usar estructuras fijas, NO dinamicas (por eficiencia...).
+ * Agregamos al comienzo de la lista "SI"
+ * Inicializa el flujo en 0
 	REQUIRES:
 		el	!= NULL
 		n	!= NULL
 */
-void el_add_edge (edgeList_t * el, unsigned int flow, unsigned int capacity, node_t * n);
-/*NOTE:la misma que antes solo que inicializa el flow en 0 */
-void el_add_edge_no_flow (edgeList_t * el,  unsigned int capacity, node_t * n);
+INLINE void el_add_edge (edgeList_t * el,  u32 capacity, node_t * n);
 
+/*NOTE:la misma que antes solo que inicializa el flow en "flow" */
+INLINE void el_add_edge_with_flow (edgeList_t * el, u32 flow, u32 capacity, node_t * n);
 
 /* Funcion que devuelve el tamaño de la lista, osea delta
 	REQUIRES:
