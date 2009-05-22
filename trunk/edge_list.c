@@ -9,22 +9,26 @@ struct edgeCeld {
 
 
 struct s_edgeList {
-	struct edgeCeld first;		/* celda dummy */
-	struct edgeCeld * actual;	/* el visor, en realidad es el anterior */
-	struct edgeCeld * si;		/* el puntero al "anterior" del SI */
+	struct edgeCeld dummy;		/* celda dummy */
+	struct edgeCeld * prev; 	/* el visor, en realidad es el anterior */
+	struct edgeCeld * si;		/* el puntero al "anterior" del SI,
+	 				   es el comienzo de la lista */
 	struct edgeCeld * no;		/* el puntero al "anterior" del NO */
-	unsigned int size;
+	short size;
 };
 
 
 
-edgeList_t * el_create (void)
+INLINE edgeList_t * el_create (void)
 {
-	edgeList_t * list = (edgeList_t) calloc (1, sizeof (struct s_edgeList));
+	edgeList_t * list = (edgeList_t) malloc (sizeof (struct s_edgeList));
 	/*! en teoria calloc rellena todo con 0 (size = 0)*/
-	list->actual = list->first;
-	list->si = list->first;
-	list->no = list->first;
+	ASSERT (list != NULL)
+	
+	list.prev = &list.dummy;
+	list.si = list.prev;
+	list.no = list.prev
+	list.size = 0;
 	
 	return list;
 }
