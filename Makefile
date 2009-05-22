@@ -1,10 +1,9 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast \
 	-Wcast-qual -Wstrict-prototypes -Wmissing-declarations \
-	-Wmissing-prototypes -Werror -D_DDEBUG \
-	-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include/
-LIBS = -lglib-2.0
-TARGET = host
+	-Wmissing-prototypes -Werror -D__DEBUG
+# ¡¡¡¡¡¡¡¡¡¡ ELIMINAR EL -D__DEBUG !!!!!!!!!!!!!
+TARGET = EK!
 SOURCES = $(shell echo *.c)
 OBJECTS = $(SOURCES:%.c=%.o)
 
@@ -22,3 +21,4 @@ $(TARGET): $(OBJECTS)
 
 clean:
 	rm -f $(TARGET) $(OBJECTS) .depend *~
+#	rm -f *.h *.c

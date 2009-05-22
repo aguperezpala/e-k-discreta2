@@ -31,7 +31,7 @@ typedef struct s_edgeList edgeList_t;
 /* Funcion que crea una lista (en caso de que usemos dinamica) 
  * constructor
  */
-edgeList_t * el_create (void);
+INLINE edgeList_t * el_create (void);
 
 /* destructor para la lista allocada dinamicamente
 	REQUIRES:
