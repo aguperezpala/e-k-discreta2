@@ -2,6 +2,7 @@
 
 struct s_estado_network{
 	node_t *nodes;
+	edge_t *edges;
 	u32 flow_value; /* Estudiar si conviene!!! */
 	int maximal; /* 1 <=> tenemos un flujo maximal */
 	int completo; /* 1 <=> se ingresaron todos los lados */

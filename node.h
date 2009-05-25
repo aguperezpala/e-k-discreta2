@@ -29,8 +29,9 @@ typedef struct s_node {
 typedef struct s_edge {
 	u32 capacity;
 	u32 flow;
-	short node;	/* nodo del otro lado de la arista (for ó back) */
-	/*! Podríamos hacer que node < 0 indique lado backward */
+	u32 nodeOrig;	/* nodo del otro lado de la arista (for ó back) */
+	u32 nodeDest;
+	/*! Podriamos probar con short */
 }edge_t;
 
 
