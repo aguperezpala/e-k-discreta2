@@ -17,18 +17,20 @@
  * para el alfabetico simplemente casteandolo o usando atoi...
  */
 typedef struct s_node {
-	u32 nodeName;	/* numérico => el nº ; alfabético => atoi (ASCII) */
+	u32 nodeName;	/* numérico => el nº ; alfabético => atoi */
 	u32 €; 		/* flujo */
 	edgeList_t fordwardList;	/* lista de aristas fordware */
 	edgeList_t backwardList;	/* lista de aristas backward */
 	bool state;		/* despues deberiamos ver si es nescesario */
+	short colour;
 } node_t;
 
 
 typedef struct s_edge {
 	u32 capacity;
 	u32 flow;
-	node_t * node;	/* puntero al nodo que conecta (for ó back) */
+	short node;	/* nodo del otro lado de la arista (for ó back) */
+	/*! Podríamos hacer que node < 0 indique lado backward */
 }edge_t;
 
 
