@@ -91,56 +91,75 @@ INLINE edge_t * el_get_actual (edgeList_t * el)
  * Inicializa el flujo en 0
 	REQUIRES:
 		el	!= NULL
-		n	!= NULL
+		edge	!= NULL
 */
-INLINE void el_add_edge (edgeList_t * el,  u32 capacity, node_t * n);
+INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
 {
 	struct edgeCeld * celd = (struct edgeCeld *) malloc (sizeof (struct edgeCeld));
 	/* pre */
 	ASSERT (el != NULL)
-	ASSERT (n != NULL)
+	ASSERT (edge != NULL)
 	
 	el->size++;
-	celd->edge.capacity = capacity;
-	celd->edge.node = n;
-	celd->edge.flow = 0;
 	
-	/* ahora lo agregamos a la lista, comienzo de si */
-	celd->next = el->si->next;
-	el->si->next = celd;
+	celd->edge = edge;
+	celd->next = el->prev->next;
+	el->prev->next = celd;
 }
-
-
-/*NOTE:la misma que antes solo que inicializa el flow en "flow" */
-INLINE void el_add_edge_with_flow (edgeList_t * el, u32 flow, u32 capacity, node_t * n);
-{
-	struct edgeCeld * celd = (struct edgeCeld *) malloc (sizeof (struct edgeCeld));
-	/* pre */
-	ASSERT (el != NULL)
-	ASSERT (n != NULL)
-	
-	el->size++;
-	/*! estamos accediendo de forma directa a la estructura... verificar como
-	 * arreglar esto */
-	celd->edge.flow = flow;
-	celd->edge.capacity = capacity;
-	celd->edge.node = n;
-	
-	/* ahora lo agregamos a la lista, comienzo de si */
-	celd->next = el->si->next;
-	el->si->next = celd;
-}
-
-	
-	
 
 
 /* Funcion que devuelve el tamaño de la lista, osea delta
 REQUIRES:
 el != NULL
 */
-unsigned int el_get_size (edgeList_t * el)
+INLINE short el_get_size (edgeList_t * el)
 {
 	ASSERT (el != NULL)
 	return el->size;
 }
+
+
+
+/* Funcion que sirve para eliminar el elemento actual
+REQUIRES:
+el != NULL
+el_get_size (el) >= 1
+*/
+INLINE void el_del_edge (edgeList_t * el)
+{
+	struct edgeCeld * celd;
+	
+	/* pres */
+	ASSERT (el != NULL)
+	ASSERT (el->size >= 1)
+	
+	
+	/* actualizamos los punteros */
+	celd = el->prev->next;
+	el->prev->next = celd->next;
+	
+	/* liberamos el edge */
+	ASSERT (el->prev->next->edge != NULL)
+	free (celd->edge);
+	/* liberamos la celda */
+	free (celd);
+}
+
+/* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
+* entonces el "visor" vuelve al comienzo. (una especie de lista circular)
+REQUIRES:
+el != NULL
+*/
+INLINE void el_avance (edgeList_t * el)
+{
+	
+	/* pres */
+	ASSERT (el != NULL);
+	
+	if (el->prev->next == NULL)
+		/* debemos empezar del principio */
+		el->prev = &(el->first);
+	
+
+
+
