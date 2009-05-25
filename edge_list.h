@@ -62,88 +62,34 @@ INLINE edge_t * el_get_actual (edgeList_t * el);
  * Inicializa el flujo en 0
 	REQUIRES:
 		el	!= NULL
-		n	!= NULL
+		edge	!= NULL
 */
-INLINE void el_add_edge (edgeList_t * el,  u32 capacity, node_t * n);
-
-/*NOTE:la misma que antes solo que inicializa el flow en "flow" */
-INLINE void el_add_edge_with_flow (edgeList_t * el, u32 flow, u32 capacity, node_t * n);
+INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
 
 /* Funcion que devuelve el tamaño de la lista, osea delta
 	REQUIRES:
 		el != NULL
 */
-unsigned int el_get_size (edgeList_t * el);
+INLINE short el_get_size (edgeList_t * el);
 
 
-/* Funcion que manda el edge actual (el que apunta el visor) de la parte SI a la
- * parte NO
+
+/* Funcion que sirve para eliminar el elemento actual (libera el edge)
+	REQUIRES:
+		el != NULL
+		el_get_size (el) >= 1
+*/
+INLINE void el_del_edge (edgeList_t * el);
+
+
+/* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
+ * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
 	REQUIRES:
 		el != NULL
 */
-void el_swap_to_si_edge (edgeList_t * el);
+INLINE void el_avance (edgeList_t * el);
 
 
-/* Funcion que manda el edge actual (el que apunta el visor) de la parte NO a la
- * parte SI
-	REQUIRES:
-		el != NULL
-*/
-void el_swap_to_no_edge (edgeList_t * el);
-
-
-/* Funcion que obtiene un elemento de la lista "NO"
-	REQUIRES:
-		el != NULL
-	RETURNS:
-		NULL si no hay elemento
-		edget_t * si existe
-*/
-edge_t * el_get_no_edge (edgeList_t * el);
-
-
-/* Funcion que obtiene un elemento de la lista "SI"
-	REQUIRES:
-		el != NULL
-	RETURNS:
-		NULL si no hay elemento
-		edget_t * si existe
-*/
-edge_t * el_get_si_edge (edgeList_t * el);
-
-
-/* Funcion que manda el primero de la lista NO a la lista SI (lo pone al principio
- * de la lista SI)
-	REQUIRES:
-		el != NULL
-		exista elemento en NO
-*/
-void el_send_no_to_si (edgeList_t * el);
-
-
-/* Funcion que manda el primero de la lista SI a la lista NO (lo pone al principio
-* de la lista NO)
-	REQUIRES:
-		el != NULL
-		exista elemento en SI
-*/
-void el_send_no_to_si (edgeList_t * el);
-
-
-
-/*! Funciones para chequear si las listas estan vacias (tienen la misma pre/pos)
-	REQUIRES:
-		el != NULL
-	RETURNS:
-		true 	si esta vacia
-		false 	caso contrario
-*/
-/* global list */
-bool el_is_empty (edgeList_t * el);
-/* SI list */
-bool el_si_is_empty (edgeList_t * el);
-/* NO list */
-bool el_no_is_empty (edgeList_t * el);
 
 
 
