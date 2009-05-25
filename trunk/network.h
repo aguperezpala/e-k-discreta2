@@ -22,3 +22,5 @@ INLINE int Inicializar(EstadoNetwork *estado, int modoinput);
 	   	  (ret == 0 => error al leer los datos ingresados)}
 */
 INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput);
+
+#endif
