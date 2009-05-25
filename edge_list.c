@@ -159,7 +159,10 @@ INLINE void el_avance (edgeList_t * el)
 	if (el->prev->next == NULL)
 		/* debemos empezar del principio */
 		el->prev = &(el->first);
-	
+	else
+		/* avanzamos asi nomas */
+		el->prev = el->prev->next;
 
+}
 
 
