@@ -4,7 +4,7 @@
 
 
 struct s_estado_network{
-	node_t *nodes;
+	node_t nodes[7000];
 	u32 flow_value;	/* Estudiar si conviene!!! */
 	bool maximal;	/* si tenemos un flujo maximal */
 	bool completo;	/* si se ingresaron todos los lados */
@@ -14,25 +14,29 @@ struct s_estado_network{
 
 
 
-INLINE EstadoNetwork *network_create(void){
+INLINE EstadoNetwork *network_create(void)
+{
 	EstadoNetwork *ret = NULL;
 
 	ret = (EstadoNetwork*)malloc(sizeof(struct s_estado_network));
 	
 	if(ret != NULL){
-		ret->maximal = 0;
-		ret->completo = 0;
+		ret->flow_value = 0;
+		ret->maximal  = false;
+		ret->completo = false;
+		ret->delta  = 0;
+		ret->colors = 0;
 	}
 	
-	/* Poscondición */
-	ASSERT(ret->maximal == 0);
-	ASSERT(ret->completo == 0);
-	
+	/* Poscondición 
+	ASSERT(ret->maximal == false)
+	ASSERT(ret->completo == false)
+*/	
 	return ret;
 }
 
 INLINE int Inicializar(EstadoNetwork *estado, int modoinput){
-	int ret = 0;
+	int ret = 0, i = 0, n = 0;
 	
 	/* Precondición */
 	ASSERT(estado != NULL);
@@ -43,14 +47,24 @@ INLINE int Inicializar(EstadoNetwork *estado, int modoinput){
 	switch(modoinput){
 		case 1:
 			/* Se espera input alfabético: ASCII(A) = 65, ASCII(a) = 97 */
+			n = 52;
 		estado->nodes = (node_t*)malloc(52*sizeof(node_t));
 		break;
 			
 		case 2:
-		/* Se espera input alfabético */
+			n = 7000;
+		/* Se espera input numérico, y la pu~@#@ç$! */
 			estado->nodes = (node_t*)malloc(7000*sizeof(node_t));
 		break;
+		
+			
 	}
+	
+	for (i = 0 ; i < n ; i++) {
+		estado.nodes[i].fordwardList = NULL;
+		estado.nodes[i].backwardList = NULL;
+	}
+		
 	
 	if(estado->nodes != NULL) ret = 1;
 	
