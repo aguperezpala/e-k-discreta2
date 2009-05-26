@@ -1,3 +1,18 @@
+/* MACK-EK versión 1.0
+ * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
+ * maximal en un network
+ *
+ * Constantes y macros varios
+ *
+ * Autores:  Budde, Carlos E.
+ *	     Kondrasky, Alejandro
+ *	     Pérez Paladini, Agustín
+ *	     Soldevilla, Mallku R.
+ *
+ * Revisión: Penazzi, Daniel
+ *
+ */
+
 #ifndef CONSTS_H
 #define CONSTS_H
 
