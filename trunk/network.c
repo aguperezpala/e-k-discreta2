@@ -1,12 +1,18 @@
+#include <stdbool.h>
 #include "network.h"
+
+
 
 struct s_estado_network{
 	node_t *nodes;
-	edge_t *edges;
-	u32 flow_value; /* Estudiar si conviene!!! */
-	int maximal; /* 1 <=> tenemos un flujo maximal */
-	int completo; /* 1 <=> se ingresaron todos los lados */
+	u32 flow_value;	/* Estudiar si conviene!!! */
+	bool maximal;	/* si tenemos un flujo maximal */
+	bool completo;	/* si se ingresaron todos los lados */
+	short delta;	/* Considerandolo grafo, el delta */
+	short colors;	/* Nº de colores obtenido por el coloreo */
 }
+
+
 
 INLINE EstadoNetwork *network_create(void){
 	EstadoNetwork *ret = NULL;
@@ -49,5 +55,26 @@ INLINE int Inicializar(EstadoNetwork *estado, int modoinput){
 	if(estado->nodes != NULL) ret = 1;
 	
 	return ret;
+}
+
+/* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
+ret = AumentarFlujo (estado, verbosidad)
+POS: {ret == 0 => *//*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ###
+*/
+INLINE int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
+{
+	
+}
+
+/*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
+INLINE u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
+{
+
+}
+
+/*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
+INLINE u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
+{
+
 }
 
