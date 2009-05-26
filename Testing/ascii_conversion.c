@@ -21,7 +21,9 @@ static unsigned int pow (unsigned int x, unsigned int n)
 	return y;
 }
 
-
+/* Si cadena representa un entero, es convertido a unsigned int y devuelto por *entero
+ * PRE: *entero == 0
+ */
 static bool IsInt (const char *cadena, unsigned int *entero)
 {
 	unsigned int i, n;
@@ -73,10 +75,19 @@ int main (void)
 	noentero[0] = ' ';
 	noentero[0] = '0';
 	noentero[0] = '0';
+	
 	ascii = 0;
 	if (IsInt (entero, &ascii))
 		printf ("cadena: %s\tentero: %u\n", entero, ascii);
 	
+	ascii = 0;
+	if (!IsInt (noentero, &ascii)) {
+		printf ("noentero NO ES ENTERO\n");
+		printf ("cadena: %s\tentero: %u\n", entero, ascii);
+	} else
+		printf ("noentero ES ENTERO\n");
+		
+		
 	return 0;
 }
 
