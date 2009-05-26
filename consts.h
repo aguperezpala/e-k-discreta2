@@ -16,6 +16,13 @@
 #endif
 
 
+/*! VERBOSIDADES */
+#define VAL_F		1	/* Valor del flujo */
+#define CAP_C		2	/* Corte y capacidad del mismo */
+#define VAL_F_FLUX	4	/* Valor del flujo + flujo */
+#define FLUX		8	/* Flujo (lados que lo hacen) */
+
+
 #ifndef INLINE
 # if __GNUC__
 #  define INLINE extern inline

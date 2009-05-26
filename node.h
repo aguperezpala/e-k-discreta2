@@ -32,7 +32,8 @@ typedef struct s_edge {
 	u32 nodeOrig;	/* nodo del otro lado de la arista (for ó back) */
 	u32 nodeDest;
 	/*! Podriamos probar con short */
-}edge_t;
+} edge_t;
+
 
 
 /*! los que le decia de las funciones inline, aca les paso un link
