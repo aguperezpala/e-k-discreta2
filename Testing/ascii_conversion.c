@@ -8,7 +8,7 @@ int main (void)
 	
 	for (c = 32; c < 127; c++) {
 		printf("Ascii %d is %c\n", c, c);
-		ascii = (int) c;
+		ascii = (unsigned int) c;
 		printf("Again, %c is ascii %u\n", c, ascii);
 	}
 	
