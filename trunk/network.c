@@ -48,13 +48,11 @@ INLINE int Inicializar(EstadoNetwork *estado, int modoinput){
 		case 1:
 			/* Se espera input alfabético: ASCII(A) = 65, ASCII(a) = 97 */
 			n = 52;
-		estado->nodes = (node_t*)malloc(52*sizeof(node_t));
 		break;
 			
 		case 2:
 			n = 7000;
 		/* Se espera input numérico, y la pu~@#@ç$! */
-			estado->nodes = (node_t*)malloc(7000*sizeof(node_t));
 		break;
 		
 			

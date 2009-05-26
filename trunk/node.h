@@ -19,8 +19,8 @@
 typedef struct s_node {
 	u32 nodeName;	/* numérico => el nº ; alfabético => atoi */
 	u32 €; 		/* flujo */
-	edgeList_t fordwardList;	/* lista de aristas fordware */
-	edgeList_t backwardList;	/* lista de aristas backward */
+	edgeList_t *fordwardList;	/* lista de aristas fordware */
+	edgeList_t *backwardList;	/* lista de aristas backward */
 	bool state;		/* despues deberiamos ver si es nescesario */
 	short colour;
 } node_t;
