@@ -114,7 +114,8 @@ el != NULL
 */
 INLINE short el_get_size (edgeList_t * el)
 {
-	ASSERT (el != NULL)
+	if (el == NULL)
+		return 0;
 	return el->size;
 }
 

@@ -84,8 +84,7 @@ INLINE edge_t * el_get_actual (edgeList_t * el);
 INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
 
 /* Funcion que devuelve el tamaño de la lista, osea delta
-	REQUIRES:
-		el != NULL
+ * NOTE: si el == NULL ==> size = 0
 */
 INLINE short el_get_size (edgeList_t * el);
 
