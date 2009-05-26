@@ -19,6 +19,8 @@
 #define NODE_H
 #include <stdio.h>
 #include <stdlib.h>
+#include "consts.h"
+
 /*! #include "listType.h": deberiamos nosotros (lo vamos a hacer) implementar este
  * TAD. Eficientemente y usando esos truquitos para poder diferenciar los 2 sub
  * conjuntos (los habilitados y deshabilitados).
@@ -34,7 +36,8 @@
  * para el alfabetico simplemente casteandolo o usando atoi...
  */
 typedef struct s_node {
-	u32 nodeName;			/* numérico => el nº ; alfabético => ascii */
+	
+	/*!u32 nodeName;		No hace falta, el nombre es el indice mismo */
 	u32 flux; 			/* flujo */
 	edgeList_t *fordwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
@@ -51,6 +54,11 @@ typedef struct s_edge {
 	/*! Podriamos probar con short */
 } edge_t;
 
+/* Creamos una arista
+	REQUIRES:
+		0 <= nodeOrig, nodeDest < 7000
+*/
+INLINE edge_t * edge_create (u32 capacity, u32 nodeOrig, u32 nodeDest);
 
 
 /*! los que le decia de las funciones inline, aca les paso un link

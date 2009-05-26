@@ -29,6 +29,7 @@ static inline void AñadirLadoAlf (EstadoNetwork *estado,
 				   char vert1, char vert2, u32 cap)
 {
 	u32 v1, v2, m;
+	edge_t * edge;
 	
 	ASSERT (estado != NULL)
 	
@@ -37,6 +38,31 @@ static inline void AñadirLadoAlf (EstadoNetwork *estado,
 	
 	m = max(v1, v2);
 	if (m > estado->mayor) estado->mayor = m;
+	
+	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
+	if (estado->nodes[v1].fordwardList == NULL)
+		estado->nodes[v1].fordwardList = el_create ();
+	
+	if (estado->nodes[v2].backwardList == NULL)
+		estado->nodes[v2].backwardList = el_create ();
+	
+	/* creamos la arista */
+	edge = edge_create (cap, v1, v2);
+	
+	/* agregamos a ambas listas */
+	el_add_edge (estado->nodes[v1].fordwardList, edge);
+	el_add_edge (estado->nodes[v2].backwardList, edge);
+	
+	/* seteamos el delta... bien cochino!*/
+	estado->mayor = max (estado->mayor, el_size (estado->nodes[v1].fordwardList) +
+					    el_size (estado->nodes[v1].backwardList));
+					    
+	estado->mayor = max (estado->mayor, el_size (estado->nodes[v2].fordwardList) +
+					    el_size (estado->nodes[v2].backwardList));
+	
+	
+
+	
 	
 	/*! TODO: <ACTUALIZAR ARISTAS>
 		  <AGREGAR NODOS SI ES NECESARIO>
@@ -110,7 +136,7 @@ INLINE int Inicializar (EstadoNetwork *estado, int modoinput)
 	}
 		
 	
-	if (estado->nodes != NULL) ret = 1;
+	if (estado->nodes != NULL) ret = 1;	/*NOTE: imposible.. es estatico?*/
 	
 	return ret;
 }
@@ -138,7 +164,7 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		u32 cap;
 		
 		/* Guardamos en "edge" lo leído */
-		memset (edge, '\0', 13);
+		/*memset (edge, '\0', 13); NOTE: no hace falta*/
 		scanf ("%[^\n]", &edge);
 		getchar ();
 		
