@@ -1,3 +1,15 @@
+/* API verión 1.0.0 del proyecto #1 de Discreta 2, año 2009
+ *
+ * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
+ * maximal en un network
+ *
+ * Autores:  Budde, Carlos E.
+ *	     Kondrasky, Alejandro
+ *	     Pérez Paladini, Agustín
+ *	     Soldevilla, Mallku R.
+ * Revisión: Penazzi, Daniel
+ */
+
 #ifndef NETWORK_H
 #define NETWORK_H
 
