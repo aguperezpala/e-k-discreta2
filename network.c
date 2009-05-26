@@ -5,50 +5,57 @@
 
 struct s_estado_network{
 	node_t nodes[7000];
-	u32 flow_value;	/*! <Estudiar si conviene!!!> */
+	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
 	bool maximal;	/* si tenemos un flujo maximal */
 	bool completo;	/* si se ingresaron todos los lados */
+	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
-	short colors;	/* Nº de colores obtenido por el coloreo */
+	short colores;	/* Nº de colores obtenido por el coloreo */
 };
 
 
 /** ~~~~~~~~~~~~~~~~~~~~~~ FUNCIONES AUXILIARES INTERNAS ~~~~~~~~~~~~~~~~~~~~ */
 
+#define max(a, b) ((a>b) ? a : b)
+#define min(a, b) ((a<b) ? a : b)
 
 /* Indica si el modo de input es soportado por la API */
 #define ModoinputValido(x)	((x == 1) || (x == 2))
-/*! BORRAR LO DE ABAJO */
-/*static inline bool ModoinputValido (int modoinput)
-{
-	if ((modoinput == 1) ||
-	    (modoinput == 2) )
-		return true;
-	else
-		return false;
-}*/
-
 
 /* Indica si el modo de verbosidad es soportado por la API */
 #define VerbosidadValida(x)	((x == 0) || (x == 1) || (x == 2) || (x == 3))
-/*! BORRAR LO DE ABAJO */
-/*static inline bool VerbosidadValida (int verbosidad)
+
+static inline void AñadirLadoAlf (EstadoNetwork *estado,
+				   char vert1, char vert2, u32 cap)
 {
-	if ((verbosidad == 0) ||
-	    (verbosidad == 1) ||
-	    (verbosidad == 2) ||
-	    (verbosidad == 3) )
-		return true;
-	else
-		return false;
-}*/
+	u32 v1, v2, m;
+	
+	ASSERT (estado != NULL)
+	
+	v1 = (u32) vert1;
+	v2 = (u32) vert2;
+	
+	m = max(v1, v2);
+	if (m > estado->mayor) estado->mayor = m;
+	
+	/*! TODO: <ACTUALIZAR ARISTAS>
+		  <AGREGAR NODOS SI ES NECESARIO>
+	 	  <SETEAR COLORES DE LOS NODOS>
+	 	  <ACTUALIZAR DELTA DEL ESTADONETWORK>
+	 */
+}
 
 
 
 /** ~~~~~~~~~~~~~~~~~~~~~ FUNCIONES DE LA API (EXTERNAS) ~~~~~~~~~~~~~~~~~~~~ */
 
 
-INLINE EstadoNetwork *network_create(void)
+/* Construye un objeto EstadoNetwork.
+ * ret = network_create();
+ * POS : {(ret != NULL => ret es un objeto EstadoNetwork vacío) && 
+ *		(ret == NULL => no hay memoria para el objeto EstadoNetwork)}
+ */
+INLINE EstadoNetwork *network_create (void)
 {
 	EstadoNetwork *ret = NULL;
 
@@ -58,8 +65,8 @@ INLINE EstadoNetwork *network_create(void)
 		ret->flow_value = 0;
 		ret->maximal  = false;
 		ret->completo = false;
-		ret->delta  = 0;
-		ret->colors = 0;
+		ret->delta  = -1;
+		ret->colors = -1;
 	}
 	
 	/* Poscondición 
@@ -70,7 +77,12 @@ INLINE EstadoNetwork *network_create(void)
 }
 
 
-INLINE int Inicializar(EstadoNetwork *estado, int modoinput)
+/* PRE : {estado != NULL && (modmoinput==1 || modoinput==2)}
+ * ret = Inicializar(estado,modoinput);
+ * POS : {(ret == 1 => estado tiene capacidad, según modoinput para almacenar 
+ *		nodos) && (ret == 0 => no hay memoria para alojar los nodos)}
+ */
+INLINE int Inicializar (EstadoNetwork *estado, int modoinput)
 {
 	int ret = 0, i, n;
 	
@@ -78,13 +90,15 @@ INLINE int Inicializar(EstadoNetwork *estado, int modoinput)
 	ASSERT(estado != NULL)
 	if ( ! ModoinputValido(modoinput) ) {
 		fprintf (stderr, "Network: Inicializar: modoinput inválido\n");
-		assert  (false);
+		return 1;
 	}
 
 	/* {modoinput == 1 || modoinput == 2} */
 	if (modoinput == 1)
-		/* Se espera input alfabético: ASCII(A) = 65, ASCII(a) = 97 */
-		n = 52;
+		/* Se espera input alfabético */
+		n = 123;
+		/* Esto cubre desde ASCII 32  para ' ' (el 1º)
+	 	 *	      hasta ASCII 122 para 'z' (el último) */
 	else
 		/* Se espera input numérico, y la pu~@#@ç$! */
 		n = 7000;
@@ -112,24 +126,55 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	ASSERT (estado != NULL);
 	if (! ModoinputValido(modoinput) ) {
 		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n");
-		assert  (false);
+		return 0;
 	}
 	
+	/* {modoinput == 1 || modoinput == 2} */
 	if (modoinput == 1) {
 		/* Input alfabético */
-		char vert1;
-		char vert2;
-		char cap[10];
+		char edge[13];
+		char vert1, vert2;
+		char *scan;
+		u32 cap;
 		
-		scanf ("%c%c %s", &vert1, &vert2, &cap);
+		/* Guardamos en "edge" lo leído */
+		memset (edge, '\0', 13);
+		scanf ("%[^\n]", &edge);
+		getchar ();
 		
-	switch (modoinput) {
-		char edge[10];
-		char capacity[10];
+		/* ¿Mal formato? */
+		if (edge[2] != ' ') {
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
 		
-		case 1:
-			scanf ("%s %[^\n]s", &edge, %capacity);
+	/*! TODO <CAMBIAR STRTOL POR UNA FUNC. PROPIA QUE DEVUELVA U32> */
+		cap = (u32) strtol (edge+3, &scan, 10);
+		
+		/* ¿Mal formato? */
+		if (*scan != '\0') {
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
+		
+		vert1 = edge[0];
+		vert2 = edge[1];
+		
+		AñadirLadoAlf (estado, vert1, vert2, cap);
+		
+		goto end1;
+		
+	} else {
+		/* Input numérico */
+		
+		/*! TODO <EN CONSTRUCCIÓN> */
+		
 	}
+	
+	end1:
+			return 1;
+	end0:
+			return 0;
 }
 
 
