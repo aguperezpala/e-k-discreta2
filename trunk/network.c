@@ -11,6 +11,7 @@ struct s_estado_network{
 	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
+	edgeList_t l_con;	/* Lista de lados conflictivos para el coloreo */
 };
 
 
@@ -25,11 +26,14 @@ struct s_estado_network{
 /* Indica si el modo de verbosidad es soportado por la API */
 #define VerbosidadValida(x)	((x == 0) || (x == 1) || (x == 2) || (x == 3))
 
+
+/*! NOTE <ESTO ESTÁ HECHO PARA COLOREO> puede hacerse más eficiente sino */
 static inline void AñadirLadoAlf (EstadoNetwork *estado,
 				   char vert1, char vert2, u32 cap)
 {
 	u32 v1, v2, m;
 	edge_t * edge;
+	bool v1new = false, v2new = false;
 	
 	ASSERT (estado != NULL)
 	
@@ -40,35 +44,52 @@ static inline void AñadirLadoAlf (EstadoNetwork *estado,
 	if (m > estado->mayor) estado->mayor = m;
 	
 	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
-	if (estado->nodes[v1].fordwardList == NULL)
-		estado->nodes[v1].fordwardList = el_create ();
+	if (estado->nodes[v1].forwardList == NULL) {
+		estado->nodes[v1].forwardList = el_create ();
+		/** NOTE Lo que sigue es para coloreo */
+		if (estado->nodes[v1].backwardList == NULL)
+			v1new = true; /* v1 es vértice nuevo */
+	}
 	
-	if (estado->nodes[v2].backwardList == NULL)
+	if (estado->nodes[v2].backwardList == NULL) {
 		estado->nodes[v2].backwardList = el_create ();
+		/** NOTE Lo que sigue es para coloreo */
+		if (estado->nodes[v1].forwardList == NULL)
+			v2new = true; /* v2 es vértice nuevo */
+	}
 	
 	/* creamos la arista */
 	edge = edge_create (cap, v1, v2);
 	
 	/* agregamos a ambas listas */
-	el_add_edge (estado->nodes[v1].fordwardList, edge);
+	el_add_edge (estado->nodes[v1].forwardList, edge);
 	el_add_edge (estado->nodes[v2].backwardList, edge);
 	
 	/* seteamos el delta... bien cochino!*/
-	estado->mayor = max (estado->mayor, el_size (estado->nodes[v1].fordwardList) +
+	estado->delta = max (estado->delta, el_size (estado->nodes[v1].forwardList) +
 					    el_size (estado->nodes[v1].backwardList));
 					    
-	estado->mayor = max (estado->mayor, el_size (estado->nodes[v2].fordwardList) +
+	estado->delta = max (estado->delta, el_size (estado->nodes[v2].forwardList) +
 					    el_size (estado->nodes[v2].backwardList));
 	
 	
-
-	
-	
-	/*! TODO: <ACTUALIZAR ARISTAS>
-		  <AGREGAR NODOS SI ES NECESARIO>
-	 	  <SETEAR COLORES DE LOS NODOS>
-	 	  <ACTUALIZAR DELTA DEL ESTADONETWORK>
-	 */
+	/** NOTE Lo que sigue es para coloreo */
+	if (v1new) {
+		if (v2new) {
+			/* Ambos vértices eran nuevos */
+			estado->nodes[v1].colour = 1;
+			estado->nodes[v2].colour = 2;
+		} else
+			/* v1 es nuevo, lo coloreamos sin conflicto */
+			estado->nodes[v1].colour = 3 - estado->nodes[v2].colour;
+	} else if (v2new)
+		/* v2 es nuevo, lo coloreamos sin conflicto */
+		estado->nodes[v2].colour = 3 - estado->nodes[v1].colour;
+	else {
+		/* Ningún vértice es nuevo => lado conflictivo */
+		edge_t *new = edge_create (0, v1, v2);
+		el_add_edge (estado->l_con, new);
+	}
 }
 
 
@@ -93,12 +114,9 @@ INLINE EstadoNetwork *network_create (void)
 		ret->completo = false;
 		ret->delta  = -1;
 		ret->colors = -1;
+		ret->l_con = el_create ();
 	}
 	
-	/* Poscondición 
-	ASSERT(ret->maximal == false)
-	ASSERT(ret->completo == false)
-*/	
 	return ret;
 }
 
@@ -131,12 +149,9 @@ INLINE int Inicializar (EstadoNetwork *estado, int modoinput)
 	
 	/* Inicializamos los lados */
 	for (i = 0 ; i < n ; i++) {
-		estado->nodes[i].fordwardList = NULL;
+		estado->nodes[i].forwardList = NULL;
 		estado->nodes[i].backwardList = NULL;
 	}
-		
-	
-	if (estado->nodes != NULL) ret = 1;	/*NOTE: imposible.. es estatico?*/
 	
 	return ret;
 }
@@ -165,6 +180,7 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		/* Guardamos en "edge" lo leído */
 		/*memset (edge, '\0', 13); NOTE: no hace falta*/
+		/** NOTE ¿Como es inicializada "char edge[13]"? */
 		scanf ("%[^\n]", &edge);
 		getchar ();
 		
@@ -174,7 +190,7 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			goto end0;
 		}
 		
-	/*! TODO <CAMBIAR STRTOL POR UNA FUNC. PROPIA QUE DEVUELVA U32> */
+		/* Guardamos la capacidad en cap */
 		cap = (u32) strtol (edge+3, &scan, 10);
 		
 		/* ¿Mal formato? */
@@ -195,6 +211,8 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		/*! TODO <EN CONSTRUCCIÓN> */
 		
+		/** ¿¿¿ Deberíamos hacer el mismo parseo sintáctico ??? */
+		
 	}
 	
 	end1:
@@ -214,7 +232,7 @@ INLINE int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	ASSERT (estado != NULL);
 	if ( ! VerbosidadValida(verbosidad) ) {
 		fprintf (stderr, "Network: AumentarFlujo: verbosidad inválida\n");
-		assert (false);
+		return /*###*/;
 	}
 	
 	

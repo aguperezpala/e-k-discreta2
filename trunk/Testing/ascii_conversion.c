@@ -74,8 +74,8 @@ int main (void)
 	entero[4] = '4';
 	entero[5] = '5';
 	
+	/** Forma propia */
 	for (i = 0 ; i < 50000000 ; i++) {
-		/** Forma propia */
 		ascii = 0;
 		
 		(void) time(&t1);
@@ -95,8 +95,8 @@ int main (void)
 		}
 	}
 	
+	/** Forma Linux */
 	for (i = 0 ; i < 50000000 ; i++) {
-		/** Forma Linux */
 		(void) time(&t1);
 		
 		ascii = (unsigned int) strtol (entero, &scan, 10);

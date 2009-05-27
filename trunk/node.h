@@ -39,10 +39,10 @@ typedef struct s_node {
 	
 	/*!u32 nodeName;		No hace falta, el nombre es el indice mismo */
 	u32 flux; 			/* flujo */
-	edgeList_t *fordwardList;	/* lista de aristas forward  */
+	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
 	bool state;			/*! <HACE FALTA???> */
-	short colour;
+	int colour;
 } node_t;
 
 
