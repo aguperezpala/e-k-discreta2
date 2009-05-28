@@ -30,6 +30,8 @@
 	#define ASSERT(x)	
 #endif
 
+/* Tipo que es solo para wrapping para el color ( si no sirve lo sacamos ) */
+typedef Color unsigned short;
 
 /*! VERBOSIDADES */
 #define VAL_F		1	/* Valor del flujo */
