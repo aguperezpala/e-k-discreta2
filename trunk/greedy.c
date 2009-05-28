@@ -1,9 +1,36 @@
+#include "greedy.h"
 #include "edge_list.h"
+#include <stdbool.h>
 
-
-INLINE Color min_free_color(node_t node, node_t * nodes , Color max_color)
+bool color_propio(node_t node, node_t * nodes)
 {
-	
+	unsigned short i= 0;
+	unsigned short size = 0;
+
+	/* Chequeo los colores de los vecinos forward */
+	size = el_get_size(node.forwardList);
+	for(i=0 ; i < size ; i++){
+		edge = el_get_actual(node.forwardList);
+		if (nodes[edge->nodeDest].colour == node.colour)
+			return false;
+		el_avance(node.forwardList);
+	}
+
+	/* Chequeo los colores de los vecinos backward */
+	size = el_get_size(node.backwardList);
+	for(i=0 ; i < size ; i++){
+		edge = el_get_actual(node.backwardList);
+		if (nodes[edge->nodeOrig].colour == node.colour)
+			return false;
+		el_avance(node.backwardList);
+	}
+
+	return true;
+}
+
+
+Color min_free_color(node_t node, node_t * nodes , Color max_color)
+{
 	unsigned short i= 0;
 	unsigned short size = 0; 
 	Color *colors = NULL;
@@ -37,6 +64,9 @@ INLINE Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	/* Destruyo la lista de colores */
 	free(colors);
 	colors = NULL;
+
+	/* Pos */
+	ASSERT(color_propio(node, nodes));
 
 	return ((i > max_color) ? i : max_color);
 }  
