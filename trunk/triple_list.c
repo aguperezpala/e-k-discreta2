@@ -181,26 +181,33 @@ INLINE void tl_start (tripleList_t * tl);
 		indexNode	<= MAX_N_NODES
 */
 void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode)
-{
-	struct tripleCeld * celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
-	
+{	
 	/* pre */
 	ASSERT (tl != NULL)
 	ASSERT (indexNode <= MAX_N_NODES)
 	
 	tl->size++;
-	
+	/* tenemos 2 casos posibles, que exista una celda o que no exista, si
+	 * existe la celda entonces solo la usamos, si no la creamos */
 	/* seteamos el flow */
-	celd->flow = flow;
+	if (tl->plast->next->next != NULL) {
+		struct tripleCeld * celd = tl->plast->next;
+		
+	} else {
+		struct tripleCeld * celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
+		celd->next = NULL;
+		tl->plast->next->next = celd;
+	}
 	
-	/*! recordemos que agregamos en el plast (no en el prev) */
-	celd->next = tl->plast->next;
-	tl->plast->next = celd;
 	
-	/* seteamos el nodo */
+	/* seteamos el nodo y el flow*/
 	celd->node = indexNode;
+	celd->flow = flow;
 	
 	/* ahora seteamos el parent, en realidad el pparent */
 	celd->pparent = tl->prev;
+	
+	/* actualizamos el ultimo puntero */
+	tl->plast = tl->plast->next;
 }
 
