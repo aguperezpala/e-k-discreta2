@@ -20,14 +20,13 @@
 
 /*! La estructura de cada celda es de la siguiente forma (una tripleta):
  *  {nodeIndex	 ,	Parent	,	actual Flow }
- * que es la representacion de la "cola" usada por E-K
+ * que es la representacion de la "cola" usada por E-K.
  * ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
  * 				MODO DE USO
  * ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
- * Antes que nada, al empezar se debe reinicializar (o inicializar) la lista.
+ * Antes que nada, al empezar se debe reinicializar (initialize) la lista.
  * Cuando se agrega un elemento (exepto en la inicializacion), ese elemento
- * tiene como padre el ultimo elemento que fue seleccionado como padre. Para
- * seleccionar un padre se debe avanzar el puntero "padre" con (avanzar padre)
+ * tiene como padre el elemento actual (osea a donde apunta el visor).
 */
 
 #include <stdlib.h>
@@ -40,6 +39,7 @@
 typedef struct s_tripleList ;
 
 
+/*! ~~~~~~~~~~~~  Constructores / destructores ~~~~~~~~~~~~~~~~~~~ */
 
 /* Funcion que crea una lista (en caso de que usemos dinamica) 
  * constructor
@@ -58,6 +58,13 @@ void tl_dinamic_destroy (tripleList_t * tl);
 		el != NULL
 */
 void tl_normal_destroy (tripleList_t * tl);
+
+/* Funcion para inicializar la lista
+	REQUIRES:
+		tl != NULL
+NOTE: antes de cada corrida debemos inicializar la estructura 
+*/
+void tl_initialize (tripleList_t * tl);
 
 /*! ~~~~~~~~~~~~  Funciones para obtener elementos ~~~~~~~~~~~~~~~~~~~ */
 
@@ -84,36 +91,37 @@ INLINE u32 tl_get_actual_flow (tripleList_t * tl);
 INLINE short tl_get_size (tripleList_t * tl);
 
 
-/*! ~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
+/*! ~~~~~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
 
-/* Funcion que agrega un elemento al edge_list "el" del nodo "n".
- * Vamos a usar estructuras fijas, NO dinamicas (por eficiencia...).
- * Inicializa el flujo en 0
-	REQUIRES:
-		tl	!= NULL
-		edge	!= NULL
-*/
-INLINE void tl_add_edge (tripleList_t * tl,  edge_t * edge);
-
-
-
-
-/* Funcion que sirve para eliminar el elemento actual (libera el edge)
-	REQUIRES:
-		tl != NULL
-		tl_get_size (tl) >= 1
-*/
-INLINE void tl_del_edge (tripleList_t * tl);
-
-
-/* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
+/* Funcion que avanza el visor al siguiente elemento, si esta en el ultimo elemento
  * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
 	REQUIRES:
-		el != NULL
+		tl != NULL
 */
 INLINE void tl_avance (tripleList_t * tl);
 
+/* Funcion que mueve el visor al padre del elemento actual
+	REQUIRES:
+		el != NULL
+*/
+INLINE void tl_go_parent (tripleList_t * tl);
 
+/* Funcion que mueve el visor al comienzo de la lista
+	REQUIRES:
+		el != NULL
+*/
+INLINE void tl_start (tripleList_t * tl);
+
+
+/*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
+
+/* Funcion que agrega una tripleta (nodo, padre, flow).
+ NOTE: tener en cuenta que el padre va a ser el elemento actual
+	REQUIRES:
+		tl		!= 	NULL
+		indexNode 	<= 	MAX_N_NODES
+*/
+void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode);
 
 
 

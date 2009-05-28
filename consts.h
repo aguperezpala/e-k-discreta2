@@ -19,6 +19,9 @@
 
 #define u32 unsigned int
 
+/*! maxima cantidad de nodos */
+#define MAX_N_NODES	7000
+
 
 /* Funcion assert previa. NOTE: el ';' ya esta incluido en la definicion para
  * que no nos queden despues ; dando vueltas (por si las moscas

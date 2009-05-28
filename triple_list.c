@@ -4,45 +4,52 @@
 /* vamos a definir el tipo celda para la lista */
 struct tripleCeld {
 	struct tripleCeld * next;
-	struct tripleCeld * parent;	/* puntero al padre */
+	struct tripleCeld * pparent;	/* puntero al anterior del padre */
 	u32 node;			/* nodo actual */
 	u32 flow;			/* flujo actual */
 };
 
 
 struct s_tripleList {
-	struct tripleCeld first;		/* celda dummy */
+	struct tripleCeld first;	/* celda dummy */
 	struct tripleCeld * prev; 	/* el visor, en realidad es el anterior */
+	struct tripleCeld * plast;	/* ultima celda */
 	short size;
 };
 
 
 
-tripleList_t * el_create (void)
+
+
+/* Funcion que crea una lista (en caso de que usemos dinamica) 
+ * constructor
+ */
+tripleList_t * tl_create (void)
 {
 	tripleList_t * list = (tripleList_t) malloc (sizeof (struct s_tripleList));
 	
 	ASSERT (list != NULL)
 	
 	list->prev = list->first.next = NULL;
+	list->plast = list->prev;
 	list->size = 0;
 	
 	return list;
 }
-	
 
-/* destructor cuando la lista era dinámica
+
+/* destructor para la lista allocada dinamicamente
 	REQUIRES:
 		el != NULL
 */
-void el_dinamic_destroy (tripleList_t * el)
+void tl_dinamic_destroy (tripleList_t * tl)
 {
 	struct tripleCeld * aux = NULL;
 	struct tripleCeld * delCeld = NULL;
 	
-	ASSERT (el != NULL)
+	ASSERT (tl != NULL)
 	
-	aux = el->first.next;
+	aux = tl->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
 		delCeld = aux;
@@ -50,21 +57,23 @@ void el_dinamic_destroy (tripleList_t * el)
 		free(delCeld);
 	}
 	/* borramos la estructura */
-	free (el);
+	free (tl);
 }
 
-/* destructor cuando la lista era estática
+
+/* destructor para la lista NO allocada dinamicamente, osea practicamente libera
+ * todas las celdas de la lista, menos la estructura misma de la celda
 	REQUIRES:
 		el != NULL
 */
-void el_normal_destroy (tripleList_t * el)
+void tl_normal_destroy (tripleList_t * tl)
 {
 	struct tripleCeld * aux = NULL;
 	struct tripleCeld * delCeld = NULL;
 	
-	ASSERT (el != NULL)
+	ASSERT (tl != NULL)
 	
-	aux = el->first.next;
+	aux = tl->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
 		delCeld = aux;
@@ -73,95 +82,125 @@ void el_normal_destroy (tripleList_t * el)
 	}
 }
 
-/* Funcion que obtiene el edge acutal al que actualmente apunta la lista 
+
+/* Funcion para inicializar la lista
 	REQUIRES:
-		el != NULL
-	RETURNS:
-		NULL 	si no hay elemento
-		edge 	caso contrario
+		tl != NULL
+NOTE: antes de cada corrida debemos inicializar la estructura 
 */
-INLINE edge_t * el_get_actual (tripleList_t * el)
+void tl_initialize (tripleList_t * tl)
 {
-	ASSERT (el != NULL)
-	return el->prev->next->edge;
+	ASSERT (tl != NULL)
+	tl->size = 0;
+	tl->prev = tl->plast = &(tl->first);
+}
+
+/*! ~~~~~~~~~~~~  Funciones para obtener elementos ~~~~~~~~~~~~~~~~~~~ */
+
+/* Funcion que obtiene el nodo actual (NOTE:indice del nodo actual)
+	REQUIRES:
+		tl != NULL
+	RETURNS:
+		indice
+*/
+INLINE u32 tl_get_actual_node (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	return tl->prev->next->node;
+}
+
+/* Funcion que obtiene el el flujo actual 
+	REQUIRES:
+		tl != NULL
+	RETURNS:
+		flow
+*/
+INLINE u32 tl_get_actual_flow (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	return tl->prev->next->flow;
 }
 
 
-/* Funcion que agrega un elemento al edge_list "el" del nodo "n".
- * Vamos a usar estructuras fijas, NO dinamicas (por eficiencia...).
- * Inicializa el flujo en 0
-	REQUIRES:
-		el	!= NULL
-		edge	!= NULL
+/* Funcion que devuelve el tamaño de la lista
+ * NOTE: si tl == NULL ==> size = 0
 */
-INLINE void el_add_edge (tripleList_t * el,  edge_t * edge);
+INLINE short tl_get_size (tripleList_t * tl);
+{
+	ASSERT (tl != NULL)
+	return tl->size;
+}
+
+
+
+/*! ~~~~~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
+
+/* Funcion que avanza el visor al siguiente elemento, si esta en el ultimo elemento
+ * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
+	REQUIRES:
+		tl != NULL
+*/
+INLINE void tl_avance (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	if (tl->prev->next == NULL)
+		tl->prev = &(tl->first);
+	else
+		tl->prev = tl->prev->next;
+}
+
+
+/* Funcion que mueve el visor al padre del elemento actual
+	REQUIRES:
+		el != NULL
+*/
+INLINE void tl_go_parent (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	tl->prev = tl->prev->pparent;
+}
+
+
+/* Funcion que mueve el visor al comienzo de la lista
+	REQUIRES:
+		el != NULL
+*/
+INLINE void tl_start (tripleList_t * tl);
+{
+	ASSERT (tl != NULL)
+	tl->prev = tl->plast = &(tl->first);
+}
+
+
+/*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
+
+/* Funcion que agrega una tripleta (nodo, padre, flow).
+ NOTE: tener en cuenta que el padre va a ser el elemento actual
+	REQUIRES:
+		tl		!= NULL
+		indexNode	<= MAX_N_NODES
+*/
+void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode)
 {
 	struct tripleCeld * celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
+	
 	/* pre */
-	ASSERT (el != NULL)
-	ASSERT (edge != NULL)
+	ASSERT (tl != NULL)
+	ASSERT (indexNode <= MAX_N_NODES)
 	
-	el->size++;
+	tl->size++;
 	
-	celd->edge = edge;
-	celd->next = el->prev->next;
-	el->prev->next = celd;
+	/* seteamos el flow */
+	celd->flow = flow;
+	
+	/*! recordemos que agregamos en el plast (no en el prev) */
+	celd->next = tl->plast->next;
+	tl->plast->next = celd;
+	
+	/* seteamos el nodo */
+	celd->node = indexNode;
+	
+	/* ahora seteamos el parent, en realidad el pparent */
+	celd->pparent = tl->prev;
 }
-
-
-/* Funcion que devuelve el tamaño de la lista */
-INLINE short el_get_size (tripleList_t * el)
-{
-	if (el == NULL)
-		return 0;
-	return el->size;
-}
-
-
-
-/* Funcion que sirve para eliminar el elemento actual
-	REQUIRES:
-		el != NULL
-		el_get_size (el) >= 1
-*/
-INLINE void el_del_edge (tripleList_t * el)
-{
-	struct tripleCeld * celd;
-	
-	/* pres */
-	ASSERT (el != NULL)
-	ASSERT (el->size >= 1)
-	
-	
-	/* actualizamos los punteros */
-	celd = el->prev->next;
-	el->prev->next = celd->next;
-	
-	/* liberamos el edge */
-	ASSERT (el->prev->next->edge != NULL)
-	free (celd->edge);
-	/* liberamos la celda */
-	free (celd);
-}
-
-/* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
-* entonces el "visor" vuelve al comienzo. (una especie de lista circular)
-	REQUIRES:
-		el != NULL
-*/
-INLINE void el_avance (tripleList_t * el)
-{
-	
-	/* pres */
-	ASSERT (el != NULL);
-	
-	if (el->prev->next == NULL)
-		/* debemos empezar del principio */
-		el->prev = &(el->first);
-	else
-		/* avanzamos asi nomas */
-		el->prev = el->prev->next;
-
-}
-
 
