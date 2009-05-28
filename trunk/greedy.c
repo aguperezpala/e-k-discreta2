@@ -31,14 +31,14 @@ INLINE Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	}
 	
 	/* Buscando el minimo color no usado */
-	for (i = 1; (i <= maxcolor) && colors[i]; i++);
-	node->colour = (Color) i;
+	for (i = 1; (i <= max_color) && colors[i]; i++);
+	node.colour = (Color) i;
 
 	/* Destruyo la lista de colores */
 	free(colors);
 	colors = NULL;
 
-	return ((i > maxcolor) ? i : maxcolor);
+	return ((i > max_color) ? i : max_color);
 }  
 
 Color color_greedy (node_t * nodes, int size)
