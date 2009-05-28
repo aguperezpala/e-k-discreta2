@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include "consts.h"
 #include "edge.h"
+#include "edge_list.h"
 /*! #include "listType.h": deberiamos nosotros (lo vamos a hacer) implementar este
  * TAD. Eficientemente y usando esos truquitos para poder diferenciar los 2 sub
  * conjuntos (los habilitados y deshabilitados).

@@ -2,6 +2,7 @@
 #define EDGE_H
 
 #include <stdlib.h>
+
 #include "consts.h"
 
 typedef struct s_edge {

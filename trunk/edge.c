@@ -7,7 +7,7 @@ REQUIRES:
 */
 INLINE edge_t * edge_create (u32 capacity, u32 nodeOrig, u32 nodeDest)
 {
-	edge_t * result = (edge_t *) malloc (1, sizeof (edge_t));
+	edge_t * result = (edge_t *) malloc (sizeof (edge_t));
 	
 	/* pres */
 	ASSERT (nodeOrig < 7000 && nodeDest < 7000);
