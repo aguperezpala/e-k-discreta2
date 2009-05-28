@@ -47,9 +47,11 @@ int main (void)
 			printf ("Enter next edge: ");
 			
 			/* Obtenemos el 1º vértice */
-			scanf ("%[^!0-9]", (char *) &vertice1);
+			scanf ("%[^ ]", (char *) &vertice1);
 			v1 = (unsigned int) strtol (vertice1, &scan, 10);
+			getchar();
 			
+			/** "%[^!-/:-~]" */
 			/* ¿Mal formato? */
 			if (*scan != '\0') {
 				printf ("Finalizó la lectura de lados\n");
@@ -57,8 +59,9 @@ int main (void)
 			}
 			
 			/* Obtenemos el 2º vértice */
-			scanf ("%[^0-9]", (char *) &vertice2);
+			scanf ("%[^ ]", (char *) &vertice2);
 			v1 = (unsigned int) strtol (vertice2, &scan, 10);
+			getchar ();
 			
 			/* ¿Mal formato? */
 			if (*scan != '\0') {
@@ -67,8 +70,9 @@ int main (void)
 			}
 			
 			/* Obtenemos la capacidad */
-			scanf ("%[0-9]", (char *) &capacity);
+			scanf ("%[^\n]", (char *) &capacity);
 			cap = (unsigned int) strtol (capacity, &scan, 10);
+			getchar();
 			
 			/* ¿Mal formato? */
 			if (*scan != '\0') {
