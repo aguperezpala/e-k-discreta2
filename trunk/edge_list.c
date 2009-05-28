@@ -22,7 +22,8 @@ edgeList_t * el_create (void)
 	
 	ASSERT (list != NULL)
 	
-	list->prev = list->first.next = NULL;
+	list->first.next = NULL;
+	list->prev = &(list->first);
 	list->size = 0;
 	
 	return list;
@@ -43,6 +44,7 @@ void el_dinamic_destroy (edgeList_t * el)
 	aux = el->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
+		free (aux->edge);
 		delCeld = aux;
 		aux = aux->next;
 		free(delCeld);
@@ -65,6 +67,7 @@ void el_normal_destroy (edgeList_t * el)
 	aux = el->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
+		free (aux->edge);
 		delCeld = aux;
 		aux = aux->next;
 		free(delCeld);
@@ -78,9 +81,10 @@ void el_normal_destroy (edgeList_t * el)
 		NULL 	si no hay elemento
 		edge 	caso contrario
 */
-INLINE edge_t * el_get_actual (edgeList_t * el)
+edge_t * el_get_actual (edgeList_t * el)
 {
 	ASSERT (el != NULL)
+	ASSERT (el->size >= 1)
 	return el->prev->next->edge;
 }
 
@@ -108,7 +112,7 @@ void el_add_edge (edgeList_t * el,  edge_t * edge)
 
 
 /* Funcion que devuelve el tamaño de la lista */
-INLINE short el_get_size (edgeList_t * el)
+short el_get_size (edgeList_t * el)
 {
 	if (el == NULL)
 		return 0;
@@ -147,13 +151,13 @@ void el_del_edge (edgeList_t * el)
 	REQUIRES:
 		el != NULL
 */
-INLINE void el_avance (edgeList_t * el)
+void el_avance (edgeList_t * el)
 {
 	
 	/* pres */
 	ASSERT (el != NULL);
 	
-	if (el->prev->next == NULL)
+	if (el->prev->next->next == NULL)
 		/* debemos empezar del principio */
 		el->prev = &(el->first);
 	else
