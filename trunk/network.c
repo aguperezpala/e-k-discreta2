@@ -8,6 +8,7 @@ struct s_estado_network{
 	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
 	bool maximal;	/* si tenemos un flujo maximal */
 	bool completo;	/* si se ingresaron todos los lados */
+	bool coloreo;	/* si nos llamaron con la opción de coloreo */
 	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
@@ -29,13 +30,46 @@ struct s_estado_network{
 /* Inidica si un código ASCII representa un caracter A-Z ó a-z */
 #define IsAscii(x)	( ((x > 64) && (x < 91)) || ((x > 97) && (x < 123)) )
 
+
+/* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
+ * Esta versión no tiene en cuenta el coloreo.
+ *
+ * PRE: estado != NULL
+ */
+void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+{
+	u32  m;
+	edge_t *edge;
+	
+	ASSERT (estado != NULL)
+	
+	m = max(v1, v2);
+	if (m > estado->mayor) estado->mayor = m;
+	
+	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
+	if (estado->nodes[v1].forwardList == NULL)
+		estado->nodes[v1].forwardList = el_create ();
+	
+	if (estado->nodes[v2].backwardList == NULL)
+		estado->nodes[v2].backwardList = el_create ();
+	
+	/* creamos la arista */
+	edge = edge_create (cap, v1, v2);
+	
+	/* Agregamos a ambas listas */
+	el_add_edge (estado->nodes[v1].forwardList, edge);
+	el_add_edge (estado->nodes[v2].backwardList, edge);
+	
+}
+
+
+
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión tiene en cuenta el coloreo incremental de los vértices.
  *
  * PRE: estado != NULL
  */
-/*! NOTE <ESTO ESTÁ HECHO PARA COLOREO> puede hacerse más eficiente sino */
-void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32  m;
 	edge_t *edge;
@@ -50,7 +84,6 @@ void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	if (estado->nodes[v1].forwardList == NULL) {
 		estado->nodes[v1].forwardList = el_create ();
 		
-		/** NOTE Lo que sigue es para coloreo */
 		if (estado->nodes[v1].backwardList == NULL) {
 			/* v1 es vértice nuevo */
 			v1new = true;
@@ -61,7 +94,6 @@ void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	if (estado->nodes[v2].backwardList == NULL) {
 		estado->nodes[v2].backwardList = el_create ();
 		
-		/** NOTE Lo que sigue es para coloreo */
 		if (estado->nodes[v1].forwardList == NULL) {
 			/* v2 es vértice nuevo */
 			v2new = true;
@@ -83,7 +115,6 @@ void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	if (estado->delta < m) estado->delta = m;
 	
 	
-	/** NOTE Lo que sigue es para coloreo */
 	if (v1new) {
 		if (v2new) {
 			/* Ambos vértices eran nuevos */
@@ -183,7 +214,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	
 	/* {modoinput == 1 || modoinput == 2} */
 	if (modoinput == 1) {
-		/* Input alfabético */
+		/** Input alfabético */
 		char edge[15];
 		
 		/* Guardamos en "edge" lo leído */
@@ -220,14 +251,17 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			/* Los vértices no eran letras */
 			printf ("Finalizó la lectura de lados\n");
 			goto end0;
-		} else
-			AñadirLado (estado, v1, v2, cap);
+		} else {
+			if (estado->coloreo)
+				AñadirLadoColor (estado, v1, v2, cap);
+			else
+				AñadirLado (estado, v1, v2, cap);
 		
 		/* Se agregó bien el lado */
 		goto end1;
 		
 	} else {
-		/* Input numérico */
+		/** Input numérico */
 		char *ptr1 = NULL, *ptr2 = NULL;
 		
 		getchar();
@@ -256,7 +290,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (*scan != '\0') {
 			/* El vértice 1 no era un entero */
 			printf ("Finalizó la lectura de lados\n");
-			break;
+			goto end0;
 		}
 		
 		/* Extraemos el 2º vértice */
@@ -266,90 +300,46 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (ptr1 == NULL) {
 			/* No había espacios tras el 1º vértice */
 			printf ("Finalizó la lectura de lados\n");
-			break;
+			goto end0;
 		}
 		
 		ptr1[0] = '\0'; /* Aislamos el 2º vértice */
 		ptr1++;
 		if (strlen (ptr2) > 10) {
-			printf ("Nombre de vértice no soportad\n");
-			printf ("Nombre de vértice: %s\n", ptr2);
+			/* Nombre de vértice mayor que u32 */
 			printf ("Finalizó la lectura de lados\n");
-			break;
+			goto end0;
 		}	 
 		v2 = (unsigned int) strtol (ptr2, &scan, 10);
-		/* ¿Mal formato? */
 		if (*scan != '\0') {
-			printf ("v2(2): %s\n", ptr2);
+			
 			printf ("Finalizó la lectura de lados\n");
-			break;
+			goto end0;
 		}
 		
 		/* Extraemos la capacidad */
 		
 		ptr2 = ptr1;
 		if (strlen (ptr2) > 10) {
-			printf ("Capacidad no soportada\n");
-			printf ("Capacidad: %s\n", ptr2);
+			/* Capacidad mayor que u32 */
 			printf ("Finalizó la lectura de lados\n");
-			break;
+			goto end0;
 		}
 			
 		cap = (unsigned int) strtol (ptr2, &scan, 10);
-		/* ¿Mal formato? */
 		if (*scan != '\0') {
-			printf ("cap: %s\n", ptr2);
-			printf ("Finalizó la lectura de lados\n");
-			break;
-		}
-	
-	
-		
-		
-		
-		char vert1[5], vert2[5], capacity[10];
-		char *scan = NULL;
-		u32 v1, v2, cap;
-		
-		/* Obtenemos el 1º vértice */
-		scanf ("%s", &vert1);
-		v1 = (u32) strtol (vert1, &scan, 10);
-		
-		/* ¿Mal formato? */
-		if (*scan != '\0') {
+			/* Capacidad no era un entero */
 			printf ("Finalizó la lectura de lados\n");
 			goto end0;
 		}
 		
-		/* Obtenemos el 2º vértice */
-		scanf ("%s", &vert2);
-		v1 = (u32) strtol (vert2, &scan, 10);
+		if (estado->coloreo)
+			AñadirLadoColor (estado, v1, v2, cap);
+		else
+			AñadirLado (estado, v1, v2, cap);
 		
-		/* ¿Mal formato? */
-		if (*scan != '\0') {
-			printf ("Finalizó la lectura de lados\n");
-			goto end0;
-		}
-		
-		/* Obtenemos la capacidad */
-		scanf ("%s", &capacity);
-		cap = (u32) strtol (vert1, &scan, 10);
-		
-		/* ¿Mal formato? */
-		if (*scan != '\0') {
-			printf ("Finalizó la lectura de lados\n");
-			goto end0;
-		}
-		
-		/* Guardamos la capacidad en cap */
-		cap = (u32) strtol (edge+3, &scan, 10);
-		
-		AñadirLado (estado, v1, v2, cap);
-		
+		/* Se agregó bien el lado */
 		goto end1;
-		
-		/** ¿¿¿ Deberíamos hacer el mismo parseo sintáctico ??? */
-		
 	}
 	
 	end1:
