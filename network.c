@@ -1,4 +1,4 @@
-	#include <stdbool.h>
+#include <stdbool.h>
 #include "network.h"
 
 
@@ -26,6 +26,8 @@ struct s_estado_network{
 /* Indica si el modo de verbosidad es soportado por la API */
 #define VerbosidadValida(x)	((x == 0) || (x == 1) || (x == 2) || (x == 3))
 
+/* Inidica si un código ASCII representa un caracter A-Z ó a-z */
+#define IsAscii(x)	( ((x > 64) && (x < 91)) || ((x > 97) && (x < 123)) )
 
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión tiene en cuenta el coloreo incremental de los vértices.
@@ -33,7 +35,7 @@ struct s_estado_network{
  * PRE: estado != NULL
  */
 /*! NOTE <ESTO ESTÁ HECHO PARA COLOREO> puede hacerse más eficiente sino */
-static inline void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32  m;
 	edge_t *edge;
@@ -108,7 +110,7 @@ static inline void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  * POS : {(ret != NULL => ret es un objeto EstadoNetwork vacío) && 
  *		(ret == NULL => no hay memoria para el objeto EstadoNetwork)}
  */
-INLINE EstadoNetwork *network_create (void)
+EstadoNetwork *network_create (void)
 {
 	EstadoNetwork *ret = NULL;
 
@@ -132,7 +134,7 @@ INLINE EstadoNetwork *network_create (void)
  * POS : {(ret == 1 => estado tiene capacidad, según modoinput para almacenar 
  *		nodos) && (ret == 0 => no hay memoria para alojar los nodos)}
  */
-INLINE int Inicializar (EstadoNetwork *estado, int modoinput)
+int Inicializar (EstadoNetwork *estado, int modoinput)
 {
 	int ret = 0, i, n;
 	
@@ -168,8 +170,11 @@ INLINE int Inicializar (EstadoNetwork *estado, int modoinput)
    POS : {(ret == 1 => estado contiene ahora el lado ingresado) && 
 	   	  (ret == 0 => error al leer los datos ingresados)}
 */
-INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
+int LeerUnLado(EstadoNetwork *estado, int modoinput)
 {
+	u32 v1, v2, cap;
+	char *scan = NULL;
+	
 	ASSERT (estado != NULL);
 	if (! ModoinputValido(modoinput) ) {
 		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n");
@@ -179,18 +184,21 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	/* {modoinput == 1 || modoinput == 2} */
 	if (modoinput == 1) {
 		/* Input alfabético */
-		char edge[13];
-		char *scan = NULL;
-		u32 v1, v2, cap;
+		char edge[15];
 		
 		/* Guardamos en "edge" lo leído */
-		/*memset (edge, '\0', 13); NOTE: no hace falta*/
-		/** NOTE ¿Como es inicializada "char edge[13]"? */
 		scanf ("%[^\n]", &edge);
 		getchar ();
 		
-		/* ¿Mal formato? */
 		if (edge[2] != ' ') {
+			/* No había espacio tras los dos vértices */
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
+		
+		
+		if (strlen (edge+3) > 10) {
+			/* Capacidad mayor que u32 */
 			printf ("Finalizó la lectura de lados\n");
 			goto end0;
 		}
@@ -198,8 +206,8 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		/* Guardamos la capacidad en cap */
 		cap = (u32) strtol (edge+3, &scan, 10);
 		
-		/* ¿Mal formato? */
 		if (*scan != '\0') {
+			/* La capacidad no era un entero */
 			printf ("Finalizó la lectura de lados\n");
 			goto end0;
 		}
@@ -208,12 +216,97 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		v1 = (u32) edge[0];
 		v2 = (u32) edge[1];
 		
-		AñadirLado (estado, v1, v2, cap);
+		if (!IsAscii (v1) || !IsAscii (v2)){
+			/* Los vértices no eran letras */
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		} else
+			AñadirLado (estado, v1, v2, cap);
 		
+		/* Se agregó bien el lado */
 		goto end1;
 		
 	} else {
 		/* Input numérico */
+		char *ptr1 = NULL, *ptr2 = NULL;
+		
+		getchar();
+		scanf ("%[^\n]", (char *) &edge);
+		
+		ptr1 = (char *) edge;
+		
+		/* Extraemos el 1º vértice */
+		
+		ptr2 = ptr1; /* Recordamos el comienzo de la cadena */
+		ptr1 = strchr (ptr2, ' ');
+		if (ptr1 == NULL) {
+			/* No había espacios en la cadena */
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
+		
+		ptr1[0] = '\0'; /* Aislamos el 1º vértice */
+		ptr1++;
+		if (strlen (ptr2) > 10) {
+			/* Nombre de vértice mayor que u32 */
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}	 
+		v1 = (unsigned int) strtol (ptr2, &scan, 10);
+		if (*scan != '\0') {
+			/* El vértice 1 no era un entero */
+			printf ("Finalizó la lectura de lados\n");
+			break;
+		}
+		
+		/* Extraemos el 2º vértice */
+		
+		ptr2 = ptr1;
+		ptr1 = strchr (ptr2, ' ');
+		if (ptr1 == NULL) {
+			/* No había espacios tras el 1º vértice */
+			printf ("Finalizó la lectura de lados\n");
+			break;
+		}
+		
+		ptr1[0] = '\0'; /* Aislamos el 2º vértice */
+		ptr1++;
+		if (strlen (ptr2) > 10) {
+			printf ("Nombre de vértice no soportad\n");
+			printf ("Nombre de vértice: %s\n", ptr2);
+			printf ("Finalizó la lectura de lados\n");
+			break;
+		}	 
+		v2 = (unsigned int) strtol (ptr2, &scan, 10);
+		/* ¿Mal formato? */
+		if (*scan != '\0') {
+			printf ("v2(2): %s\n", ptr2);
+			printf ("Finalizó la lectura de lados\n");
+			break;
+		}
+		
+		/* Extraemos la capacidad */
+		
+		ptr2 = ptr1;
+		if (strlen (ptr2) > 10) {
+			printf ("Capacidad no soportada\n");
+			printf ("Capacidad: %s\n", ptr2);
+			printf ("Finalizó la lectura de lados\n");
+			break;
+		}
+			
+		cap = (unsigned int) strtol (ptr2, &scan, 10);
+		/* ¿Mal formato? */
+		if (*scan != '\0') {
+			printf ("cap: %s\n", ptr2);
+			printf ("Finalizó la lectura de lados\n");
+			break;
+		}
+	
+	
+		
+		
+		
 		char vert1[5], vert2[5], capacity[10];
 		char *scan = NULL;
 		u32 v1, v2, cap;
@@ -270,7 +363,7 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 ret = AumentarFlujo (estado, verbosidad)
 POS: {ret == 0 => *//*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ###
 */
-INLINE int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
+int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	/* Precondiciones */
 	ASSERT (estado != NULL);
@@ -284,13 +377,13 @@ INLINE int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 
 
 /*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
-INLINE u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
+u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
 
 }
 
 /*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
-INLINE u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
+u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
 
 }
