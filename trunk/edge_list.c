@@ -134,14 +134,14 @@ void el_del_edge (edgeList_t * el)
 	ASSERT (el != NULL)
 	ASSERT (el->size >= 1)
 	
-	
+	el->size--;
 	/* actualizamos los punteros */
 	celd = el->prev->next;
 	el->prev->next = celd->next;
 	
 	/* liberamos el edge */
-	ASSERT (el->prev->next->edge != NULL)
-	free (celd->edge);
+	if (celd->edge != NULL)
+		free (celd->edge);
 	/* liberamos la celda */
 	free (celd);
 }

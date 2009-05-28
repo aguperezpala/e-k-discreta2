@@ -29,8 +29,9 @@ int main (void)
 	e_print (el_get_actual (list));
 	el_avance (list);
 	e_print (el_get_actual (list));
-	
-	
+	el_del_edge (list);
+	printf ("size:%d\n",el_get_size(list));
+	/*
 	for (i = 0; i < 900; i++) {
 		edge = edge_create ((u32) i, 2, (u32) 900-i);
 		el_add_edge (list, edge);
@@ -40,7 +41,7 @@ int main (void)
 		e_print (el_get_actual (list));
 		el_avance (list);
 	}
-	printf ("size:%d\n",el_get_size(list));
+	printf ("size:%d\n",el_get_size(list));*/
 	i = 0;
 	el_dinamic_destroy (list);
 	
