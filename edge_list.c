@@ -16,7 +16,7 @@ struct s_edgeList {
 
 
 
-INLINE edgeList_t * el_create (void)
+edgeList_t * el_create (void)
 {
 	edgeList_t * list = (edgeList_t) malloc (sizeof (struct s_edgeList));
 	
@@ -33,7 +33,7 @@ INLINE edgeList_t * el_create (void)
 	REQUIRES:
 		el != NULL
 */
-INLINE void el_dinamic_destroy (edgeList_t * el)
+void el_dinamic_destroy (edgeList_t * el)
 {
 	struct edgeCeld * aux = NULL;
 	struct edgeCeld * delCeld = NULL;
@@ -55,7 +55,7 @@ INLINE void el_dinamic_destroy (edgeList_t * el)
 	REQUIRES:
 		el != NULL
 */
-INLINE void el_normal_destroy (edgeList_t * el)
+void el_normal_destroy (edgeList_t * el)
 {
 	struct edgeCeld * aux = NULL;
 	struct edgeCeld * delCeld = NULL;
@@ -92,7 +92,7 @@ INLINE edge_t * el_get_actual (edgeList_t * el)
 		el	!= NULL
 		edge	!= NULL
 */
-INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
+void el_add_edge (edgeList_t * el,  edge_t * edge);
 {
 	struct edgeCeld * celd = (struct edgeCeld *) malloc (sizeof (struct edgeCeld));
 	/* pre */
@@ -122,7 +122,7 @@ INLINE short el_get_size (edgeList_t * el)
 		el != NULL
 		el_get_size (el) >= 1
 */
-INLINE void el_del_edge (edgeList_t * el)
+void el_del_edge (edgeList_t * el)
 {
 	struct edgeCeld * celd;
 	

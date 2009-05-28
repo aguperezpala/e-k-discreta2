@@ -39,29 +39,23 @@
 typedef struct s_edgeList edgeList_t;
 
 
-/*!<<debemos pasar todas las funciones a inline o hacer visible la estructura y
- * usamos #defines para definir las funciones (Algunas).
- * Si vamos a definir inline fijarse que alomejor en el .c deben estar declaradas
- * como "static inline ....".
- */
-
 /* Funcion que crea una lista (en caso de que usemos dinamica) 
  * constructor
  */
-INLINE edgeList_t * el_create (void);
+edgeList_t * el_create (void);
 
 /* destructor para la lista allocada dinamicamente
 	REQUIRES:
 		el != NULL
 */
-INLINE void el_dinamic_destroy (edgeList_t * el);
+void el_dinamic_destroy (edgeList_t * el);
 
 /* destructor para la lista NO allocada dinamicamente, osea practicamente libera
  * todas las celdas de la lista, menos la estructura misma de la celda
 	REQUIRES:
 		el != NULL
 */
-INLINE void el_normal_destroy (edgeList_t * el);
+void el_normal_destroy (edgeList_t * el);
 
 
 /* Funcion que obtiene el edge acutal al que actualmente apunta la lista 
@@ -80,7 +74,7 @@ INLINE edge_t * el_get_actual (edgeList_t * el);
 		el	!= NULL
 		edge	!= NULL
 */
-INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
+void el_add_edge (edgeList_t * el,  edge_t * edge);
 
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si el == NULL ==> size = 0
@@ -94,7 +88,7 @@ INLINE short el_get_size (edgeList_t * el);
 		el != NULL
 		el_get_size (el) >= 1
 */
-INLINE void el_del_edge (edgeList_t * el);
+void el_del_edge (edgeList_t * el);
 
 
 /* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
