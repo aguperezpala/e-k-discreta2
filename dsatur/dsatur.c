@@ -126,7 +126,7 @@ int equal_max_dsatur(struct alist_vert **heap)
 	return (heap[0]->dsatur == heap[left(0)]->dsatur || heap[0]->dsatur == heap[right(0)]->dsatur);
 }
 
-int dsatur(node_t node , node_t * nodes)
+int dsatur(node_t node , node_t * nodes , short delta)
 {
 
 	int m, n, i, maxdeg, maxsatur, maxcolor = 1, heapsize, check_eq = 1;
