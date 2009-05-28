@@ -34,7 +34,7 @@
 #endif
 
 /* Tipo que es solo para wrapping para el color ( si no sirve lo sacamos ) */
-typedef Color unsigned short;
+typedef unsigned short Color;
 
 /*! VERBOSIDADES */
 #define VAL_F		1	/* Valor del flujo */
