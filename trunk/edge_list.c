@@ -5,7 +5,7 @@
 struct edgeCeld {
 	struct edgeCeld * next;
 	edge_t* edge;		/* no lo definimos como puntero por "eficiencia" */
-}
+};
 
 
 struct s_edgeList {
@@ -109,8 +109,6 @@ INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
 
 
 /* Funcion que devuelve el tamaño de la lista, osea delta
-REQUIRES:
-el != NULL
 */
 INLINE short el_get_size (edgeList_t * el)
 {
