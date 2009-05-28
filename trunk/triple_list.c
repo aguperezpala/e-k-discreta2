@@ -4,8 +4,9 @@
 /* vamos a definir el tipo celda para la lista */
 struct tripleCeld {
 	struct tripleCeld * next;
-	struct tripleCeld * parent;
-	u32 flow;
+	struct tripleCeld * parent;	/* puntero al padre */
+	u32 node;			/* nodo actual */
+	u32 flow;			/* flujo actual */
 };
 
 
