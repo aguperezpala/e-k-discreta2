@@ -42,7 +42,8 @@ typedef struct s_node {
 	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
 	bool state;			/*! <HACE FALTA???> */
-	int colour;
+	short colour;
+	short delta;
 	/* int satur;	Agregarlo en caso de que usemos DSATUR */
 } node_t;
 

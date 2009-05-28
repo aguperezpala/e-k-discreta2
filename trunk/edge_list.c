@@ -30,8 +30,8 @@ INLINE edgeList_t * el_create (void)
 	
 
 /* destructor cuando la lista era dinámica
-REQUIRES:
-el != NULL
+	REQUIRES:
+		el != NULL
 */
 INLINE void el_dinamic_destroy (edgeList_t * el)
 {
@@ -52,8 +52,8 @@ INLINE void el_dinamic_destroy (edgeList_t * el)
 }
 
 /* destructor cuando la lista era estática
-REQUIRES:
-el != NULL
+	REQUIRES:
+		el != NULL
 */
 INLINE void el_normal_destroy (edgeList_t * el)
 {
@@ -72,11 +72,11 @@ INLINE void el_normal_destroy (edgeList_t * el)
 }
 
 /* Funcion que obtiene el edge acutal al que actualmente apunta la lista 
-REQUIRES:
-el != NULL
-RETURNS:
-NULL 	si no hay elemento
-edge 	cc
+	REQUIRES:
+		el != NULL
+	RETURNS:
+		NULL 	si no hay elemento
+		edge 	caso contrario
 */
 INLINE edge_t * el_get_actual (edgeList_t * el)
 {
@@ -87,7 +87,6 @@ INLINE edge_t * el_get_actual (edgeList_t * el)
 
 /* Funcion que agrega un elemento al edge_list "el" del nodo "n".
  * Vamos a usar estructuras fijas, NO dinamicas (por eficiencia...).
- * Agregamos al comienzo de la lista "SI"
  * Inicializa el flujo en 0
 	REQUIRES:
 		el	!= NULL
@@ -108,8 +107,7 @@ INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
 }
 
 
-/* Funcion que devuelve el tamaño de la lista, osea delta
-*/
+/* Funcion que devuelve el tamaño de la lista */
 INLINE short el_get_size (edgeList_t * el)
 {
 	if (el == NULL)
@@ -120,9 +118,9 @@ INLINE short el_get_size (edgeList_t * el)
 
 
 /* Funcion que sirve para eliminar el elemento actual
-REQUIRES:
-el != NULL
-el_get_size (el) >= 1
+	REQUIRES:
+		el != NULL
+		el_get_size (el) >= 1
 */
 INLINE void el_del_edge (edgeList_t * el)
 {
@@ -146,8 +144,8 @@ INLINE void el_del_edge (edgeList_t * el)
 
 /* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
 * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
-REQUIRES:
-el != NULL
+	REQUIRES:
+		el != NULL
 */
 INLINE void el_avance (edgeList_t * el)
 {
