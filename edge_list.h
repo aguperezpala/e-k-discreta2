@@ -75,7 +75,6 @@ INLINE edge_t * el_get_actual (edgeList_t * el);
 
 /* Funcion que agrega un elemento al edge_list "el" del nodo "n".
  * Vamos a usar estructuras fijas, NO dinamicas (por eficiencia...).
- * Agregamos al comienzo de la lista "SI"
  * Inicializa el flujo en 0
 	REQUIRES:
 		el	!= NULL
@@ -83,7 +82,7 @@ INLINE edge_t * el_get_actual (edgeList_t * el);
 */
 INLINE void el_add_edge (edgeList_t * el,  edge_t * edge);
 
-/* Funcion que devuelve el tamaño de la lista, osea delta
+/* Funcion que devuelve el tamaño de la lista
  * NOTE: si el == NULL ==> size = 0
 */
 INLINE short el_get_size (edgeList_t * el);

@@ -1,4 +1,4 @@
-#include <stdbool.h>
+	#include <stdbool.h>
 #include "network.h"
 
 
@@ -15,7 +15,7 @@ struct s_estado_network{
 };
 
 
-/** ~~~~~~~~~~~~~~~~~~~~~~ FUNCIONES AUXILIARES INTERNAS ~~~~~~~~~~~~~~~~~~~~ */
+/** ~~~~~~~~~~~~~~~~~~~~ FUNCIONES AUXILIARES INTERNAS ~~~~~~~~~~~~~~~~~~~~~~ */
 
 #define max(a, b) ((a>b) ? a : b)
 #define min(a, b) ((a<b) ? a : b)
@@ -27,18 +27,19 @@ struct s_estado_network{
 #define VerbosidadValida(x)	((x == 0) || (x == 1) || (x == 2) || (x == 3))
 
 
+/* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
+ * Esta versión tiene en cuenta el coloreo incremental de los vértices.
+ *
+ * PRE: estado != NULL
+ */
 /*! NOTE <ESTO ESTÁ HECHO PARA COLOREO> puede hacerse más eficiente sino */
-static inline void AñadirLadoAlf (EstadoNetwork *estado,
-				   char vert1, char vert2, u32 cap)
+static inline void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
-	u32 v1, v2, m;
-	edge_t * edge;
+	u32  m;
+	edge_t *edge;
 	bool v1new = false, v2new = false;
 	
 	ASSERT (estado != NULL)
-	
-	v1 = (u32) vert1;
-	v2 = (u32) vert2;
 	
 	m = max(v1, v2);
 	if (m > estado->mayor) estado->mayor = m;
@@ -46,31 +47,38 @@ static inline void AñadirLadoAlf (EstadoNetwork *estado,
 	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
 	if (estado->nodes[v1].forwardList == NULL) {
 		estado->nodes[v1].forwardList = el_create ();
+		
 		/** NOTE Lo que sigue es para coloreo */
-		if (estado->nodes[v1].backwardList == NULL)
-			v1new = true; /* v1 es vértice nuevo */
+		if (estado->nodes[v1].backwardList == NULL) {
+			/* v1 es vértice nuevo */
+			v1new = true;
+			estado->nodes[v1].delta = 0;
+		}
 	}
 	
 	if (estado->nodes[v2].backwardList == NULL) {
 		estado->nodes[v2].backwardList = el_create ();
+		
 		/** NOTE Lo que sigue es para coloreo */
-		if (estado->nodes[v1].forwardList == NULL)
-			v2new = true; /* v2 es vértice nuevo */
+		if (estado->nodes[v1].forwardList == NULL) {
+			/* v2 es vértice nuevo */
+			v2new = true;
+			estado->nodes[v2].delta = 0;
+		}
 	}
 	
 	/* creamos la arista */
 	edge = edge_create (cap, v1, v2);
 	
-	/* agregamos a ambas listas */
+	/* Agregamos a ambas listas */
 	el_add_edge (estado->nodes[v1].forwardList, edge);
+	estado->nodes[v1].delta++;
 	el_add_edge (estado->nodes[v2].backwardList, edge);
+	estado->nodes[v2].delta++;
 	
-	/* seteamos el delta... bien cochino!*/
-	estado->delta = max (estado->delta, el_size (estado->nodes[v1].forwardList) +
-					    el_size (estado->nodes[v1].backwardList));
-					    
-	estado->delta = max (estado->delta, el_size (estado->nodes[v2].forwardList) +
-					    el_size (estado->nodes[v2].backwardList));
+	/* Seteamos el delta de todo el network/grafo */
+	m = max (estado->nodes[v1].delta, estado->nodes[v2].delta);
+	if (estado->delta < m) estado->delta = m;
 	
 	
 	/** NOTE Lo que sigue es para coloreo */
@@ -85,11 +93,9 @@ static inline void AñadirLadoAlf (EstadoNetwork *estado,
 	} else if (v2new)
 		/* v2 es nuevo, lo coloreamos sin conflicto */
 		estado->nodes[v2].colour = 3 - estado->nodes[v1].colour;
-	else {
+	else
 		/* Ningún vértice es nuevo => lado conflictivo */
-		edge_t *new = edge_create (0, v1, v2);
-		el_add_edge (estado->l_con, new);
-	}
+		el_add_edge (estado->l_con, edge);
 }
 
 
@@ -174,9 +180,8 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	if (modoinput == 1) {
 		/* Input alfabético */
 		char edge[13];
-		char vert1, vert2;
-		char *scan;
-		u32 cap;
+		char *scan = NULL;
+		u32 v1, v2, cap;
 		
 		/* Guardamos en "edge" lo leído */
 		/*memset (edge, '\0', 13); NOTE: no hace falta*/
@@ -199,17 +204,56 @@ INLINE int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			goto end0;
 		}
 		
-		vert1 = edge[0];
-		vert2 = edge[1];
+		/* Obtenemos el ASCII del nombre de los vértices */
+		v1 = (u32) edge[0];
+		v2 = (u32) edge[1];
 		
-		AñadirLadoAlf (estado, vert1, vert2, cap);
+		AñadirLado (estado, v1, v2, cap);
 		
 		goto end1;
 		
 	} else {
 		/* Input numérico */
+		char vert1[5], vert2[5], capacity[10];
+		char *scan = NULL;
+		u32 v1, v2, cap;
 		
-		/*! TODO <EN CONSTRUCCIÓN> */
+		/* Obtenemos el 1º vértice */
+		scanf ("%s", &vert1);
+		v1 = (u32) strtol (vert1, &scan, 10);
+		
+		/* ¿Mal formato? */
+		if (*scan != '\0') {
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
+		
+		/* Obtenemos el 2º vértice */
+		scanf ("%s", &vert2);
+		v1 = (u32) strtol (vert2, &scan, 10);
+		
+		/* ¿Mal formato? */
+		if (*scan != '\0') {
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
+		
+		/* Obtenemos la capacidad */
+		scanf ("%s", &capacity);
+		cap = (u32) strtol (vert1, &scan, 10);
+		
+		/* ¿Mal formato? */
+		if (*scan != '\0') {
+			printf ("Finalizó la lectura de lados\n");
+			goto end0;
+		}
+		
+		/* Guardamos la capacidad en cap */
+		cap = (u32) strtol (edge+3, &scan, 10);
+		
+		AñadirLado (estado, v1, v2, cap);
+		
+		goto end1;
 		
 		/** ¿¿¿ Deberíamos hacer el mismo parseo sintáctico ??? */
 		
