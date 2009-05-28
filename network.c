@@ -83,7 +83,7 @@ void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
 	if (estado->nodes[v1].forwardList == NULL) {
 		estado->nodes[v1].forwardList = el_create ();
-		
+		/** Para coloreo */
 		if (estado->nodes[v1].backwardList == NULL) {
 			/* v1 es vértice nuevo */
 			v1new = true;
@@ -93,7 +93,7 @@ void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	
 	if (estado->nodes[v2].backwardList == NULL) {
 		estado->nodes[v2].backwardList = el_create ();
-		
+		/** Para coloreo */
 		if (estado->nodes[v1].forwardList == NULL) {
 			/* v2 es vértice nuevo */
 			v2new = true;
@@ -110,6 +110,7 @@ void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	el_add_edge (estado->nodes[v2].backwardList, edge);
 	estado->nodes[v2].delta++;
 	
+	/** De acá para abajo, para coloreo */
 	/* Seteamos el delta de todo el network/grafo */
 	m = max (estado->nodes[v1].delta, estado->nodes[v2].delta);
 	if (estado->delta < m) estado->delta = m;
@@ -206,7 +207,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	u32 v1, v2, cap;
 	char *scan = NULL;
 	
-	ASSERT (estado != NULL);
+	ASSERT (estado != NULL)
 	if (! ModoinputValido(modoinput) ) {
 		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n");
 		return 0;
@@ -356,7 +357,7 @@ POS: {ret == 0 => *//*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ###
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	/* Precondiciones */
-	ASSERT (estado != NULL);
+	ASSERT (estado != NULL)
 	if ( ! VerbosidadValida(verbosidad) ) {
 		fprintf (stderr, "Network: AumentarFlujo: verbosidad inválida\n");
 		return /*###*/;
