@@ -5,7 +5,7 @@
 
 int main (void)
 {
-	char edge[12], vertice1[5], vertice2[5], capacity[10];
+	char edge[30];
 	char vert1, vert2;
 	char *scan;
 	unsigned int v1, v2, cap;
@@ -19,14 +19,14 @@ int main (void)
 	
 	if (inputmode == 1) {
 		while (true) {
-			memset (edge, '\0', 12);
 			printf ("Enter next edge: ");
-			scanf ("%[^\n]", (char *) &edge);
 			getchar ();
+			scanf ("%[^\n]", (char *) &edge);
 			
 			if (edge[2] != ' ') {
+				printf ("Faltó el espacio entre vértices y cap\n");
 				fprintf (stderr, "Finalizó la lectura de lados\n");
-				goto end;
+				break;
 			}
 				
 			vert1 = edge[0];
@@ -34,8 +34,9 @@ int main (void)
 			cap = (unsigned int) strtol (edge+3, &scan, 10);
 			
 			if (*scan != '\0') {
+				printf ("La capacidad no era un nº\n");
 				fprintf (stderr, "Finalizó la lectura de lados\n");
-				goto end;
+				break;
 			}
 				
 			printf ("\nvert1: %c\nvert2: %c\ncapacity: %u\n",
@@ -43,52 +44,92 @@ int main (void)
 		}
 		
 	} else if (inputmode == 2) {
+		char *ptr1 = NULL, *ptr2 = NULL;
+		
 		while (true) {
+			getchar();
 			printf ("Enter next edge: ");
+			scanf ("%[^\n]", (char *) &edge);
 			
-			/* Obtenemos el 1º vértice */
-			scanf ("%[^ ]", (char *) &vertice1);
-			v1 = (unsigned int) strtol (vertice1, &scan, 10);
-			getchar();
+			ptr1 = (char *) edge;
 			
-			/** "%[^!-/:-~]" */
+			/* Extraemos el 1º vértice */
+			
+			ptr2 = ptr1; /* Recordamos el comienzo de la cadena */
+			ptr1 = strchr (ptr2, ' ');
 			/* ¿Mal formato? */
-			if (*scan != '\0') {
+			if (ptr1 == NULL) {
+				printf ("v1(1): %s\n", ptr2);
 				printf ("Finalizó la lectura de lados\n");
-				goto end;
+				break;
 			}
 			
-			/* Obtenemos el 2º vértice */
-			scanf ("%[^ ]", (char *) &vertice2);
-			v1 = (unsigned int) strtol (vertice2, &scan, 10);
-			getchar ();
-			
+			ptr1[0] = '\0'; /* Aislamos el 1º vértice */
+			ptr1++;
+			if (strlen (ptr2) > 10) {
+				printf ("Nombre de vértice no soportad\n");
+				printf ("Nombre de vértice: %s\n", ptr2);
+				printf ("Finalizó la lectura de lados\n");
+				break;
+			}	 
+			v1 = (unsigned int) strtol (ptr2, &scan, 10);
 			/* ¿Mal formato? */
 			if (*scan != '\0') {
+				printf ("v1(2): %s\n", ptr2);
 				printf ("Finalizó la lectura de lados\n");
-				goto end;
+				break;
 			}
 			
-			/* Obtenemos la capacidad */
-			scanf ("%[^\n]", (char *) &capacity);
-			cap = (unsigned int) strtol (capacity, &scan, 10);
-			getchar();
+			/* Extraemos el 2º vértice */
 			
+			ptr2 = ptr1; /* Recordamos el comienzo de la cadena */
+			ptr1 = strchr (ptr2, ' ');
+			/* ¿Mal formato? */
+			if (ptr1 == NULL) {
+				printf ("v2(1): %s\n", ptr2);
+				printf ("Finalizó la lectura de lados\n");
+				break;
+			}
+			
+			ptr1[0] = '\0'; /* Aislamos el 2º vértice */
+			ptr1++;
+			if (strlen (ptr2) > 10) {
+				printf ("Nombre de vértice no soportad\n");
+				printf ("Nombre de vértice: %s\n", ptr2);
+				printf ("Finalizó la lectura de lados\n");
+				break;
+			}	 
+			v2 = (unsigned int) strtol (ptr2, &scan, 10);
 			/* ¿Mal formato? */
 			if (*scan != '\0') {
+				printf ("v2(2): %s\n", ptr2);
 				printf ("Finalizó la lectura de lados\n");
-				goto end;
+				break;
+			}
+			
+			/* Extraemos la capacidad */
+			
+			ptr2 = ptr1;
+			if (strlen (ptr2) > 10) {
+				printf ("Capacidad no soportada\n");
+				printf ("Capacidad: %s\n", ptr2);
+				printf ("Finalizó la lectura de lados\n");
+				break;
+			}
+				
+			cap = (unsigned int) strtol (ptr2, &scan, 10);
+			/* ¿Mal formato? */
+			if (*scan != '\0') {
+				printf ("cap: %s\n", ptr2);
+				printf ("Finalizó la lectura de lados\n");
+				break;
 			}
 			
 			printf ("\nv1: %u\nv2: %u\ncap: %u\n", v1, v2, cap);
 		}
-	} else
-		goto end;
-	
-	end:
-	{
-			printf ("Goodbye, thanks for beeing so gay!\n");
-			return 0;
 	}
+	
+	printf ("Goodbye, thanks for beeing so gay!\n");
+	return 0;
 }
 

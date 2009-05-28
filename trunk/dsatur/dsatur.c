@@ -8,16 +8,9 @@
 
 /* Funciones internas.
  * Duda : Conviene pasar el nodo o el indice del nodo ? */
-short degree(node_t node);
 Color min_color(node_t node , node_t * nodes , Color max);
 void increase_satur(node_t node , node_t * nodes);
 int equal_max_dsatur(struct alist_vert **heap);
-
-/* Retorna el grado del nodo */
-short degree(node_t node)
-{
-	return el_get_size(node.forwardList) + el_get_size(node.backwardList)
-}
 
 /* Incrementa el grado de saturacion de todos los vecinos de node.
  */
@@ -83,10 +76,10 @@ Color min_color(node_t node , node_t * nodes , Color max)
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.backwardList);
 		
-		if(node_array[edge->nodeDest].colour > max_color)
-			maxcolor = node_array[edge->nodeDest].colour;
+		if(node_array[edge->nodeOrig].colour > max_color)
+			maxcolor = node_array[edge->nodeOrig].colour;
 			
-		colors[node_array[edge->nodeDest].colour]++;
+		colors[node_array[edge->nodeOrig].colour]++;
 		el_avance(node.backwardList);
 	}
 	
