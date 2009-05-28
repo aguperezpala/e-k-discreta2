@@ -33,11 +33,12 @@
 #include <stdbool.h>
 
 #include "consts.h"
+#include "edge.h"
+
 
 /* definimos el tipo */
 typedef struct s_edgeList edgeList_t;
 
-#include "node.h"	/* edge */
 
 /* Funcion que crea una lista (en caso de que usemos dinamica) 
  * constructor

@@ -17,10 +17,11 @@
 
 #ifndef NODE_H
 #define NODE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "consts.h"
-
+#include "edge.h"
 /*! #include "listType.h": deberiamos nosotros (lo vamos a hacer) implementar este
  * TAD. Eficientemente y usando esos truquitos para poder diferenciar los 2 sub
  * conjuntos (los habilitados y deshabilitados).
@@ -42,25 +43,10 @@ typedef struct s_node {
 	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
 	bool state;			/*! <HACE FALTA???> */
-	short colour;
+	Color colour;
 	short delta;
 	/* int satur;	Agregarlo en caso de que usemos DSATUR */
 } node_t;
-
-
-typedef struct s_edge {
-	u32 capacity;
-	u32 flow;
-	u32 nodeOrig;
-	u32 nodeDest;
-	/*! Podriamos probar con short */
-} edge_t;
-
-/* Creamos una arista
-	REQUIRES:
-		0 <= nodeOrig, nodeDest < 7000
-*/
-INLINE edge_t * edge_create (u32 capacity, u32 nodeOrig, u32 nodeDest);
 
 
 /*! los que le decia de las funciones inline, aca les paso un link
