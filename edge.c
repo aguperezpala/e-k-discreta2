@@ -5,7 +5,7 @@
 REQUIRES:
 0 <= nodeOrig, nodeDest < 7000
 */
-INLINE edge_t * edge_create (u32 capacity, u32 nodeOrig, u32 nodeDest)
+edge_t * edge_create (u32 capacity, u32 nodeOrig, u32 nodeDest)
 {
 	edge_t * result = (edge_t *) malloc (sizeof (edge_t));
 	
@@ -24,7 +24,7 @@ INLINE edge_t * edge_create (u32 capacity, u32 nodeOrig, u32 nodeDest)
  	REQUIRES:
 		e != NULL
 */
-INLINE void edge_destroy (edge_t * e)
+void edge_destroy (edge_t * e)
 {
 	ASSERT (e != NULL)
 	free (e);

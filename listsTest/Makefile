@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast \
 	-Wcast-qual -Wstrict-prototypes -Wmissing-declarations \
-	-Wmissing-prototypes -Werror -D_DDEBUG \
+	-Wmissing-prototypes -Werror -D__DEBUG \
 	-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include/
 LIBS = -lglib-2.0
 TARGET = host

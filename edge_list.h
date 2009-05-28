@@ -66,7 +66,7 @@ void el_normal_destroy (edgeList_t * el);
 		NULL 	si no hay elemento
 		edge 	cc
 */
-INLINE edge_t * el_get_actual (edgeList_t * el);
+edge_t * el_get_actual (edgeList_t * el);
 
 /* Funcion que agrega un elemento al edge_list "el" del nodo "n".
  * Vamos a usar estructuras fijas, NO dinamicas (por eficiencia...).
@@ -80,7 +80,7 @@ void el_add_edge (edgeList_t * el,  edge_t * edge);
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si el == NULL ==> size = 0
 */
-INLINE short el_get_size (edgeList_t * el);
+short el_get_size (edgeList_t * el);
 
 
 
@@ -97,7 +97,7 @@ void el_del_edge (edgeList_t * el);
 	REQUIRES:
 		el != NULL
 */
-INLINE void el_avance (edgeList_t * el);
+void el_avance (edgeList_t * el);
 
 
 
