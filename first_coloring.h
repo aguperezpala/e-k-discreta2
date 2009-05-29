@@ -25,9 +25,12 @@
  * los conflictos de color uno por uno
  *
  * PRE: estado != NULL
- * POS: "estado posee coloreo propio"
+ *
+ *	K = ResolverConflictos (estado)
+ *
+ * POS: "estado posee coloreo propio" && "el coloreo emplea K colores"
  */
-int ResolverConflictos (EstadoNetwork *estado);
+short ResolverConflictos (EstadoNetwork *estado);
 
 
 #endif

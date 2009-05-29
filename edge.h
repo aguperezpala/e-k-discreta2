@@ -1,3 +1,20 @@
+/* MACK-EK versión 1.0
+ * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
+ * maximal en un network
+ *
+ * TAD edge_t (lado), versión 1.0.0, del proyecto único de
+ * Discreta 2, FaMAF, año 2009
+ * La estructura es transparente para permitir el acceso directo
+ *
+ * Autores:  Budde, Carlos E.
+ *	     Kondrasky, Alejandro
+ *	     Pérez Paladini, Agustín
+ *	     Soldevilla, Mallku R.
+ *
+ * Revisión: Penazzi, Daniel
+ *
+ */
+
 #ifndef EDGE_H
 #define EDGE_H
 
@@ -6,12 +23,12 @@
 #include "consts.h"
 
 typedef struct s_edge {
-	u32 capacity;
-	u32 flow;
-	u32 nodeOrig;
-	u32 nodeDest;
-	/*! Podriamos probar con short */
+	u32 capacity;	/* Capacidad del lado */
+	u32 flow;	/* Flujo actual que atraviesa el lado */
+	u32 nodeOrig;	/* Vértice de origen */
+	u32 nodeDest;	/* Vértice de destino */
 } edge_t;
+
 
 /* Creamos una arista
 	REQUIRES:

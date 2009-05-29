@@ -1,5 +1,8 @@
 #include <stdbool.h>
 #include "network.h"
+#include "node.h"
+#include "edge.h"
+#include "edge_list.h"
 
 
 
@@ -119,14 +122,14 @@ void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	if (v1new) {
 		if (v2new) {
 			/* Ambos vértices eran nuevos */
-			estado->nodes[v1].colour = 1;
-			estado->nodes[v2].colour = 2;
+			estado->nodes[v1].color = 1;
+			estado->nodes[v2].color = 2;
 		} else
 			/* v1 es nuevo, lo coloreamos sin conflicto */
-			estado->nodes[v1].colour = 3 - estado->nodes[v2].colour;
+			estado->nodes[v1].color = 3 - estado->nodes[v2].color;
 	} else if (v2new)
 		/* v2 es nuevo, lo coloreamos sin conflicto */
-		estado->nodes[v2].colour = 3 - estado->nodes[v1].colour;
+		estado->nodes[v2].color = 3 - estado->nodes[v1].color;
 	else
 		/* Ningún vértice es nuevo => lado conflictivo */
 		el_add_edge (estado->l_con, edge);

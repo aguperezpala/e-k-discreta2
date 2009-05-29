@@ -7,10 +7,6 @@
 * Sacar el flag __DEBUG (para quitar los ASSERTS y otras verduras)
 
 
-
-
-
-
-
-inline functions:
-http://publib.boulder.ibm.com/infocenter/lnxpcomp/v7v91/index.jsp?topic=/com.ibm.vacpp7l.doc/language/ref/clrc07cplr243.htm
+Inline functions:
+  [1] http://publib.boulder.ibm.com/infocenter/lnxpcomp/v7v91/index.jsp?topic=/com.ibm.vacpp7l.doc/language/ref/clrc07cplr243.htm
+  [2] http://www.greenend.org.uk/rjk/2003/03/inline.html  

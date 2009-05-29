@@ -11,7 +11,7 @@ bool color_propio(node_t node, node_t * nodes)
 	size = el_get_size(node.forwardList);
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.forwardList);
-		if (nodes[edge->nodeDest].colour == node.colour)
+		if (nodes[edge->nodeDest].color == node.color)
 			return false;
 		el_avance(node.forwardList);
 	}
@@ -20,7 +20,7 @@ bool color_propio(node_t node, node_t * nodes)
 	size = el_get_size(node.backwardList);
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.backwardList);
-		if (nodes[edge->nodeOrig].colour == node.colour)
+		if (nodes[edge->nodeOrig].color == node.color)
 			return false;
 		el_avance(node.backwardList);
 	}
@@ -45,7 +45,7 @@ Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	size = el_get_size(node.forwardList);
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.forwardList);
-		colors[nodes[edge->nodeDest].colour]++;
+		colors[nodes[edge->nodeDest].color]++;
 		el_avance(node.forwardList);
 	}
 
@@ -53,13 +53,13 @@ Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	size = el_get_size(node.backwardList);
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.backwardList);
-		colors[nodes[edge->nodeOrig].colour]++;
+		colors[nodes[edge->nodeOrig].color]++;
 		el_avance(node.backwardList);
 	}
 	
 	/* Buscando el minimo color no usado */
 	for (i = 1; (i <= max_color) && colors[i]; i++);
-	node.colour = (Color) i;
+	node.color = (Color) i;
 
 	/* Destruyo la lista de colores */
 	free(colors);
@@ -77,8 +77,8 @@ Color color_greedy (node_t * nodes, int size)
 	Color max_color = 1;
 
 	for(i = 0; i < size; i++ ){
-		nodes[i].colour = min_free_color(i, nodes, max_color);
-		if(nodes[i].colour > max_color) max_color = nodes[i].colour;
+		nodes[i].color = min_free_color(i, nodes, max_color);
+		if(nodes[i].color > max_color) max_color = nodes[i].color;
 	}
 
 	return max_color;
