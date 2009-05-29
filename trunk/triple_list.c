@@ -26,11 +26,15 @@ struct s_tripleList {
  */
 tripleList_t * tl_create (void)
 {
-	tripleList_t * list = (tripleList_t) malloc (sizeof (struct s_tripleList));
-	
+	tripleList_t * list = (tripleList_t *) malloc (sizeof (struct s_tripleList));
+	/* cochinada nos asegura un invariante y muchos chequeos */
+	struct tripleCeld * celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
 	ASSERT (list != NULL)
 	
-	list->prev = list->first.next = NULL;
+	list->first.next = celd;
+	celd->next = NULL;
+	celd->pparent = celd;
+	list->prev =  &(list->first);
 	list->plast = list->prev;
 	list->size = 0;
 	
@@ -88,11 +92,15 @@ void tl_normal_destroy (tripleList_t * tl)
 		tl != NULL
 NOTE: antes de cada corrida debemos inicializar la estructura 
 */
-void tl_initialize (tripleList_t * tl)
+void tl_initialize (tripleList_t * tl, u32 indexNode)
 {
 	ASSERT (tl != NULL)
+	
 	tl->size = 0;
 	tl->prev = tl->plast = &(tl->first);
+	tl->first.node = indexNode;
+	tl->first.pparent = NULL;
+	
 }
 
 /*! ~~~~~~~~~~~~  Funciones para obtener elementos ~~~~~~~~~~~~~~~~~~~ */
@@ -103,9 +111,10 @@ void tl_initialize (tripleList_t * tl)
 	RETURNS:
 		indice
 */
-INLINE u32 tl_get_actual_node (tripleList_t * tl)
+u32 tl_get_actual_node (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
+	ASSERT (tl->size >= 1)
 	return tl->prev->next->node;
 }
 
@@ -115,7 +124,7 @@ INLINE u32 tl_get_actual_node (tripleList_t * tl)
 	RETURNS:
 		flow
 */
-INLINE u32 tl_get_actual_flow (tripleList_t * tl)
+u32 tl_get_actual_flow (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	return tl->prev->next->flow;
@@ -125,9 +134,10 @@ INLINE u32 tl_get_actual_flow (tripleList_t * tl)
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si tl == NULL ==> size = 0
 */
-INLINE short tl_get_size (tripleList_t * tl);
+short tl_get_size (tripleList_t * tl)
 {
-	ASSERT (tl != NULL)
+	if (tl == NULL)
+		return 0;
 	return tl->size;
 }
 
@@ -140,10 +150,10 @@ INLINE short tl_get_size (tripleList_t * tl);
 	REQUIRES:
 		tl != NULL
 */
-INLINE void tl_avance (tripleList_t * tl)
+void tl_avance (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
-	if (tl->prev->next == NULL)
+	if (tl->prev->next->next == NULL)
 		tl->prev = &(tl->first);
 	else
 		tl->prev = tl->prev->next;
@@ -154,10 +164,10 @@ INLINE void tl_avance (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-INLINE void tl_go_parent (tripleList_t * tl)
+void tl_go_parent (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
-	tl->prev = tl->prev->pparent;
+	tl->prev = tl->prev->next->pparent;
 }
 
 
@@ -165,10 +175,25 @@ INLINE void tl_go_parent (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-INLINE void tl_start (tripleList_t * tl);
+void tl_start (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	tl->prev = tl->plast = &(tl->first);
+}
+
+
+
+
+/* Funcion que mueve el actual al final de la lista
+REQUIRES:
+el != NULL
+NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
+avanzar el "visor" (actual) al final.
+*/
+void tl_move_last (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	tl->prev = tl->plast;
 }
 
 
@@ -182,6 +207,7 @@ INLINE void tl_start (tripleList_t * tl);
 */
 void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode)
 {	
+	struct tripleCeld * celd;
 	/* pre */
 	ASSERT (tl != NULL)
 	ASSERT (indexNode <= MAX_N_NODES)
@@ -191,10 +217,10 @@ void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode)
 	 * existe la celda entonces solo la usamos, si no la creamos */
 	/* seteamos el flow */
 	if (tl->plast->next->next != NULL) {
-		struct tripleCeld * celd = tl->plast->next;
+		celd = tl->plast->next->next;
 		
 	} else {
-		struct tripleCeld * celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
+		celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
 		celd->next = NULL;
 		tl->plast->next->next = celd;
 	}
