@@ -2,7 +2,7 @@
  * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
  * maximal en un network
  *
- * TAD Coloreo Greedy, versión 1.0.0, del proyecto único de
+ * Módulo Coloreo Greedy, versión 1.0.0, del proyecto único de
  * Discreta 2, FaMAF, año 2009
  *
  * Autores:  Budde, Carlos E.
