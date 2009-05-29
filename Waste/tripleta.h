@@ -3,7 +3,7 @@
  * maximal en un network
  *
  * TAD tripleta versión 1.0.0, del proyecto único de Discreta 2, FaMAF, año 2009
- * Una tripleta es un elemento de la cola que genera Edmods-Karp a cada paso
+ * Una tripleta es un elemento de la cola que genera Edmonds-Karp a cada paso
  *   de extensión del grafo. Es decir, un elemento tripleta está compuesto por
  *   tres elementos: 1. Nombre del vértice
  *		     2. Nombre del padre que puso este vértice
