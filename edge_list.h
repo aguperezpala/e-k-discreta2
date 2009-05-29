@@ -15,17 +15,6 @@
  */
 
 
-/*! vamos a hacer directamente el tipo de lista arista para agilizar las cosas */
-
-/*! Practicamente lo que es esta lista consta de 4 punteros y un entero (tamaño)
- * El primer puntero señala el comienzo de la lista, el 2 señala el final de los
- * "NO", el 3 el comienzo de los SI  y el 4 el elemento "actual".
- * <podriamos utilizar solo 2 punteros (ya que el comienzo de NO es el comienzo
- * de la lista en si, y el comienzo de la lista si es el final + 1 de la lista
- * NO>
- * Tanto en el momento de la creacion como cuando se agregan elementos, estos son
- * puestos en la cola de "SI".
-*/
 #ifndef EDGE_LIST_H
 #define EDGE_LIST_H
 

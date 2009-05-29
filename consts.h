@@ -35,7 +35,7 @@
 typedef unsigned short Color;
 
 
-/** Algunos defeines de utilidad */
+/** Algunos defines de utilidad */
 
 #define max(a, b) ((a>b) ? a : b)
 #define min(a, b) ((a<b) ? a : b)

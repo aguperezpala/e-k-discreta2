@@ -3,6 +3,7 @@ CFLAGS = -g -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast \
 	-Wcast-qual -Wstrict-prototypes -Wmissing-declarations \
 	-Wmissing-prototypes -Werror -D__DEBUG
 # ¡¡¡¡¡¡¡¡¡¡ ELIMINAR EL -D__DEBUG !!!!!!!!!!!!!
+# Analizar qué banderas dejar
 TARGET = EK!
 SOURCES = $(shell echo *.c)
 OBJECTS = $(SOURCES:%.c=%.o)
