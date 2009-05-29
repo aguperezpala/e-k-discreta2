@@ -36,7 +36,7 @@
 #include "node.h"	/* edge */
 
 /* definimos el tipo */
-typedef struct s_tripleList ;
+typedef struct s_tripleList tripleList_t ;
 
 
 /*! ~~~~~~~~~~~~  Constructores / destructores ~~~~~~~~~~~~~~~~~~~ */
@@ -62,9 +62,10 @@ void tl_normal_destroy (tripleList_t * tl);
 /* Funcion para inicializar la lista
 	REQUIRES:
 		tl != NULL
-NOTE: antes de cada corrida debemos inicializar la estructura 
+NOTE: antes de cada corrida debemos inicializar la estructura, tomamos el nodo
+* principal de todos (s).
 */
-void tl_initialize (tripleList_t * tl);
+void tl_initialize (tripleList_t * tl, u32 indexNode);
 
 /*! ~~~~~~~~~~~~  Funciones para obtener elementos ~~~~~~~~~~~~~~~~~~~ */
 
@@ -74,7 +75,7 @@ void tl_initialize (tripleList_t * tl);
 	RETURNS:
 		indice
 */
-INLINE u32 tl_get_actual_node (tripleList_t * tl);
+ u32 tl_get_actual_node (tripleList_t * tl);
 
 /* Funcion que obtiene el el flujo actual 
 	REQUIRES:
@@ -82,13 +83,13 @@ INLINE u32 tl_get_actual_node (tripleList_t * tl);
 	RETURNS:
 		flow
 */
-INLINE u32 tl_get_actual_flow (tripleList_t * tl);
+ u32 tl_get_actual_flow (tripleList_t * tl);
 
 
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si tl == NULL ==> size = 0
 */
-INLINE short tl_get_size (tripleList_t * tl);
+ short tl_get_size (tripleList_t * tl);
 
 
 /*! ~~~~~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
@@ -98,21 +99,30 @@ INLINE short tl_get_size (tripleList_t * tl);
 	REQUIRES:
 		tl != NULL
 */
-INLINE void tl_avance (tripleList_t * tl);
+ void tl_avance (tripleList_t * tl);
 
 /* Funcion que mueve el visor al padre del elemento actual
 	REQUIRES:
 		el != NULL
 */
-INLINE void tl_go_parent (tripleList_t * tl);
+ void tl_go_parent (tripleList_t * tl);
 
 /* Funcion que mueve el visor al comienzo de la lista
 	REQUIRES:
 		el != NULL
 */
-INLINE void tl_start (tripleList_t * tl);
+ void tl_start (tripleList_t * tl);
 
 
+ /* Funcion que mueve el actual al final de la lista
+	REQUIRES:
+		el != NULL
+NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
+      avanzar el "visor" (actual) al final.
+*/
+ void tl_move_last (tripleList_t * tl);
+ 
+ 
 /*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
 
 /* Funcion que agrega una tripleta (nodo, padre, flow).
