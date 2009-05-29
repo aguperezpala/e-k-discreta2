@@ -23,9 +23,7 @@
 #define MAX_N_NODES	7000
 
 
-/* Funcion assert previa. NOTE: el ';' ya esta incluido en la definicion para
- * que no nos queden despues ; dando vueltas (por si las moscas
- */
+/* Funcion assert previa. NOTE: el ';' ya esta incluido en la definicion */
 #ifdef __DEBUG
 	#include <assert.h>
 	#define ASSERT(x)	assert(x);
@@ -36,11 +34,21 @@
 /* Tipo que es solo para wrapping para el color ( si no sirve lo sacamos ) */
 typedef unsigned short Color;
 
-/*! VERBOSIDADES */
-#define VAL_F		1	/* Valor del flujo */
-#define CAP_C		2	/* Corte y capacidad del mismo */
-#define VAL_F_FLUX	4	/* Valor del flujo + flujo */
-#define FLUX		8	/* Flujo (lados que lo hacen) */
+
+/** Algunos defeines de utilidad */
+
+#define max(a, b) ((a>b) ? a : b)
+#define min(a, b) ((a<b) ? a : b)
+
+/* Indica si el modo de input es soportado por la API */
+#define ModoinputValido(x)	((x == 1) || (x == 2))
+
+/* Indica si el modo de verbosidad es soportado por la API */
+#define VerbosidadValida(x)	((x == 0) || (x == 1) || (x == 2) || (x == 3))
+
+/* Inidica si un código numérico ASCII representa un caracter A-Z ó a-z */
+#define IsAscii(x)	( ((x > 64) && (x < 91)) || ((x > 97) && (x < 123)) )
+
 
 
 #ifndef INLINE
