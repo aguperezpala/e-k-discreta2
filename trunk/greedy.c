@@ -7,6 +7,7 @@ bool color_propio(node_t node, node_t * nodes)
 {
 	unsigned short i= 0;
 	unsigned short size = 0;
+	edge_t *edge = NULL;
 
 	/* Chequeo los colores de los vecinos forward */
 	size = el_get_size(node.forwardList);
@@ -67,8 +68,9 @@ Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	colors = NULL;
 
 	/* Pos */
-	ASSERT(color_propio(node, nodes));
+	ASSERT(color_propio(node, nodes))
 
+	/** NOTE: ¡¡¡ <HAY QUE DEVOLVER 'I' DIRECTAMENTE> !!! ### ### ### ### */
 	return ((i > max_color) ? i : max_color);
 }  
 

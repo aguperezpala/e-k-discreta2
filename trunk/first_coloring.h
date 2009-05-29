@@ -21,8 +21,11 @@
 #define C_INICIAL_H
 
 
-/* Estudia la lista de aristas conflictivas de (estado) para ir resolviendo
- * los conflictos de color uno por uno
+/* Estudia la lista de aristas conflictivas de (estado) para ir
+ * resolviendo los conflictos de color uno por uno.
+ * Básicamente es una corrida de Greedy restringida a los vértices
+ * de las aristas conflictivas
+ * Actualiza el EstadoNetwork para reflejar el resultado.
  *
  * PRE: estado != NULL
  *
