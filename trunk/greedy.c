@@ -1,6 +1,7 @@
-#include "greedy.h"
-#include "edge_list.h"
 #include <stdbool.h>
+#include "consts.h"
+#include "edge_list.h"
+#include "greedy.h"
 
 bool color_propio(node_t node, node_t * nodes)
 {
@@ -39,7 +40,7 @@ Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	ASSERT(nodes != NULL)
 
 	/* Creo el arreglo de los colores actuales */
-	colors = calloc(maxcolor + 1, sizeof(Color));
+	colors = (Color *) calloc (maxcolor + 1, sizeof(Color));
 
 	/* Obtengo los colores de los vecinos forward */
 	size = el_get_size(node.forwardList);
