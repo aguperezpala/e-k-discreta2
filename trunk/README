@@ -5,3 +5,12 @@
   punteros como para inicializar tamaños?) o si no nos sirve un choripan.
   
 * Sacar el flag __DEBUG (para quitar los ASSERTS y otras verduras)
+
+
+
+
+
+
+
+inline functions:
+http://publib.boulder.ibm.com/infocenter/lnxpcomp/v7v91/index.jsp?topic=/com.ibm.vacpp7l.doc/language/ref/clrc07cplr243.htm
