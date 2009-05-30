@@ -62,7 +62,6 @@ static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			/* v2 es vértice nuevo */
 			estado->nodes[v2].corrida = 0;
 	}
-}
 	
 	/* creamos la arista */
 	edge = edge_create (cap, v1, v2);
@@ -149,25 +148,6 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 		/* Ningún vértice es nuevo => lado conflictivo */
 		el_add_edge (estado->l_con, edge);
 }
-
-
-/* Aumenta el flujo de un EstadoNetwork corriendo en modo alfabético
- *
- * PRE:
- *   ret = AumentarFlujoAlf (estado)
- * POS:*/
-static int AumentarFlujoAlf (EstadoNetwork *estado)
-{
-	u32 actual;
-	
-	ASSERT (estado != NULL)
-	ASSERT (estado->modoinput == 1)
-	
-	actual = tl_get_actual_node (estado->cola);
-	
-}
-
-
 
 
 
@@ -398,6 +378,12 @@ POS: {ret == 0 => *//*! TODO <COMPLETAR COMPLETAR> */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	int result = 0;
+	u32 s, t, indiceActual;
+	unsigned short corrida;
+	node_t  actual;
+	edge_t *edge;
+	bool empty = false; /* "¿Se vació la cola?" */
+	int endList = 0;
 	
 	/* Precondiciones */
 	ASSERT (estado != NULL)
@@ -408,25 +394,40 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	
 	if (estado->modoinput == 1) {
 		/** Modo alfabético */
-		/* Borramos la cola vieja */
-		tl_initialize (estado->cola, 115); /* 115 == ASCII('s') */
-		/* Nos paramos en 's' */
-		tl_start (estado->cola);
-		/* Aumentamos la versión de corrida E-K */
-		estado->nodes[115].corrida++;
-		
-		result = AumentarFlujoAlf (estado);
+		s = 115; /* 115 == ASCII('s') */
+		t = 116;
 	} else {
 		/** Modo numérico */
-		/* Borramos la cola vieja */
-		tl_initialize (estado->cola, 0);
-		/* Nos paramos en 's' */
-		tl_start (estado->cola);
-		/* Aumentamos la versión de corrida E-K */
-		estado->nodes[0].corrida++;
-		
-		result = AumentarFlujoNum (estado);
+		s = 0;
+		t = 1;
 	}
+	
+	/* Borramos la cola vieja */
+	tl_initialize (estado->cola, s);
+	/* Nos paramos en 's' */
+	tl_start (estado->cola);
+	/* Aumentamos y registramos la versión de corrida E-K */
+	corrida = estado->nodes[s].corrida++;
+	
+	indiceActual = tl_get_actual_node (estado->cola);
+	
+	while (!empty && indiceActual != t) { /* Ciclo principal */
+		
+		actual = estado->nodes[indiceActual];
+		el_start (actual.forwardList);
+		
+		while (endList == 0) { /* Ciclo "lados forward" */
+			
+			edge = el_get_actual (actual.forwardList);
+			
+			if (edge->flow < edge->capacity) {
+				
+				
+			
+			endList = el_avance (actual.forwardList);
+			
+	
+	/*! TODO <EN CONSTRUCCIÓN> */
 	
 	return result;
 }

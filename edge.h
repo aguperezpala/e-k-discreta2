@@ -25,6 +25,7 @@
 typedef struct s_edge {
 	u32 capacity;	/* Capacidad del lado */
 	u32 flow;	/* Flujo actual que atraviesa el lado */
+	u32 preFlow;	/* Flujo que querríamos mandar en una corrida E-K */
 	u32 nodeOrig;	/* Vértice de origen */
 	u32 nodeDest;	/* Vértice de destino */
 } edge_t;

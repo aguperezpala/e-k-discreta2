@@ -107,10 +107,15 @@ void tl_initialize (tripleList_t * tl, u32 indexNode);
 */
  void tl_go_parent (tripleList_t * tl);
 
-/* Funcion que mueve el visor al comienzo de la lista
-	REQUIRES:
-		el != NULL
-*/
+ 
+/* Funcion que avanza el visor al siguiente elemento
+ * Si esta en el ultimo elemento no avanzamos.
+ *	REQUIRES:
+ *		tl != NULL
+ *	RETURNS:
+ *		0, si avanzamos normalmente
+ *		1, si estamos al final de la cola
+ */
  void tl_start (tripleList_t * tl);
 
 
