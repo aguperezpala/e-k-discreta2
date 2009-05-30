@@ -46,16 +46,15 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput);
 
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
  * ret = AumentarFlujo (estado, verbosidad)
- * POS: {ret == 0 => *//*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ###
- */
+ * POS: {ret == 0 => *//*! TODO <COMPLETAR COMPLETAR> */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad);
 
 
-/*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
+/*! TODO  <COMPLETAR COMPLETAR>  */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
 
 
-/*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
+/*! TODO <COMPLETAR COMPLETAR> */
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad);
 
 
