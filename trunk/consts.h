@@ -31,8 +31,10 @@
 	#define ASSERT(x)	
 #endif
 
-/* Tipo que es solo para wrapping para el color ( si no sirve lo sacamos ) */
-typedef unsigned short Color;
+/* Tipo que es solo para wrapping para el color.
+ * Permito colores negativos para el coloreo greedy.
+ */
+typedef signed short Color;
 
 
 /** Algunos defines de utilidad */

@@ -21,12 +21,14 @@
 #include "const.h"
 
 /* Funcion que le aplica un coloreo propio a nodes y 
-   retorna la cantidad de colores usados.
-	REQUIRES:
-		nodes != NULL
-	RETURNS:
-		cantidad de colores
-*/
+ * retorna la cantidad de colores usados.
+   REQUIRES:
+ 		nodes != NULL
+   RETURNS:
+ 		cantidad de colores utilizados.
+   NOTE: Recordar que los colores van a ser negativos. Ademas 
+ 	     suponemos que puede contener un coloreo "positivo" previo.	
+ */
 Color color_greedy ( node_t * nodes );
 
 #endif
