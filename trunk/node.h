@@ -2,7 +2,7 @@
  * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
  * maximal en un network
  *
- * Estructura node (vértices), versión 1.0.0, del proyecto único de
+ * Estructura node_t (vértices), versión 1.0.0, del proyecto único de
  * Discreta 2, FaMAF, año 2009
  *
  * Autores:  Budde, Carlos E.
@@ -25,18 +25,14 @@
 #include "edge_list.h"
 
 
- /* recordemos que tenemos tambien el caso alfabetico, podriamos usar entero
- * para el alfabetico simplemente casteandolo o usando atoi...
- */
 typedef struct s_node {
-	
-	/*!u32 nodeName;		No hace falta, el nombre es el indice mismo */
 	u32 flux; 			/* flujo */
 	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
+	short corrida;	/* Versión de corrida E-K para aumentar flujo */
+	short degree;	/* Nº total de vecinos */
 	Color color;
-	short degree;			/* Nº total de vecinos */
-	/* int satur;	Agregarlo en caso de que usemos DSATUR */
+// 	int satur;	Agregarlo en caso de que usemos DSATUR
 } node_t;
 
 

@@ -11,15 +11,18 @@
 
 struct s_estado_network{
 	node_t nodes[7000];
+	tripleList_t *cola;	/* Cola de las corridas E-K */
 	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
 	bool maximal;	/* si tenemos un flujo maximal */
 	bool completo;	/* si se ingresaron todos los lados */
 	bool coloreo;	/* si nos llamaron con la opción de coloreo */
+	short modoinput;
 	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
 	edgeList_t l_con;	/* Lista de lados conflictivos para el coloreo */
 };
+
 
 
 /** ~~~~~~~~~~~~~~~~~~~~ FUNCIONES AUXILIARES INTERNAS ~~~~~~~~~~~~~~~~~~~~~~ */
@@ -30,7 +33,7 @@ struct s_estado_network{
  *
  * PRE: estado != NULL
  */
-void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32  m;
 	edge_t *edge;
@@ -40,12 +43,26 @@ void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	m = max(v1, v2);
 	if (m > estado->mayor) estado->mayor = m;
 	
-	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
-	if (estado->nodes[v1].forwardList == NULL)
-		estado->nodes[v1].forwardList = el_create ();
+	/* Generamos las listas forward y/o backward si es necesario */
 	
-	if (estado->nodes[v2].backwardList == NULL)
+	if (estado->nodes[v1].forwardList == NULL) {
+		
+		estado->nodes[v1].forwardList = el_create ();
+		
+		if (estado->nodes[v1].backwardList == NULL)
+			/* v1 es vértice nuevo */
+			estado->nodes[v1].corrida = 0;
+	}
+	
+	if (estado->nodes[v2].backwardList == NULL) {
+		
 		estado->nodes[v2].backwardList = el_create ();
+		
+		if (estado->nodes[v2].backwardList == NULL)
+			/* v2 es vértice nuevo */
+			estado->nodes[v2].corrida = 0;
+	}
+}
 	
 	/* creamos la arista */
 	edge = edge_create (cap, v1, v2);
@@ -63,7 +80,7 @@ void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  *
  * PRE: estado != NULL
  */
-void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32  m;
 	edge_t *edge;
@@ -74,22 +91,29 @@ void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	m = max(v1, v2);
 	if (m > estado->mayor) estado->mayor = m;
 	
-	/* ahora debemos verificar si tenemos que generar la fordwareList o backward */
+	/* Generamos las listas forward y/o backward si es necesario */
+	
 	if (estado->nodes[v1].forwardList == NULL) {
+		
 		estado->nodes[v1].forwardList = el_create ();
-		/** Para coloreo */
+		
 		if (estado->nodes[v1].backwardList == NULL) {
 			/* v1 es vértice nuevo */
+			estado->nodes[v1].corrida = 0;
+			/** Para coloreo */
 			v1new = true;
 			estado->nodes[v1].degree = 0;
 		}
 	}
 	
 	if (estado->nodes[v2].backwardList == NULL) {
+		
 		estado->nodes[v2].backwardList = el_create ();
-		/** Para coloreo */
+		
 		if (estado->nodes[v1].forwardList == NULL) {
 			/* v2 es vértice nuevo */
+			estado->nodes[v2].corrida = 0;
+			/** Para coloreo */
 			v2new = true;
 			estado->nodes[v2].degree = 0;
 		}
@@ -127,6 +151,26 @@ void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 }
 
 
+/* Aumenta el flujo de un EstadoNetwork corriendo en modo alfabético
+ *
+ * PRE:
+ *   ret = AumentarFlujoAlf (estado)
+ * POS:*/
+static int AumentarFlujoAlf (EstadoNetwork *estado)
+{
+	u32 actual;
+	
+	ASSERT (estado != NULL)
+	ASSERT (estado->modoinput == 1)
+	
+	actual = tl_get_actual_node (estado->cola);
+	
+}
+
+
+
+
+
 
 /** ~~~~~~~~~~~~~~~~~~~~~ FUNCIONES DE LA API (EXTERNAS) ~~~~~~~~~~~~~~~~~~~~ */
 
@@ -140,15 +184,17 @@ EstadoNetwork *network_create (void)
 {
 	EstadoNetwork *ret = NULL;
 
-	ret = (EstadoNetwork*)malloc(sizeof(struct s_estado_network));
+	ret = (EstadoNetwork*) malloc (sizeof (struct s_estado_network));
 	
 	if(ret != NULL){
+		ret->cola = tl_create ();
 		ret->flow_value = 0;
 		ret->maximal  = false;
 		ret->completo = false;
+		ret->mayor  = 0;
 		ret->delta  = 0;
 		ret->colors = 0;
-		ret->l_con = el_create ();
+		ret->l_con  = el_create ();
 	}
 	
 	return ret;
@@ -172,14 +218,16 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	}
 
 	/* {modoinput == 1 || modoinput == 2} */
-	if (modoinput == 1)
+	if (modoinput == 1) {
 		/* Se espera input alfabético */
-		n = 123;
-		/* Esto cubre desde ASCII 32  para ' ' (el 1º)
-	 	 *	      hasta ASCII 122 para 'z' (el último) */
-	else
+		estado->modoinput = 1;
+		n = 123;  /* Esto cubre desde ASCII 32  para ' ' (el 1º)
+	 		   * hasta ASCII 122 para 'z' (el último) */
+	} else {
 		/* Se espera input numérico, y la pu~@#@ç$! */
+		estado->modoinput = 2;
 		n = 7000;
+	}
 	
 	/* Inicializamos los lados */
 	for (i = 0 ; i < n ; i++) {
@@ -346,10 +394,11 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
 ret = AumentarFlujo (estado, verbosidad)
-POS: {ret == 0 => *//*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ###
-*/
+POS: {ret == 0 => *//*! TODO <COMPLETAR COMPLETAR> */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
+	int result = 0;
+	
 	/* Precondiciones */
 	ASSERT (estado != NULL)
 	if ( ! VerbosidadValida(verbosidad) ) {
@@ -357,17 +406,39 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		return /*###*/;
 	}
 	
+	if (estado->modoinput == 1) {
+		/** Modo alfabético */
+		/* Borramos la cola vieja */
+		tl_initialize (estado->cola, 115); /* 115 == ASCII('s') */
+		/* Nos paramos en 's' */
+		tl_start (estado->cola);
+		/* Aumentamos la versión de corrida E-K */
+		estado->nodes[115].corrida++;
+		
+		result = AumentarFlujoAlf (estado);
+	} else {
+		/** Modo numérico */
+		/* Borramos la cola vieja */
+		tl_initialize (estado->cola, 0);
+		/* Nos paramos en 's' */
+		tl_start (estado->cola);
+		/* Aumentamos la versión de corrida E-K */
+		estado->nodes[0].corrida++;
+		
+		result = AumentarFlujoNum (estado);
+	}
 	
+	return result;
 }
 
 
-/*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
+/*! TODO <COMPLETAR COMPLETAR> */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
 
 }
 
-/*! ### NOTE TODO TEST <COMPLETAR COMPLETAR> ### */
+/*! TODO <COMPLETAR COMPLETAR> */
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
 
