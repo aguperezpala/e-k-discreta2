@@ -380,7 +380,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	int result = 0;
 	u32 s, t, indiceActual;
 	unsigned short corrida;
-	node_t  actual;
+	node_t *actual;	
 	edge_t *edge;
 	bool empty = false; /* "¿Se vació la cola?" */
 	int endList = 0;
@@ -413,14 +413,19 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	
 	while (!empty && indiceActual != t) { /* Ciclo principal */
 		
-		actual = estado->nodes[indiceActual];
-		el_start (actual.forwardList);
+		actual = &estado->nodes[indiceActual];
+		el_start (actual->forwardList);
 		
 		while (endList == 0) { /* Ciclo "lados forward" */
 			
-			edge = el_get_actual (actual.forwardList);
+			edge = el_get_actual (actual->forwardList);
 			
-			if (edge->flow < edge->capacity) {
+			if (NotInQueue(actual,corrida) &&
+				(edge->flow < edge->capacity)) {
+				
+				/* TODO */
+				
+			}
 				
 				
 			

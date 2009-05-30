@@ -51,6 +51,8 @@ typedef signed short Color;
 /* Inidica si un código numérico ASCII representa un caracter A-Z ó a-z */
 #define IsAscii(x)	( ((x > 64) && (x < 91)) || ((x > 97) && (x < 123)) )
 
+/* Indica si el nodo 'x' está en la cola de E-K corrida nº 'c'  */
+#define NotInQueue(x,c) (x->corrida < c)
 
 
 #ifndef INLINE
