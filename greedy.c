@@ -3,7 +3,7 @@
 #include "edge_list.h"
 #include "greedy.h"
 
-bool color_propio(node_t node, node_t * nodes)
+static bool color_propio(node_t node, node_t * nodes)
 {
 	unsigned short i= 0;
 	unsigned short size = 0;
@@ -30,24 +30,31 @@ bool color_propio(node_t node, node_t * nodes)
 	return true;
 }
 
-
-Color min_free_color(node_t node, node_t * nodes , Color max_color)
+/* Dado un el nodo busca el menor color aún libre entre sus vecinos
+ *
+ * PRE: nodes != NULL && max_color < 0
+ * POS: color_propio(node, nodes) && retorna el mayor color usado.
+ */
+static Color coloring_node(node_t node, node_t * nodes , Color max_color)
 {
 	unsigned short i= 0;
 	unsigned short size = 0; 
 	Color *colors = NULL;
+	edge_t *edge = NULL;
 	
 	/* Pre */
 	ASSERT(nodes != NULL)
+	ASSERT(max_color < 0)
 
 	/* Creo el arreglo de los colores actuales */
-	colors = (Color *) calloc (maxcolor + 1, sizeof(Color));
+	colors = (Color *) calloc ( (maxcolor*(-1) ) + 1, sizeof(Color));
 
 	/* Obtengo los colores de los vecinos forward */
 	size = el_get_size(node.forwardList);
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.forwardList);
-		colors[nodes[edge->nodeDest].color]++;
+		if ( nodes[edge->nodeDest].color < 0 )
+			colors[(nodes[edge->nodeDest].color*(-1))]++;
 		el_avance(node.forwardList);
 	}
 
@@ -55,13 +62,14 @@ Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	size = el_get_size(node.backwardList);
 	for(i=0 ; i < size ; i++){
 		edge = el_get_actual(node.backwardList);
-		colors[nodes[edge->nodeOrig].color]++;
+		if ( nodes[edge->nodeOrig].color < 0 )
+			colors[(nodes[edge->nodeOrig].color*(-1))]++;
 		el_avance(node.backwardList);
 	}
 	
 	/* Buscando el minimo color no usado */
 	for (i = 1; (i <= max_color) && colors[i]; i++);
-	node.color = (Color) i;
+	node.color = (Color) -i;
 
 	/* Destruyo la lista de colores */
 	free(colors);
@@ -70,20 +78,17 @@ Color min_free_color(node_t node, node_t * nodes , Color max_color)
 	/* Pos */
 	ASSERT(color_propio(node, nodes))
 
-	/** NOTE: ¡¡¡ <HAY QUE DEVOLVER 'I' DIRECTAMENTE> !!! ### ### ### ### */
-	return ((i > max_color) ? i : max_color);
+	return (node.color < max_color) ? node.color : max_color;
 }  
 
 Color color_greedy (node_t * nodes, int size)
 {
 	int i = 0;
-	Color max_color = 1;
+	Color max_color = -1;
 
-	for(i = 0; i < size; i++ ){
-		nodes[i].color = min_free_color(i, nodes, max_color);
-		if(nodes[i].color > max_color) max_color = nodes[i].color;
-	}
-
+	for(i = 0; i < size; i++ )
+		max_color = coloring_node(nodes[i], nodes, max_color);
+	
 	return max_color;
 }
 
