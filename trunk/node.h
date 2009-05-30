@@ -29,8 +29,8 @@ typedef struct s_node {
 	u32 flux; 			/* flujo */
 	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
-	short corrida;	/* Versión de corrida E-K para aumentar flujo */
-	short degree;	/* Nº total de vecinos */
+	unsigned short corrida; /* Versión de corrida E-K para aumentar flujo */
+	short degree;		/* Nº total de vecinos */
 	Color color;
 // 	int satur;	Agregarlo en caso de que usemos DSATUR
 } node_t;

@@ -83,13 +83,20 @@ void el_del_edge (edgeList_t * el);
 
 /* Funcion que avanza al siguiente elemento, si esta en el ultimo elemento
  * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
-	REQUIRES:
-		el != NULL
-*/
-void el_avance (edgeList_t * el);
+ *	REQUIRES:
+ *		el != NULL
+ *	RETURNS:
+ *		0, si se avanzó normalmente
+ *		1, si al avanzar volvimos al comienzo
+ */
+int el_avance (edgeList_t * el);
 
 
-
+/* Mueve el "visor" al primero elemento de la lista
+ * 	REQUIRES:
+ *		el != NULL
+ */
+void el_start (edgeList_t * el);
 
 
 #endif

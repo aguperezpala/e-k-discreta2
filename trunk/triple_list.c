@@ -145,18 +145,24 @@ short tl_get_size (tripleList_t * tl)
 
 /*! ~~~~~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
 
-/* Funcion que avanza el visor al siguiente elemento, si esta en el ultimo elemento
- * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
-	REQUIRES:
-		tl != NULL
-*/
-void tl_avance (tripleList_t * tl)
+/* Funcion que avanza el visor al siguiente elemento
+ * Si esta en el ultimo elemento no avanzamos.
+ *	REQUIRES:
+ *		tl != NULL
+ *	RETURNS:
+ *		0, si avanzamos normalmente
+ *		1, si estamos al final de la cola
+ */
+int tl_avance (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
+			
 	if (tl->prev->next->next == NULL)
-		tl->prev = &(tl->first);
-	else
+		return 1;
+	else {
 		tl->prev = tl->prev->next;
+		return 0;
+	}
 }
 
 
