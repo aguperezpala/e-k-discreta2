@@ -2,8 +2,19 @@
  * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
  * maximal en un network
  *
- * TAD edgeList (lista de aristas), versión 1.0.0, del proyecto único de
+ * TAD triple_list_t (lista de tripletas), versión 1.0.0, del proyecto único de
  * Discreta 2, FaMAF, año 2009
+ * Este TAD representa la cola de una corrida E-K (o sea una ejecución de
+ * AumentarFlujo)
+ * Su nombre deriva de los 3 elementos principales que cada elemento de la cola
+ * (celda de triple_list) posee: ·Nombre del vértice
+ *				 ·Nombre del padre (y del espíritu santo, amén)
+ *				 ·Flujo soportado por el lado padre--vértice
+ *				 ·Condición de backwardtitud
+ * ¡Pero esos son 4 elementos!
+ * El problema fue que agregamos la última luego de haber construido el TAD
+ * cuando vimos que era necesaria en AumentarFlujo.
+ * Y cambiar todo a cuadruple_list era un viaje, además que suena feo
  *
  * Autores:  Budde, Carlos E.
  *	     Kondrasky, Alejandro
@@ -33,7 +44,7 @@
 #include <stdbool.h>
 
 #include "consts.h"
-#include "node.h"	/* edge */
+#include "edge.h"
 
 /* definimos el tipo */
 typedef struct s_tripleList tripleList_t ;

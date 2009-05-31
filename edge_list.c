@@ -154,7 +154,7 @@ void el_del_edge (edgeList_t * el)
  *		0, si se avanzó normalmente
  *		1, si al avanzar volvimos al comienzo
  */
-void el_avance (edgeList_t * el)
+int el_avance (edgeList_t * el)
 {
 	
 	/* pres */
