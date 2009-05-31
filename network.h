@@ -19,7 +19,7 @@
 #include "consts.h"
 #include "node.h"
 #include "edge_list.h"
-#include "triple_list.h"
+#include "quad_list.h"
 
 
 #ifndef NETWORK_H
@@ -30,7 +30,7 @@
 typedef struct s_estado_network {
 	
 	node_t nodes[MAX_N_NODES];
-	tripleList_t *cola;	/* Cola de las corridas E-K */
+	quadList_t *cola;	/* Cola de las corridas E-K */
 	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
 	bool maximal;	/* si tenemos un flujo maximal */
 	bool completo;	/* si se ingresaron todos los lados */

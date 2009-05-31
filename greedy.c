@@ -9,6 +9,9 @@ static bool color_propio(node_t node, node_t * nodes)
 	unsigned short size = 0;
 	edge_t *edge = NULL;
 
+	/* Pre */
+	ASSERT(nodes != NULL)
+
 	/* Chequeo los colores de los vecinos forward */
 	size = el_get_size (node.forwardList);
 	if (size > 0) el_start (node.forwardList);
