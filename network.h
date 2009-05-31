@@ -12,11 +12,36 @@
  * Revisión: Penazzi, Daniel
  *
  */
+ 
+/* Librerías públicas */
+#include <stdbool.h>
+/* Librerías personales */
+#include "consts.h"
+#include "node.h"
+#include "edge_list.h"
+#include "triple_list.h"
+
 
 #ifndef NETWORK_H
 #define NETWORK_H
 
-typedef struct s_estado_network EstadoNetwork;
+
+
+typedef struct s_estado_network {
+	
+	node_t nodes[MAX_N_NODES];
+	tripleList_t *cola;	/* Cola de las corridas E-K */
+	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
+	bool maximal;	/* si tenemos un flujo maximal */
+	bool completo;	/* si se ingresaron todos los lados */
+	bool coloreo;	/* si nos llamaron con la opción de coloreo */
+	short modoinput;
+	short mayor;	/* vértice de "mayor nombre" ingresado */
+	short delta;	/* Considerandolo grafo, el delta */
+	short colores;	/* Nº de colores obtenido por el coloreo */
+	edgeList_t l_con;	/* Lista de lados conflictivos para el coloreo */
+	
+} EstadoNetwork ;
 
 
 

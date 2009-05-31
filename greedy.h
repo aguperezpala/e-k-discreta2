@@ -18,7 +18,7 @@
 #define GREEDY_H
 
 #include "node.h"
-#include "const.h"
+#include "consts.h"
 
 /* Funcion que le aplica un coloreo propio a nodes y 
  * retorna la cantidad de colores usados.

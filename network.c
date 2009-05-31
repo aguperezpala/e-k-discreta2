@@ -1,6 +1,6 @@
-/* Librerías públicas */
+
 #include <stdbool.h>
-/* Librerías personales */
+
 #include "consts.h"
 #include "node.h"
 #include "edge.h"
@@ -9,19 +9,6 @@
 
 
 
-struct s_estado_network{
-	node_t nodes[MAX_N_NODES];
-	tripleList_t *cola;	/* Cola de las corridas E-K */
-	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
-	bool maximal;	/* si tenemos un flujo maximal */
-	bool completo;	/* si se ingresaron todos los lados */
-	bool coloreo;	/* si nos llamaron con la opción de coloreo */
-	short modoinput;
-	short mayor;	/* vértice de "mayor nombre" ingresado */
-	short delta;	/* Considerandolo grafo, el delta */
-	short colores;	/* Nº de colores obtenido por el coloreo */
-	edgeList_t l_con;	/* Lista de lados conflictivos para el coloreo */
-};
 
 
 /** ~~~~~~~~~~~~~~~~~~ FUNCIONES INTERNAS DE VERBOSIDAD ~~~~~~~~~~~~~~~~~~~~~ */
@@ -29,7 +16,7 @@ static void printAumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	u32 path_flow = 0;
 	
-	switch (n) {
+	switch (verbosidad) {
 	  case 0:
 	  	break;
 	  case 1:
@@ -51,7 +38,11 @@ static void printAumentarFlujo (EstadoNetwork *estado, int verbosidad)
  */
 static u32 printCaminoActual(EstadoNetwork *estado)
 {
+	u32 € = 0;
 	
+	/*! TODO */
+	
+	return €;
 }
 
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
@@ -258,6 +249,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	ASSERT (estado != NULL)
 	if (! ModoinputValido(modoinput) ) {
 		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n");
+		estado->completo = true;
 		return 0;
 	}
 	
@@ -273,14 +265,16 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (edge[2] != ' ') {
 			/* No había espacio tras los dos vértices */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		
 		if (strlen (edge+3) > 10) {
 			/* Capacidad mayor que u32 */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		/* Guardamos la capacidad en cap */
@@ -289,7 +283,8 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (*scan != '\0') {
 			/* La capacidad no era un entero */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		/* Obtenemos el ASCII del nombre de los vértices */
@@ -299,18 +294,18 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (!IsAscii (v1) || !IsAscii (v2)){
 			/* Los vértices no eran letras */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		} else {
 			if (estado->coloreo)
 				AñadirLadoColor (estado, v1, v2, cap);
 			else
 				AñadirLado (estado, v1, v2, cap);
-		
-		/* Se agregó bien el lado */
-		goto end1;
+		}
 		
 	} else {
 		/** Input numérico */
+		char edge[30];
 		char *ptr1 = NULL, *ptr2 = NULL;
 		
 		getchar();
@@ -325,7 +320,8 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (ptr1 == NULL) {
 			/* No había espacios en la cadena */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		ptr1[0] = '\0'; /* Aislamos el 1º vértice */
@@ -333,13 +329,15 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (strlen (ptr2) > 10) {
 			/* Nombre de vértice mayor que u32 */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}	 
 		v1 = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
 			/* El vértice 1 no era un entero */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		/* Extraemos el 2º vértice */
@@ -349,7 +347,8 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (ptr1 == NULL) {
 			/* No había espacios tras el 1º vértice */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		ptr1[0] = '\0'; /* Aislamos el 2º vértice */
@@ -357,13 +356,15 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (strlen (ptr2) > 10) {
 			/* Nombre de vértice mayor que u32 */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
-		}	 
+			estado->completo = true;
+			return 0;
+		}
+		
 		v2 = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
-			
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		/* Extraemos la capacidad */
@@ -372,29 +373,25 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		if (strlen (ptr2) > 10) {
 			/* Capacidad mayor que u32 */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 			
 		cap = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
 			/* Capacidad no era un entero */
 			fprintf (stderr, "Finalizó la lectura de lados\n");
-			goto end0;
+			estado->completo = true;
+			return 0;
 		}
 		
 		if (estado->coloreo)
 			AñadirLadoColor (estado, v1, v2, cap);
 		else
 			AñadirLado (estado, v1, v2, cap);
-		
-		/* Se agregó bien el lado */
-		goto end1;
 	}
 	
-	end1:
-			return 1;
-	end0:
-			return 0;
+	return 1;
 }
 
 
@@ -424,7 +421,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		return 2;
 	}
 
-	if(estado->maximal){
+	if(estado->maximal && estado->completo){
 		/* No se puede aumentar el flujo */
 		fprintf (stderr, "Network: AumentarFlujo: No se pudo aumentar flujo\n");
 		return 1;
@@ -486,7 +483,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		endList = 0;
 		while (endList == 0) { 
 			edge = el_get_actual (actual->backwardList);
-			vecino = &estado->nodes[edge->nodeDest];
+			vecino = &estado->nodes[edge->nodeOrig];
 			
 			if (NotInQueue(vecino,corrida) &&
 				(edge->flow > 0)){
@@ -494,7 +491,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				e = tl_get_actual_flow (estado->cola);
 				if(edge->flow < e)
 					e = edge->flow;
-				tl_add_triple (estado->cola, e, edge->nodeOrig , edge , true );
+				tl_add_triple (estado->cola, e, edge->nodeOrig , edge, true);
 			}
 			
 			endList = el_avance (actual->backwardList);
