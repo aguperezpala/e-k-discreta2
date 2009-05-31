@@ -84,6 +84,22 @@ void tl_initialize (tripleList_t * tl, u32 indexNode);
 		flow
 */
  u32 tl_get_actual_flow (tripleList_t * tl);
+ 
+/* Funcion que obtiene la arista que agrego al nodo actual
+	REQUIRES:
+		tl != NULL
+	RETURNS:
+		edge
+*/
+edge_t tl_get_actual_edge (tripleList_t * tl);
+
+/* Funcion que obtiene la arista que agrego al nodo actual
+	REQUIRES:
+		tl != NULL
+	RETURNS:
+		si es backward
+*/
+bool tl_get_actual_is_backward (tripleList_t * tl);
 
 
 /* Funcion que devuelve el tamaño de la lista
@@ -96,10 +112,13 @@ void tl_initialize (tripleList_t * tl, u32 indexNode);
 
 /* Funcion que avanza el visor al siguiente elemento, si esta en el ultimo elemento
  * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
-	REQUIRES:
-		tl != NULL
-*/
- void tl_avance (tripleList_t * tl);
+ *	REQUIRES:
+ *		tl != NULL
+ *	RETURNS:
+ *		0, si avanzamos normalmente
+ *		1, si estamos al final de la cola
+ */
+int tl_avance (tripleList_t * tl);
 
 /* Funcion que mueve el visor al padre del elemento actual
 	REQUIRES:
@@ -130,13 +149,14 @@ NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
  
 /*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
 
-/* Funcion que agrega una tripleta (nodo, padre, flow).
+/* Funcion que agrega una quintupleta (nodo, padre, flow, edge , is_backward).
  NOTE: tener en cuenta que el padre va a ser el elemento actual
 	REQUIRES:
-		tl		!= 	NULL
-		indexNode 	<= 	MAX_N_NODES
+		tl		!= NULL
+		edge	!= NULL
+		indexNode	<= MAX_N_NODES
 */
-void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode);
+void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode , edge_t * edge , bool is_backward );
 
 
 

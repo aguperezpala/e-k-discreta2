@@ -24,9 +24,35 @@ struct s_estado_network{
 };
 
 
+/** ~~~~~~~~~~~~~~~~~~ FUNCIONES INTERNAS DE VERBOSIDAD ~~~~~~~~~~~~~~~~~~~~~ */
+static void printAumentarFlujo (EstadoNetwork *estado, int verbosidad)
+{
+	u32 path_flow = 0;
+	
+	switch (n) {
+	  case 0:
+	  	break;
+	  case 1:
+		path_flow = printCaminoActual(estado)
+	  case 2:
+
+	  case 3:
+	  
+	}
+}
+
 
 /** ~~~~~~~~~~~~~~~~~~~~ FUNCIONES AUXILIARES INTERNAS ~~~~~~~~~~~~~~~~~~~~~~ */
 
+/* Imprime el ultimo camino s<->t obtenido de EstadoNetwork, devolviendo
+ * el incremento de flujo
+ *
+ * PRE: estado != NULL
+ */
+static u32 printCaminoActual(EstadoNetwork *estado)
+{
+	
+}
 
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
@@ -374,24 +400,36 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
 ret = AumentarFlujo (estado, verbosidad)
-POS: {ret == 0 => *//*! TODO <COMPLETAR COMPLETAR> */
+POS: {(ret == 0 => Se pudo aumentar el flujo) 	 &&
+* 	  (ret == 1 => No se pudo aumentar el flujo) &&
+* 	  (ret == 2 => Se produjo un error)			 }
+*/
+
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	int result = 0;
-	u32 s, t, indiceActual;
+	u32 s, t, q , p , e;
 	unsigned short corrida;
 	node_t *actual;	
 	edge_t *edge;
-	bool empty = false; /* "¿Se vació la cola?" */
+	bool empty = false;
 	int endList = 0;
 	
 	/* Precondiciones */
 	ASSERT (estado != NULL)
-	if ( ! VerbosidadValida(verbosidad) ) {
+
+	if (!((x == 0) || (x == 1) || (x == 2) || (x == 3))) {
+		/* Verbosidad no valida */
 		fprintf (stderr, "Network: AumentarFlujo: verbosidad inválida\n");
-		return /*###*/;
+		return 2;
 	}
-	
+
+	if(estado->maximal){
+		/* No se puede aumentar el flujo */
+		fprintf (stderr, "Network: AumentarFlujo: No se pudo aumentar flujo\n");
+		return 1;
+	}
+		
 	if (estado->modoinput == 1) {
 		/** Modo alfabético */
 		s = 115; /* 115 == ASCII('s') */
@@ -409,30 +447,83 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	/* Aumentamos y registramos la versión de corrida E-K */
 	corrida = estado->nodes[s].corrida++;
 	
-	indiceActual = tl_get_actual_node (estado->cola);
+	q = tl_get_actual_node (estado->cola);
 	
-	while (!empty && indiceActual != t) { /* Ciclo principal */
+	while (!empty && q != t) { /* Ciclo principal */
 		
-		actual = &estado->nodes[indiceActual];
+		actual = &estado->nodes[q];
+		ASSERT (actual->degree > 0)
+
+		forwards:/* Ciclo "lados forward" */
+		if (actual->forwardList == NULL ) goto backwards;
 		el_start (actual->forwardList);
-		
-		while (endList == 0) { /* Ciclo "lados forward" */
-			
+		endList = 0;
+		while (endList == 0) { 
 			edge = el_get_actual (actual->forwardList);
 			
 			if (NotInQueue(actual,corrida) &&
-				(edge->flow < edge->capacity)) {
+				(edge->flow < edge->capacity)){
+				/* Encolo el vertice */
+				e = tl_get_actual_flow (estado->cola);
+				if((edge->capacity - edge->flow) < e)
+					e = (edge->capacity - edge->flow);
+				tl_add_triple (estado->cola, e, edge->nodeDest, edge , true );
 				
-				/* TODO */
-				
+				if (edge->nodeDest == t) {
+					/* Obtuvimos t , terminamos el ciclo */
+					q = t;
+					goto endwhile;
+				}
 			}
-				
-				
 			
-			endList = el_avance (actual.forwardList);
+			endList = el_avance (actual->forwardList);
+		}
+		
+		backwards: /* Ciclo "lados backward" */
+		if (actual->forwardList == NULL ) goto nextNode;
+		el_start (actual->backwardList);
+		endList = 0;
+		while (endList == 0) { 
+			edge = el_get_actual (actual->backwardList);
 			
-	
-	/*! TODO <EN CONSTRUCCIÓN> */
+			if (NotInQueue(actual,corrida) &&
+				(edge->flow > 0)){
+				/* Encolo el vertice */
+				e = tl_get_actual_flow (estado->cola);
+				if(edge->flow < e)
+					e = edge->flow;
+				tl_add_triple (estado->cola, e, edge->nodeOrig , edge , true );
+			}
+			
+			endList = el_avance (actual->backwardList);
+		}
+
+		nextNode:/* Nos movemos al siguiente nodo */
+		empty = (tl_avance(estado->cola) != 1);
+		q = tl_get_actual_node (estado->cola);
+
+		endwhile:/* Esta es la salida en caso de que lleguemos a t */
+	}
+
+	if (q == t){
+		/* Actualizo el flujo total */
+		estado->flow_value += e;
+		/* Actualizo el flujo del network */
+		while (q != s){
+			edge = tl_get_actual_edge (estado->cola);
+			
+			if (!tl_actual_is_backward(estado->cola))
+				edge->flow += e;
+			else
+				edge->flow -= e;
+				
+			tl_go_parent (estado->cola);
+			q = tl_get_actual_node (estado->cola);
+		}
+		
+	}else{
+		estado->maximal = true;
+	}
 	
 	return result;
 }

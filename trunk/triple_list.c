@@ -1,5 +1,5 @@
 #include "triple_list.h"
-
+#include <stdbool.h>
 
 /* vamos a definir el tipo celda para la lista */
 struct tripleCeld {
@@ -7,6 +7,8 @@ struct tripleCeld {
 	struct tripleCeld * pparent;	/* puntero al anterior del padre */
 	u32 node;			/* nodo actual */
 	u32 flow;			/* flujo actual */
+	bool is_backward	/* fue agregado en backward */
+	edge_t * edge;		/* arista que puso al nodo */
 };
 
 
@@ -111,30 +113,53 @@ void tl_initialize (tripleList_t * tl, u32 indexNode)
 	RETURNS:
 		indice
 */
-u32 tl_get_actual_node (tripleList_t * tl)
+INLINE u32 tl_get_actual_node (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	ASSERT (tl->size >= 1)
 	return tl->prev->next->node;
 }
 
-/* Funcion que obtiene el el flujo actual 
+/* Funcion que obtiene el flujo actual 
 	REQUIRES:
 		tl != NULL
 	RETURNS:
 		flow
 */
-u32 tl_get_actual_flow (tripleList_t * tl)
+INLINE u32 tl_get_actual_flow (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	return tl->prev->next->flow;
 }
 
+/* Funcion que obtiene la arista que agrego al nodo actual
+	REQUIRES:
+		tl != NULL
+	RETURNS:
+		edge
+ */
+INLINE edge_t tl_get_actual_edge (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	return tl->prev->next->edge;
+}
+
+/* Funcion que obtiene la arista que agrego al nodo actual
+	REQUIRES:
+		tl != NULL
+	RETURNS:
+		si es backward
+ */
+INLINE bool tl_get_actual_is_backward (tripleList_t * tl)
+{
+	ASSERT (tl != NULL)
+	return tl->prev->next->is_backward;
+}
 
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si tl == NULL ==> size = 0
-*/
-short tl_get_size (tripleList_t * tl)
+ */
+INLINE short tl_get_size (tripleList_t * tl)
 {
 	if (tl == NULL)
 		return 0;
@@ -153,7 +178,7 @@ short tl_get_size (tripleList_t * tl)
  *		0, si avanzamos normalmente
  *		1, si estamos al final de la cola
  */
-int tl_avance (tripleList_t * tl)
+INLINE int tl_avance (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 			
@@ -170,7 +195,7 @@ int tl_avance (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-void tl_go_parent (tripleList_t * tl)
+INLINE void tl_go_parent (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	tl->prev = tl->prev->next->pparent;
@@ -181,7 +206,7 @@ void tl_go_parent (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-void tl_start (tripleList_t * tl)
+INLINE void tl_start (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	tl->prev = tl->plast = &(tl->first);
@@ -196,7 +221,7 @@ el != NULL
 NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
 avanzar el "visor" (actual) al final.
 */
-void tl_move_last (tripleList_t * tl)
+INLINE void tl_move_last (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	tl->prev = tl->plast;
@@ -209,13 +234,15 @@ void tl_move_last (tripleList_t * tl)
  NOTE: tener en cuenta que el padre va a ser el elemento actual
 	REQUIRES:
 		tl		!= NULL
+		edge	!= NULL
 		indexNode	<= MAX_N_NODES
 */
-void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode)
+void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode , edge_t * edge , bool is_backward )
 {	
 	struct tripleCeld * celd;
 	/* pre */
 	ASSERT (tl != NULL)
+	ASSERT (edge != NULL)
 	ASSERT (indexNode <= MAX_N_NODES)
 	
 	tl->size++;
@@ -231,10 +258,11 @@ void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode)
 		tl->plast->next->next = celd;
 	}
 	
-	
-	/* seteamos el nodo y el flow*/
+	/* seteamos la celda */
 	celd->node = indexNode;
 	celd->flow = flow;
+	celd->edge = edge;
+	celd->is_backward = is_backward; 
 	
 	/* ahora seteamos el parent, en realidad el pparent */
 	celd->pparent = tl->prev;
