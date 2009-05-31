@@ -182,7 +182,7 @@ EstadoNetwork *network_create (void)
 	ret = (EstadoNetwork*) malloc (sizeof (struct s_estado_network));
 	
 	if(ret != NULL){
-		ret->cola = tl_create ();
+		ret->cola = qt_create ();
 		ret->flow_value = 0;
 		ret->maximal  = false;
 		ret->completo = false;
@@ -436,20 +436,20 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	}
 	
 	/* Borramos la cola vieja */
-	tl_initialize (estado->cola, s);
+	qt_initialize (estado->cola, s);
 	/* Nos paramos en 's' */
-	tl_start (estado->cola);
+	qt_start (estado->cola);
 	/* Aumentamos y registramos la versión de corrida E-K */
 	corrida = estado->nodes[s].corrida++;
 	
-	q = tl_get_actual_node (estado->cola);
+	q = qt_get_actual_node (estado->cola);
 	
 	while (!empty && q != t) { /* Ciclo principal */
 		
 		actual = &estado->nodes[q];
 		ASSERT (actual->degree > 0)
 
-		forwards:/* Ciclo "lados forward" */
+		/* forwards: Ciclo "lados forward" */
 		if (actual->forwardList == NULL ) goto backwards;
 		el_start (actual->forwardList);
 		endList = 0;
@@ -460,15 +460,15 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			if (NotInQueue(vecino,corrida) &&
 				(edge->flow < edge->capacity)){
 				/* Encolo el vertice */
-				e = tl_get_actual_flow (estado->cola);
+				e = qt_get_actual_flow (estado->cola);
 				if((edge->capacity - edge->flow) < e)
 					e = (edge->capacity - edge->flow);
-				tl_add_triple (estado->cola, e, edge->nodeDest, edge, false);
+				qt_add_quad (estado->cola, e, edge->nodeDest, edge, false);
 				
 				if (edge->nodeDest == t) {
 					/* Obtuvimos t , terminamos el ciclo */
 					q = t;
-					break;
+					goto endwhile;
 				}
 			}
 			
@@ -486,18 +486,19 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			if (NotInQueue(vecino,corrida) &&
 				(edge->flow > 0)){
 				/* Encolo el vertice */
-				e = tl_get_actual_flow (estado->cola);
+				e = qt_get_actual_flow (estado->cola);
 				if(edge->flow < e)
 					e = edge->flow;
-				tl_add_triple (estado->cola, e, edge->nodeOrig , edge, true);
+				qt_add_quad (estado->cola, e, edge->nodeOrig , edge, true);
 			}
 			
 			endList = el_avance (actual->backwardList);
 		}
 
 		nextNode:/* Nos movemos al siguiente nodo */
-		empty = (tl_avance(estado->cola) != 1);
-		q = tl_get_actual_node (estado->cola);
+		empty = (qt_avance(estado->cola) != 1);
+		q = qt_get_actual_node (estado->cola);
+		endwhile:/* Esta es la salida en caso de que lleguemos a t */
 	}
 
 	if (q == t){
@@ -505,9 +506,10 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		estado->flow_value += e;
 		/* Actualizo el flujo del network */
 		while (q != s){
-			edge = tl_get_actual_edge (estado->cola);
-			
-			if (!tl_actual_is_backward(estado->cola)) {
+			edge = qt_get_actual_edge (estado->cola);
+
+			ASSERT (nIsFromEdge(q, edge))
+			if (edge->nodeDest == q) {
 				ASSERT (!NotInQueue(estado->nodes[edge->nodeDest]))
 				edge->flow += e;
 			} else {
@@ -515,8 +517,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				edge->flow -= e;
 			}
 				
-			tl_go_parent (estado->cola);
-			q = tl_get_actual_node (estado->cola);
+			qt_go_parent (estado->cola);
+			q = qt_get_actual_node (estado->cola);
 		}
 		
 	}else{

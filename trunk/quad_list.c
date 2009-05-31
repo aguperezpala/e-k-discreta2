@@ -1,21 +1,20 @@
-#include "triple_list.h"
+#include "quad_list.h"
 #include <stdbool.h>
 
 /* vamos a definir el tipo celda para la lista */
-struct tripleCeld {
-	struct tripleCeld * next;
-	struct tripleCeld * pparent;	/* puntero al anterior del padre */
+struct quadCeld {
+	struct quadCeld * next;
+	struct quadCeld * pparent;	/* puntero al anterior del padre */
 	u32 node;			/* nodo actual */
 	u32 flow;			/* flujo actual */
-	bool is_backward	/* fue agregado en backward */
 	edge_t * edge;		/* arista que puso al nodo */
 };
 
 
-struct s_tripleList {
-	struct tripleCeld first;	/* celda dummy */
-	struct tripleCeld * prev; 	/* el visor, en realidad es el anterior */
-	struct tripleCeld * plast;	/* ultima celda */
+struct s_quadList {
+	struct quadCeld first;	/* celda dummy */
+	struct quadCeld * prev; 	/* el visor, en realidad es el anterior */
+	struct quadCeld * plast;	/* ultima celda */
 	short size;
 };
 
@@ -26,11 +25,11 @@ struct s_tripleList {
 /* Funcion que crea una lista (en caso de que usemos dinamica) 
  * constructor
  */
-tripleList_t * tl_create (void)
+quadList_t * qt_create (void)
 {
-	tripleList_t * list = (tripleList_t *) malloc (sizeof (struct s_tripleList));
+	quadList_t * list = (quadList_t *) malloc (sizeof (struct s_quadList));
 	/* cochinada nos asegura un invariante y muchos chequeos */
-	struct tripleCeld * celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
+	struct quadCeld * celd = (struct quadCeld *) malloc (sizeof (struct quadCeld));
 	ASSERT (list != NULL)
 	
 	list->first.next = celd;
@@ -48,14 +47,14 @@ tripleList_t * tl_create (void)
 	REQUIRES:
 		el != NULL
 */
-void tl_dinamic_destroy (tripleList_t * tl)
+void qt_dinamic_destroy (quadList_t * qt)
 {
-	struct tripleCeld * aux = NULL;
-	struct tripleCeld * delCeld = NULL;
+	struct quadCeld * aux = NULL;
+	struct quadCeld * delCeld = NULL;
 	
-	ASSERT (tl != NULL)
+	ASSERT (qt != NULL)
 	
-	aux = tl->first.next;
+	aux = qt->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
 		delCeld = aux;
@@ -63,7 +62,7 @@ void tl_dinamic_destroy (tripleList_t * tl)
 		free(delCeld);
 	}
 	/* borramos la estructura */
-	free (tl);
+	free (qt);
 }
 
 
@@ -72,14 +71,14 @@ void tl_dinamic_destroy (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-void tl_normal_destroy (tripleList_t * tl)
+void qt_normal_destroy (quadList_t * qt)
 {
-	struct tripleCeld * aux = NULL;
-	struct tripleCeld * delCeld = NULL;
+	struct quadCeld * aux = NULL;
+	struct quadCeld * delCeld = NULL;
 	
-	ASSERT (tl != NULL)
+	ASSERT (qt != NULL)
 	
-	aux = tl->first.next;
+	aux = qt->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
 		delCeld = aux;
@@ -91,17 +90,17 @@ void tl_normal_destroy (tripleList_t * tl)
 
 /* Funcion para inicializar la lista
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 NOTE: antes de cada corrida debemos inicializar la estructura 
 */
-void tl_initialize (tripleList_t * tl, u32 indexNode)
+void qt_initialize (quadList_t * qt, u32 indexNode)
 {
-	ASSERT (tl != NULL)
+	ASSERT (qt != NULL)
 	
-	tl->size = 0;
-	tl->prev = tl->plast = &(tl->first);
-	tl->first.node = indexNode;
-	tl->first.pparent = NULL;
+	qt->size = 0;
+	qt->prev = qt->plast = &(qt->first);
+	qt->first.node = indexNode;
+	qt->first.pparent = NULL;
 	
 }
 
@@ -109,61 +108,49 @@ void tl_initialize (tripleList_t * tl, u32 indexNode)
 
 /* Funcion que obtiene el nodo actual (NOTE:indice del nodo actual)
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 	RETURNS:
 		indice
 */
-INLINE u32 tl_get_actual_node (tripleList_t * tl)
+INLINE u32 qt_get_actual_node (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
-	ASSERT (tl->size >= 1)
-	return tl->prev->next->node;
+	ASSERT (qt != NULL)
+	ASSERT (qt->size >= 1)
+	return qt->prev->next->node;
 }
 
 /* Funcion que obtiene el flujo actual 
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 	RETURNS:
 		flow
 */
-INLINE u32 tl_get_actual_flow (tripleList_t * tl)
+INLINE u32 qt_get_actual_flow (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
-	return tl->prev->next->flow;
+	ASSERT (qt != NULL)
+	return qt->prev->next->flow;
 }
 
 /* Funcion que obtiene la arista que agrego al nodo actual
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 	RETURNS:
 		edge
  */
-INLINE edge_t tl_get_actual_edge (tripleList_t * tl)
+INLINE edge_t qt_get_actual_edge (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
-	return tl->prev->next->edge;
-}
-
-/* Funcion que obtiene la arista que agrego al nodo actual
-	REQUIRES:
-		tl != NULL
-	RETURNS:
-		si es backward
- */
-INLINE bool tl_actual_is_backward (tripleList_t * tl)
-{
-	ASSERT (tl != NULL)
-	return tl->prev->next->is_backward;
+	ASSERT (qt != NULL)
+	return qt->prev->next->edge;
 }
 
 /* Funcion que devuelve el tamaño de la lista
- * NOTE: si tl == NULL ==> size = 0
+ * NOTE: si qt == NULL ==> size = 0
  */
-INLINE short tl_get_size (tripleList_t * tl)
+INLINE short qt_get_size (quadList_t * qt)
 {
-	if (tl == NULL)
+	if (qt == NULL)
 		return 0;
-	return tl->size;
+	return qt->size;
 }
 
 
@@ -173,19 +160,19 @@ INLINE short tl_get_size (tripleList_t * tl)
 /* Funcion que avanza el visor al siguiente elemento
  * Si esta en el ultimo elemento no avanzamos.
  *	REQUIRES:
- *		tl != NULL
+ *		qt != NULL
  *	RETURNS:
  *		0, si avanzamos normalmente
  *		1, si estamos al final de la cola
  */
-INLINE int tl_avance (tripleList_t * tl)
+INLINE int qt_avance (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
+	ASSERT (qt != NULL)
 			
-	if (tl->prev->next->next == NULL)
+	if (qt->prev->next->next == NULL)
 		return 1;
 	else {
-		tl->prev = tl->prev->next;
+		qt->prev = qt->prev->next;
 		return 0;
 	}
 }
@@ -195,10 +182,10 @@ INLINE int tl_avance (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-INLINE void tl_go_parent (tripleList_t * tl)
+INLINE void qt_go_parent (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
-	tl->prev = tl->prev->next->pparent;
+	ASSERT (qt != NULL)
+	qt->prev = qt->prev->next->pparent;
 }
 
 
@@ -206,10 +193,10 @@ INLINE void tl_go_parent (tripleList_t * tl)
 	REQUIRES:
 		el != NULL
 */
-INLINE void tl_start (tripleList_t * tl)
+INLINE void qt_start (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
-	tl->prev = tl->plast = &(tl->first);
+	ASSERT (qt != NULL)
+	qt->prev = qt->plast = &(qt->first);
 }
 
 
@@ -221,53 +208,52 @@ el != NULL
 NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
 avanzar el "visor" (actual) al final.
 */
-INLINE void tl_move_last (tripleList_t * tl)
+INLINE void qt_move_last (quadList_t * qt)
 {
-	ASSERT (tl != NULL)
-	tl->prev = tl->plast;
+	ASSERT (qt != NULL)
+	qt->prev = qt->plast;
 }
 
 
 /*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
 
-/* Funcion que agrega una tripleta (nodo, padre, flow).
+/* Funcion que agrega una quatripleta (nodo, padre, flow).
  NOTE: tener en cuenta que el padre va a ser el elemento actual
 	REQUIRES:
-		tl		!= NULL
+		qt		!= NULL
 		edge	!= NULL
 		indexNode	<= MAX_N_NODES
 */
-void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode , edge_t * edge , bool is_backward )
+void qt_add_triple (quadList_t * qt,  u32 flow, u32 indexNode , edge_t * edge )
 {	
-	struct tripleCeld * celd;
+	struct quadCeld * celd;
 	/* pre */
-	ASSERT (tl != NULL)
+	ASSERT (qt != NULL)
 	ASSERT (edge != NULL)
 	ASSERT (indexNode <= MAX_N_NODES)
+	ASSERT (nIsFromEdge(indexNode, edge))
 	
-	tl->size++;
+	qt->size++;
 	/* tenemos 2 casos posibles, que exista una celda o que no exista, si
 	 * existe la celda entonces solo la usamos, si no la creamos */
 	/* seteamos el flow */
-	if (tl->plast->next->next != NULL) {
-		celd = tl->plast->next->next;
-		
+	if (qt->plast->next->next != NULL) {
+		celd = qt->plast->next->next;
 	} else {
-		celd = (struct tripleCeld *) malloc (sizeof (struct tripleCeld));
+		celd = (struct quadCeld *) malloc (sizeof (struct quadCeld));
 		celd->next = NULL;
-		tl->plast->next->next = celd;
+		qt->plast->next->next = celd;
 	}
 	
 	/* seteamos la celda */
 	celd->node = indexNode;
 	celd->flow = flow;
 	celd->edge = edge;
-	celd->is_backward = is_backward; 
 	
 	/* ahora seteamos el parent, en realidad el pparent */
-	celd->pparent = tl->prev;
+	celd->pparent = qt->prev;
 	
 	/* actualizamos el ultimo puntero */
-	tl->plast = tl->plast->next;
+	qt->plast = qt->plast->next;
 }
 

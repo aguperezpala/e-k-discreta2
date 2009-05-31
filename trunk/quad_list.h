@@ -2,19 +2,15 @@
  * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
  * maximal en un network
  *
- * TAD triple_list_t (lista de tripletas), versión 1.0.0, del proyecto único de
+ * TAD TAD quadList (lista de quatripletas), versión 1.0.0, del proyecto único de
  * Discreta 2, FaMAF, año 2009
  * Este TAD representa la cola de una corrida E-K (o sea una ejecución de
  * AumentarFlujo)
- * Su nombre deriva de los 3 elementos principales que cada elemento de la cola
- * (celda de triple_list) posee: ·Nombre del vértice
- *				 ·Nombre del padre (y del espíritu santo, amén)
- *				 ·Flujo soportado por el lado padre--vértice
- *				 ·Condición de backwardtitud
- * ¡Pero esos son 4 elementos!
- * El problema fue que agregamos la última luego de haber construido el TAD
- * cuando vimos que era necesaria en AumentarFlujo.
- * Y cambiar todo a cuadruple_list era un viaje, además que suena feo
+ * Su nombre deriva de los elementos que la componen cada una de sus celdas:
+ * 	·Nombre del vértice
+ *	·Nombre del padre (y que satanas te guarde)
+ *	·Flujo soportado por el lado padre--vértice
+ *	·Lado que une al vertice con su padre ( si , es un embarazo paterno :P )
  *
  * Autores:  Budde, Carlos E.
  *	     Kondrasky, Alejandro
@@ -25,12 +21,13 @@
  *
  */
 
-#ifndef TRIPLE_LIST_H
-#define TRIPLE_LIST_H
+
+#ifndef QUAD_LIST_H
+#define QUAD_LIST_H
 
 
-/*! La estructura de cada celda es de la siguiente forma (una tripleta):
- *  {nodeIndex	 ,	Parent	,	actual Flow }
+/*! La estructura de cada celda es de la siguiente forma (una cuatripĺeta):
+ *  {nodeIndex	 ,	Parent	,	actual Flow ,  edge }
  * que es la representacion de la "cola" usada por E-K.
  * ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
  * 				MODO DE USO
@@ -44,10 +41,11 @@
 #include <stdbool.h>
 
 #include "consts.h"
+#include "node.h"
 #include "edge.h"
 
 /* definimos el tipo */
-typedef struct s_tripleList tripleList_t ;
+typedef struct s_quadList quadList_t ;
 
 
 /*! ~~~~~~~~~~~~  Constructores / destructores ~~~~~~~~~~~~~~~~~~~ */
@@ -55,68 +53,59 @@ typedef struct s_tripleList tripleList_t ;
 /* Funcion que crea una lista (en caso de que usemos dinamica) 
  * constructor
  */
-tripleList_t * tl_create (void);
+quadList_t * qt_create (void);
 
 /* destructor para la lista allocada dinamicamente
 	REQUIRES:
 		el != NULL
 */
-void tl_dinamic_destroy (tripleList_t * tl);
+void qt_dinamic_destroy (quadList_t * qt);
 
 /* destructor para la lista NO allocada dinamicamente, osea practicamente libera
  * todas las celdas de la lista, menos la estructura misma de la celda
 	REQUIRES:
 		el != NULL
 */
-void tl_normal_destroy (tripleList_t * tl);
+void qt_normal_destroy (quadList_t * qt);
 
 /* Funcion para inicializar la lista
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 NOTE: antes de cada corrida debemos inicializar la estructura, tomamos el nodo
 * principal de todos (s).
 */
-void tl_initialize (tripleList_t * tl, u32 indexNode);
+void qt_initialize (quadList_t * qt, u32 indexNode);
 
 /*! ~~~~~~~~~~~~  Funciones para obtener elementos ~~~~~~~~~~~~~~~~~~~ */
 
 /* Funcion que obtiene el nodo actual (NOTE:indice del nodo actual)
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 	RETURNS:
 		indice
 */
- u32 tl_get_actual_node (tripleList_t * tl);
+u32 qt_get_actual_node (quadList_t * qt);
 
 /* Funcion que obtiene el el flujo actual 
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 	RETURNS:
 		flow
 */
- u32 tl_get_actual_flow (tripleList_t * tl);
+u32 qt_get_actual_flow (quadList_t * qt);
  
 /* Funcion que obtiene la arista que agrego al nodo actual
 	REQUIRES:
-		tl != NULL
+		qt != NULL
 	RETURNS:
 		edge
 */
-edge_t tl_get_actual_edge (tripleList_t * tl);
-
-/* Funcion que obtiene la arista que agrego al nodo actual
-	REQUIRES:
-		tl != NULL
-	RETURNS:
-		si es backward
-*/
-bool tl_get_actual_is_backward (tripleList_t * tl);
-
+edge_t qt_get_actual_edge (quadList_t * qt);
 
 /* Funcion que devuelve el tamaño de la lista
- * NOTE: si tl == NULL ==> size = 0
+ * NOTE: si qt == NULL ==> size = 0
 */
- short tl_get_size (tripleList_t * tl);
+short qt_get_size (quadList_t * qt);
 
 
 /*! ~~~~~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
@@ -124,29 +113,29 @@ bool tl_get_actual_is_backward (tripleList_t * tl);
 /* Funcion que avanza el visor al siguiente elemento, si esta en el ultimo elemento
  * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
  *	REQUIRES:
- *		tl != NULL
+ *		qt != NULL
  *	RETURNS:
  *		0, si avanzamos normalmente
  *		1, si estamos al final de la cola
  */
-int tl_avance (tripleList_t * tl);
+int qt_avance (quadList_t * qt);
 
 /* Funcion que mueve el visor al padre del elemento actual
 	REQUIRES:
 		el != NULL
 */
- void tl_go_parent (tripleList_t * tl);
+ void qt_go_parent (quadList_t * qt);
 
  
 /* Funcion que avanza el visor al siguiente elemento
  * Si esta en el ultimo elemento no avanzamos.
  *	REQUIRES:
- *		tl != NULL
+ *		qt != NULL
  *	RETURNS:
  *		0, si avanzamos normalmente
  *		1, si estamos al final de la cola
  */
- void tl_start (tripleList_t * tl);
+ void qt_start (quadList_t * qt);
 
 
  /* Funcion que mueve el actual al final de la lista
@@ -155,7 +144,7 @@ int tl_avance (tripleList_t * tl);
 NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
       avanzar el "visor" (actual) al final.
 */
- void tl_move_last (tripleList_t * tl);
+ void qt_move_last (quadList_t * qt);
  
  
 /*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
@@ -163,11 +152,12 @@ NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
 /* Funcion que agrega una quintupleta (nodo, padre, flow, edge , is_backward).
  NOTE: tener en cuenta que el padre va a ser el elemento actual
 	REQUIRES:
-		tl		!= NULL
+		qt		!= NULL
 		edge	!= NULL
 		indexNode	<= MAX_N_NODES
+		nIsFromEdge(indexNode, edge)
 */
-void tl_add_triple (tripleList_t * tl,  u32 flow, u32 indexNode , edge_t * edge , bool is_backward );
+void qt_add_quad (quadList_t * qt,  u32 flow, u32 indexNode , edge_t * edge);
 
 
 
