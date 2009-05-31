@@ -87,9 +87,9 @@ static Color MenorColorLibre (EstadoNetwork *estado, u32 N)
 	
 #ifdef __DEBUG
 	if (HayConflicto (estado, N)) {
-		   fprintf (stderr, "Se generó un conflicto al buscar un "
-				   "color para el vértice %u\n", N);
-		   fprintf (stderr, "Se le otorgó el color %d\n", (int) i);
+		   fprintf (stderr, "Se generó un conflicto al buscar un"
+				    " color para el vértice %u\nSe le otorgó"
+				    " el color %d\n", N, (int) i);
 	}
 #endif
 	

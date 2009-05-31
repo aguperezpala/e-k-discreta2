@@ -10,7 +10,7 @@
 
 
 struct s_estado_network{
-	node_t nodes[7000];
+	node_t nodes[MAX_N_NODES];
 	tripleList_t *cola;	/* Cola de las corridas E-K */
 	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
 	bool maximal;	/* si tenemos un flujo maximal */
@@ -232,7 +232,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	} else {
 		/* Se espera input numérico, y la pu~@#@ç$! */
 		estado->modoinput = 2;
-		n = 7000;
+		n = MAX_N_NODES;
 	}
 	
 	/* Inicializamos los lados */
@@ -410,7 +410,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	int result = 0;
 	u32 s, t, q , p , e;
 	unsigned short corrida;
-	node_t *actual;	
+	node_t *actual, *vecino;
 	edge_t *edge;
 	bool empty = false;
 	int endList = 0;
@@ -460,19 +460,20 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		endList = 0;
 		while (endList == 0) { 
 			edge = el_get_actual (actual->forwardList);
+			vecino = &estado->nodes[edge->nodeDest];
 			
-			if (NotInQueue(actual,corrida) &&
+			if (NotInQueue(vecino,corrida) &&
 				(edge->flow < edge->capacity)){
 				/* Encolo el vertice */
 				e = tl_get_actual_flow (estado->cola);
 				if((edge->capacity - edge->flow) < e)
 					e = (edge->capacity - edge->flow);
-				tl_add_triple (estado->cola, e, edge->nodeDest, edge , true );
+				tl_add_triple (estado->cola, e, edge->nodeDest, edge, false);
 				
 				if (edge->nodeDest == t) {
 					/* Obtuvimos t , terminamos el ciclo */
 					q = t;
-					goto endwhile;
+					break;
 				}
 			}
 			
@@ -485,8 +486,9 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		endList = 0;
 		while (endList == 0) { 
 			edge = el_get_actual (actual->backwardList);
+			vecino = &estado->nodes[edge->nodeDest];
 			
-			if (NotInQueue(actual,corrida) &&
+			if (NotInQueue(vecino,corrida) &&
 				(edge->flow > 0)){
 				/* Encolo el vertice */
 				e = tl_get_actual_flow (estado->cola);
@@ -501,8 +503,6 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		nextNode:/* Nos movemos al siguiente nodo */
 		empty = (tl_avance(estado->cola) != 1);
 		q = tl_get_actual_node (estado->cola);
-
-		endwhile:/* Esta es la salida en caso de que lleguemos a t */
 	}
 
 	if (q == t){
