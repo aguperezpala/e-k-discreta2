@@ -26,7 +26,6 @@
 
 
 typedef struct s_node {
-	u32 flux; 			/* flujo */
 	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
 	unsigned short corrida; /* Versión de corrida E-K para aumentar flujo */

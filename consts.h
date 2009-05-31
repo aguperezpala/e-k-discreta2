@@ -45,7 +45,10 @@ typedef signed short Color;
 /* Indica si el modo de input es soportado por la API */
 #define ModoinputValido(x)	((x == 1) || (x == 2))
 
-/* Indica si el modo de verbosidad es soportado por la API */
+/* Indica si el modo de verbosidad es soportado por la API.
+ * NOTE: Esto no es util ya que las 3 operaciones de verbosidad
+ * no aceptan estos cuatro valores.
+ */
 #define VerbosidadValida(x)	((x == 0) || (x == 1) || (x == 2) || (x == 3))
 
 /* Inidica si un código numérico ASCII representa un caracter A-Z ó a-z */
