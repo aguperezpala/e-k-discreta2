@@ -150,7 +150,7 @@ INLINE edge_t tl_get_actual_edge (tripleList_t * tl)
 	RETURNS:
 		si es backward
  */
-INLINE bool tl_get_actual_is_backward (tripleList_t * tl)
+INLINE bool tl_actual_is_backward (tripleList_t * tl)
 {
 	ASSERT (tl != NULL)
 	return tl->prev->next->is_backward;
