@@ -1,10 +1,8 @@
-
-#include <stdbool.h>
-
-#include "consts.h"
-#include "node.h"
+/* Librerías públicas */
+#include <stdlib.h>
+#include <stdio.h>
+/* Librerías personales */
 #include "edge.h"
-#include "edge_list.h"
 #include "network.h"
 
 
@@ -509,10 +507,13 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		while (q != s){
 			edge = tl_get_actual_edge (estado->cola);
 			
-			if (!tl_actual_is_backward(estado->cola))
+			if (!tl_actual_is_backward(estado->cola)) {
+				ASSERT (!NotInQueue(estado->nodes[edge->nodeDest]))
 				edge->flow += e;
-			else
+			} else {
+				ASSERT (!NotInQueue(estado->nodes[edge->nodeOrig]))
 				edge->flow -= e;
+			}
 				
 			tl_go_parent (estado->cola);
 			q = tl_get_actual_node (estado->cola);
