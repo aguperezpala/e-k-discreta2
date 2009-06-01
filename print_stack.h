@@ -35,10 +35,10 @@ print_s *ps_create (void);
 /* Destruye la pila de impresión
  *
  * PRE: ps != NULL
- *    ps = ps_destroy(ps)
+ *    ps_destroy(ps)
  * POS: los recursos de memoria de ps han sido liberados
  */
-print_s *ps_destroy (print_s *ps);
+void ps_destroy (print_s *ps);
 
 
 /* Añade un nuevo vértice 'v' al comienzo de la pila de impresión.
