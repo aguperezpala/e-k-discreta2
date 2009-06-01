@@ -91,9 +91,27 @@ int main (int argc, char ** args)
 			}
 			/* ahora vemos si tenemos que aumentar el flujo m veces
 			 * o si lo tenemos que aumentar hasta el final */
+			
+			if (flowsRun > 0) {
+				/* entonces debemos aumentar m veces el flujo */
+				err = 0;
+				for (i = 0; i < flowsRun && err == 0; i++) {
+					err = AumentarFlujo (estado, pa_verbose (pa));
+				}
+			} else 
+				/* simplemente aumentamos el flujo */
+				while (err == 0)
+					err = AumentarFlujo (estado, pa_verbose (pa));
+		}
+	} else {
+		/* tomamos primero todos los lados */
+		while (!finish)
+			finish = LeerUnLado(estado, inputMode) == 0;
+		
+		err = 0;
+		/* simplemente aumentamos el flujo */
+		while (err == 0)
 			err = AumentarFlujo (estado, pa_verbose (pa));
-			
-			
 	
 	
 	
