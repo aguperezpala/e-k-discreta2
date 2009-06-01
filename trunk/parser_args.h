@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "consts.h"
 /* definimos la estructura que a su vez va a tener almacenado los flags (args)
  * y las opciones de las mismas (seria una especie de "flagsFields struct")
@@ -26,10 +27,17 @@ void pa_destroy (parserArgs_t * pa);
 /* Funcion que rellena la estructura con los campos determinados
 	REQUIRES:
 		pa != NULL
-		argc >= 0
+		argc >= 1
 		args != NULL
+	RETURNS:
+ 	!error:
+ 		= 0
+ 	error:
+ 		-2 si no es un parametro valido
+ 		-3 si se esperaba otro tipo de valor (numerico por ejemplo)
+		-4 otro error
 */
-void pa_parse (parserArgs_t * pa, int argc, char ** args);
+int pa_parse (parserArgs_t * pa, int argc, char ** args);
 
 
 
