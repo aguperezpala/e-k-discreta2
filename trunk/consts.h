@@ -64,12 +64,49 @@ typedef signed short Color;
 /* Indica si el vértice 'x' está en la cola de E-K corrida nº 'c'  */
 #define   NotInQueue(x,c)   (x->corrida < c)
 
+#define   Transform(x)   ((x == 0) ? 's'
 
-#define   PrintFlowNum(x,y,f)  ((x == 0) ? \
-				printf ("Lado (s,%u): Flujo %u\n", y, f); \
-					 : \
+/* Imprime la cadena: "Lado (x,y): Flujo f" donde 'x', 'y' y 'f'
+ * son valores u32. Si 'x' o 'y' son '0' o '1' son cambiados por
+ * los caracteres 's' o 't' respectivamente */
+#define   PrintFlowNum(x,y,f)  (((x != 0) && (x != 1) && (y != 0) && (y != 1)) ? \
+				(printf ("Lado (%u,%u): Flujo %u\n", x, y, f);)  \
+					 : ( \
+				((x == 0) && (y != 0) && (y != 1)) ? \
+				(printf ("Lado (s,%u): Flujo %u\n", y, f);) \
+					 : ( \
+				((x == 1) && (y != 0) && (y != 1)) ? \
+				(printf ("Lado (t,%u): Flujo %u\n", y, f);) \
+					 : ( \
+				((x != 0) && (x != 1) && (y == 0)) ? \
+				(printf ("Lado (%u,s): Flujo %u\n", x, f);) \
+					 : ( \
+				((x != 0) && (x != 1) && (y == 1)) ? \
+				(printf ("Lado (%u,t): Flujo %u\n", x, f);) \
+					 : ( \
+				(printf ("Lado (s,t): Flujo %u\n");) \
+					) ) ) ) ) \
+				)
+				
+					 
+/*					 
 				(y == 0) ? \
-				printf ("Lado (%u,s): Flujo
+				printf ("Lado (%u,s): Flujo %u\n", x, f); \
+					 : ( \
+				(x == 1) ? \
+				printf ("Lado (t,%u): Flujo %u\n", y, f); \
+					 : ( \
+				(y == 1) ? \
+				printf ("Lado (%u,t): Flujo %u\n", x, f); \
+					 : ( \
+				printf ("Lado (%u,%u): Flujo %u\n", x, y, f) \
+					) ) ) )  )
+*/					
+					
+#define   PrintFlowNum(x,y,f)  ((x != 0) && (y != 0(( ? \
+					
+					
+				
 
 #ifndef INLINE
 # if __GNUC__
