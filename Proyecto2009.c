@@ -9,19 +9,20 @@
 
 static void main_help (void)
 {
-	printf ("Modo de uso:\n"
-	"NOTA: Las flags que requieren de un parametro adicional son las marcadas"
-	"con un *.\n"
+	printf ("\n\n\n\nModo de uso:\n"
 	"Para setear modo numerico: -numeric (por defecto es modo alfanumerico)\n"
-	"* verbosidad: -v <grado>\n"
+	"verbosidad: -v <grado>\n"
 	"si vamos a calcular el flujo maximo: -max-flow\n"
 	"si vamos a calcular coloreo: -colour\n"
-	"*si vamos a agregar bloques incrementalmente: -inc <n>\n"
-	"*si vamos a calcular parcialmente: -partial <m>\n"
-	"*para ejecutar n veces para medir el tiempo: -ctime <n>\n"
-	"*para ejecutar n veces para medir el flujo: -ftime <n>\n");
+	"si vamos a agregar bloques incrementalmente: -inc <n>\n"
+	"si vamos a calcular parcialmente: -partial <m>\n"
+	"para ejecutar n veces para medir el tiempo: -ctime <n>\n"
+	"para ejecutar n veces para medir el flujo: -ftime <n>\n"
+	"\n\nNOTA: son obligatorios los campos <>\n");
 }
 	
+
+
 
 
 
@@ -30,12 +31,9 @@ int main (int argc, char ** args)
 	parserArgs_t * pa = NULL;
 	int result = 0;
 	
+	/* creamos el parserArgs */
 	pa = pa_create ();
-	
-	 		/*-2 si no es un parametro valido
- 		-3 si se esperaba otro tipo de valor (numerico por ejemplo)
-		-4 otro error
-*/
+
 
 	main_help ();
 	if (argc <= 1) {
