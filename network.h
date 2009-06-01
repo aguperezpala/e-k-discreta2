@@ -20,6 +20,7 @@
 #include "node.h"
 #include "edge_list.h"
 #include "quad_list.h"
+#include "node_stack.h"
 
 
 #ifndef NETWORK_H

@@ -660,7 +660,39 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 
 	K = ResolverConflictos(estado);
 	
+	/* Imprimo el coloreo obtenido por first_coloring */
+	if ( verbosidad == 1 ) {
+
+		printf("Coloreo con First Coloring : %d" , K );  
+
+		if ( estado->modoinput  == 1)
+			ns_cmd (estado->nstack , estado->nodes, color_printf_alfa );
+		else
+			ns_cmd (estado->nstack , estado->nodes, color_printf_num );
+
+		printf("Cantidad de Colores utilizados: %d" , K ); 
+	}
+
 	if ( K > estado->delta )
-		estado->delta = color_greedy
+		K = color_greedy( estado->nstack , estado->nodes);
+	else
+		return K;
+
+	/* Imprimo el coloreo obtenido por greedy.
+	   NOTA!: Los colores se imprimen en negativo , luego lo arreglare con una
+		  funcion aparte. */
+	if ( verbosidad == 1 ) {
+
+		printf("Coloreo con Greedy : %d" , K ); 
+
+		if ( estado->modoinput  == 1)
+			ns_cmd (estado->nstack , estado->nodes, color_printf_alfa );
+		else
+			ns_cmd (estado->nstack , estado->nodes, color_printf_num );
+
+		printf("Cantidad de Colores utilizados: %d" , K ); 
+	}
+
+	return K*(-1);
 }
 

@@ -44,7 +44,7 @@
 /* Tipo que es solo para wrapping para el color.
  * Permito colores negativos para el coloreo greedy.
  */
-typedef signed short Color;
+typedef int Color;
 
 
 /** Algunos defines de utilidad */
