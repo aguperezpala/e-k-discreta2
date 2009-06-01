@@ -84,7 +84,7 @@ int main (int argc, char ** args)
 	
 	if (blockReadSize > 0){
 		/* tenemos que leer en forma de bloque */
-		while (!finish) {
+		while (!finish && err != 2) {
 			for (i = 0; i < blockReadSize && !finish; i++) {
 				/* leemos un lado y nos fijamos si debemos salir */
 				finish = LeerUnLado(estado, inputMode) == 0;
@@ -109,9 +109,18 @@ int main (int argc, char ** args)
 			finish = LeerUnLado(estado, inputMode) == 0;
 		
 		err = 0;
-		/* simplemente aumentamos el flujo */
-		while (err == 0)
-			err = AumentarFlujo (estado, pa_verbose (pa));
+		/* chequeamos si debemos aumentar parcialmente */
+		if (flowsRun > 0) {
+				/* entonces debemos aumentar m veces el flujo */
+				err = 0;
+				for (i = 0; i < flowsRun && err == 0; i++) {
+					err = AumentarFlujo (estado, pa_verbose (pa));
+				}
+			} else 
+				/* simplemente aumentamos el flujo */
+				while (err == 0)
+					err = AumentarFlujo (estado, pa_verbose (pa));
+	}
 	
 	
 	
