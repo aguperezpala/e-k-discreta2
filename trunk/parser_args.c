@@ -79,17 +79,17 @@ static int pa_map_arg (char * arg)
 	else if (strcmp (arg, F_VERBOSE) == 0)
 		result = 1;
 	else if (strcmp (arg, F_MAX_FLOW) == 0)
-		result = 1;
+		result = 2;
 	else if (strcmp (arg, F_COLOUR) == 0)
-		result = 1;
+		result = 3;
 	else if (strcmp (arg, F_INCREMENTAL) == 0)
-		result = 1;
+		result = 4;
 	else if (strcmp (arg, F_PARTIAL) == 0)
-		result = 1;
+		result = 5;
 	else if (strcmp (arg, F_COLOUR_TIME) == 0)
-		result = 1;
+		result = 6;
 	else if (strcmp (arg, F_FLOW_TIME) == 0)
-		result = 1;
+		result = 7;
 	else 
 		result = -1;
 	
@@ -361,6 +361,47 @@ int pa_colour_repeat (parserArgs_t * pa)
 	
 	return pa->colourRepeat;
 }
+
+
+#ifdef __DEBUG
+
+/* Imprime la estructura
+	REQUIRES:
+		pa != NULL
+*/
+void pa_print (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	
+	printf ("Es modo numerico?\t");
+	
+	if (pa->isNumeric)
+		printf ("true\n");
+	else
+		printf ("false\n");
+	
+	printf ("Hay que imprimir flujo\t");
+	if (pa_work_flow (pa))
+		printf ("true\n");
+	else
+		printf ("false\n");
+	
+	printf ("Hay que imprimir color\t");
+	if (pa_work_colour (pa))
+		printf ("true\n");
+	else
+		printf ("false\n");
+
+	printf ("verbose: %d\n", pa->verbose);
+	printf ("incremental: %d\n", pa->incremental);
+	printf ("partialRun: %d\n", pa->partialRun);
+	printf ("ColourRepeat: %d\n", pa->colourRepeat);
+	printf ("FlowRepeat: %d\n", pa->maxFlowRepeat);
+}
+	
+	
+#endif
 
 
 
