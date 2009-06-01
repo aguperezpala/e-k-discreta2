@@ -75,11 +75,11 @@ void ActualizarConCamino (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo)
 			
 			if (edge->nodeDest == q) { /* Es lado forward */
 				edge->flow += e;
-				ps = ps_add_node (ps, q, estado->modoinput, 1);
+				ps = ps_add_node (ps, q, 1);
 						
 			} else {		  /* Es lado backward */
 				edge->flow -= e;
-				ps = ps_add_node (ps, q, estado->modoinput, 2);
+				ps = ps_add_node (ps, q, 2);
 			}
 			
 			qt_go_parent (estado->cola);
@@ -89,7 +89,7 @@ void ActualizarConCamino (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo)
 		ps = ps_add_node (ps, q, estado->modoinput, 1);
 		
 		/* Imprimimos el camino hallado */
-		ps_print (ps);
+		ps_print (ps, estado->modoinput);
 		ps_destroy (ps);
 		
 	} else
