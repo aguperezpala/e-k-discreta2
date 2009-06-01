@@ -670,6 +670,14 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
+	unsigned short K = 0;
+
+	/* Precondiciones */
+	ASSERT(VerbosidadInvalidaColorear(verbosidad))
+
+	K = ResolverConflictos(estado);
 	
+	if ( K > estado->delta )
+		estado->delta = color_greedy
 }
 

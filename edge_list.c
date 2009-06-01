@@ -11,7 +11,7 @@ struct edgeCeld {
 struct s_edgeList {
 	struct edgeCeld first;		/* celda dummy */
 	struct edgeCeld * prev; 	/* el visor, en realidad es el anterior */
-	short size;
+	unsigned short size;
 };
 
 
