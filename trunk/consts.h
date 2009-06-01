@@ -31,6 +31,16 @@
 	#define ASSERT(x)	
 #endif
 
+
+/* Impresión de errores, para debuggeo */
+#ifdef __DEBUG
+	#include <stdio.h>
+	#define PRINTERR (x)	fprintf(stderr, x)
+#else
+	#define PRINTERR (x)
+#endif
+
+
 /* Tipo que es solo para wrapping para el color.
  * Permito colores negativos para el coloreo greedy.
  */
@@ -61,10 +71,10 @@ typedef signed short Color;
  */
 #define nIsFromEdge(n,e) ((e->nodeOrig == n) != (e->nodeDest == q))
 
+
 /* Indica si el vértice 'x' está en la cola de E-K corrida nº 'c'  */
 #define   NotInQueue(x,c)   (x->corrida < c)
 
-#define   Transform(x)   ((x == 0) ? 's'
 
 /* Imprime la cadena: "Lado (x,y): Flujo f" donde 'x', 'y' y 'f'
  * son valores u32. Si 'x' o 'y' son '0' o '1' son cambiados por
@@ -87,26 +97,7 @@ typedef signed short Color;
 				(printf ("Lado (s,t): Flujo %u\n");) \
 					) ) ) ) ) \
 				)
-				
-					 
-/*					 
-				(y == 0) ? \
-				printf ("Lado (%u,s): Flujo %u\n", x, f); \
-					 : ( \
-				(x == 1) ? \
-				printf ("Lado (t,%u): Flujo %u\n", y, f); \
-					 : ( \
-				(y == 1) ? \
-				printf ("Lado (%u,t): Flujo %u\n", x, f); \
-					 : ( \
-				printf ("Lado (%u,%u): Flujo %u\n", x, y, f) \
-					) ) ) )  )
-*/					
-					
-#define   PrintFlowNum(x,y,f)  ((x != 0) && (y != 0(( ? \
-					
-					
-				
+	
 
 #ifndef INLINE
 # if __GNUC__
