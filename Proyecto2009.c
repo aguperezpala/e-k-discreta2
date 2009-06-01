@@ -179,16 +179,23 @@ int main (int argc, char ** args)
 	 * normal los lados */
 	blockReadSize = pa_incremental (pa);
 	verbose = pa_verbose (pa);
+	
+	/* primero vamos a hacer una corrida normal y cargar el grafo */
+	if (blockReadSize > 0){
+		err = block_read (estado, pa, inputMode);
+	} else {
+		err = normal_read (estado, pa, inputMode);
+	}
+	
 	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
 	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
 	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
 		/* inicializamos el network */
 		Inicializar(estado, inputMode);
-		if (blockReadSize > 0){
-			err = block_read (estado, pa, inputMode);
-		} else {
-			err = normal_read (estado, pa, inputMode);
-		}
+		/* ahora lo que hacemos es aumentar el fucking flow */
+		while (err == 0)
+			err = AumentarFlujo (estado, verbose);
+		
 	}
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)) {
