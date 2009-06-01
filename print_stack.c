@@ -11,7 +11,7 @@ struct _print_s {
 
 struct _print_celd {
 	u32 node;	/* Nombre del vértice */
-	int sentido;	/* 1 => forward ; 2 => backward */
+	char sentido;	/* ',' => forward ; '<' => backward */
 	_print_celd *prev;
 };
 
@@ -65,12 +65,12 @@ void ps_destroy (print_s *ps)
  * PRE: ps != NULL  &&  sentido == 1,2
  *    ps = ps_add_node (ps, v, modoinput, sentido);
  * POS: "ps contiene a 'v' como último elemento" &&
- *	sentido == 1  =>  se considera "forward" la relación entre 'v'
- *			  y el vértice anterior de la pila
- *	sentido == 1  =>  se considera "backward" la relación entre 'v'
- *			  y el vértice anterior de la pila
+ *	sentido == ','  =>  se considera "forward" la relación entre 'v'
+ *			    y el vértice anterior de la pila
+ *	sentido == '<'  =>  se considera "backward" la relación entre 'v'
+ *			    y el vértice anterior de la pila
  */
-print_s *ps_add_node (print_s *ps, u32 v, int sentido)
+print_s *ps_add_node (print_s *ps, u32 v, char sentido)
 {
 	_print_celd *new;
 	
@@ -107,4 +107,19 @@ void ps_print (print_s *ps, int modoinput)
 	
 	aux = ps->last;
 	
+	while (aux->prev != &ps->dummy) {
+		/* Vamos imprimiendo todos los vértices */
+		if (modoinput == 1)
+			printf ("%c%c", aux->node, aux->sentido);
+		else
+			printf ("%u%c", aux->node, aux->sentido);
+		
+		aux = aux->prev;
+	}
+	
+	/* Imprimimos 't' (o el último vértice, que DEBERIA ser lo mismo) */
+	if (modoinput == 1)
+			printf ("%c\n", aux->node);
+	else
+			printf ("%u\n", aux->node);
 }
