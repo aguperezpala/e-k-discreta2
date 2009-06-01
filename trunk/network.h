@@ -41,7 +41,7 @@ typedef struct s_estado_network {
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
 	edgeList_t l_con;	/* Lista de lados conflictivos para el coloreo */
-	node_stack nstack	/* Stack que guarda los nodos que fueron agregados */
+	node_s nstack	/* Stack que guarda los nodos que fueron agregados */
 	
 } EstadoNetwork ;
 
