@@ -134,7 +134,7 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  *
  * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
  */
-static void ImpresiónFlujosAlf (u32 node, node_t *nodes)
+extern void ImpresiónFlujosAlf (u32 node, node_t *nodes)
 {
 	edge_list *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
@@ -161,7 +161,7 @@ static void ImpresiónFlujosAlf (u32 node, node_t *nodes)
  *
  * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
  */ 
-static void ImpresiónFlujosNum (u32 node, node_t *nodes)
+extern void ImpresiónFlujosNum (u32 node, node_t *nodes)
 {
 	edge_list *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
@@ -176,24 +176,6 @@ static void ImpresiónFlujosNum (u32 node, node_t *nodes)
 	
 	while (endList == 0) {
 		PrintFlowNum (edge->nodeOrig, edge->nodeDest, edge->flow);
-		
-		if (edge->nodeOrig == 0)
-			printf ("Lado (s,%u): Flujo %u\n",
-				edge->nodeDest, edge->flow);
-		else if (edge->nodeDest == 0)
-			printf ("Lado (%u,s): Flujo %u\n",
-				edge->nodeDest, edge->flow);
-		if (edge->nodeOrig == 1)
-			printf ("Lado (t,%u): Flujo %u\n",
-				edge->nodeDest, edge->flow);
-		else if (edge->nodeDest == 1)
-			printf ("Lado (%u,t): Flujo %u\n",
-				edge->nodeDest, edge->flow);
-		else
-			printf ("Lado (%u,%u): Flujo %u\n",
-				edge->nodeOrig, edge->nodeDest, edge->flow);
-			
-		
 		endLIst = el_avance (fl);
 	}
 }
@@ -240,7 +222,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	/* Precondiciones */
 	ASSERT(estado != NULL)
 	if ( ModoinputInvalido (modoinput) ) {
-		fprintf (stderr, "API: Inicializar: modoinput inválido\n");
+		PRINTERR ("API: Inicializar: modoinput inválido\n");
 		return 1;
 	}
 
@@ -279,17 +261,20 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	ASSERT (estado != NULL)
 			
 	if ( ModoinputInvalido (modoinput) ) {
-		fprintf (stderr, "API: LeerUnLado: modoinput inválido\n");
+		PRINTERR ("API: LeerUnLado: modoinput inválido\n");
 		estado->completo = true;
 		return 0;
-		
-	} else if (modoinput != estado->modoinput) {
-		fprintf (stderr, "API: LeerUnLado: modoinput inválido\n"
+	}
+	
+#ifdef __DEBUG	
+	if (modoinput != estado->modoinput) {
+		fprintf (stderr,"API: LeerUnLado: modoinput inválido\n"
 				"Ingresó %d y antes había escogido %d\nSe ruega"
 				" coherencia\n", modoinput, estado->modoinput);
 		estado->completo = true;
 		return 0;
 	}
+#endif
 	
 	/* {modoinput == 1 || modoinput == 2} */
 	if (modoinput == 1) {
@@ -302,7 +287,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (edge[2] != ' ') {
 			/* No había espacio tras los dos vértices */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -310,7 +295,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (strlen (edge+3) > 10) {
 			/* Capacidad mayor que u32 */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -320,7 +305,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (*scan != '\0') {
 			/* La capacidad no era un entero */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -331,7 +316,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (!IsAscii (v1) || !IsAscii (v2)){
 			/* Los vértices no eran letras */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		} else {
@@ -359,7 +344,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1 = strchr (ptr2, ' ');
 		if (ptr1 == NULL) {
 			/* No había espacios en la cadena */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -368,14 +353,14 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1++;
 		if (strlen (ptr2) > 10) {
 			/* Nombre de vértice mayor que u32 */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}	 
 		v1 = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
 			/* El vértice 1 no era un entero */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -386,7 +371,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1 = strchr (ptr2, ' ');
 		if (ptr1 == NULL) {
 			/* No había espacios tras el 1º vértice */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -395,14 +380,14 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1++;
 		if (strlen (ptr2) > 10) {
 			/* Nombre de vértice mayor que u32 */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
 		
 		v2 = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -412,7 +397,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr2 = ptr1;
 		if (strlen (ptr2) > 10) {
 			/* Capacidad mayor que u32 */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -420,7 +405,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		cap = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
 			/* Capacidad no era un entero */
-			fprintf (stderr, "Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -455,16 +440,16 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	
 	/* Precondiciones */
 	ASSERT (estado != NULL)
-
+	
 	if ( VerbosidadInvalidaAumentar (verbosidad) ) {
 		/* Verbosidad no valida */
-		fprintf (stderr, "API: AumentarFlujo: verbosidad inválida\n");
+		PRINTERR ("API: AumentarFlujo: verbosidad inválida\n");
 		return 2;
 	}
-
+	
 	if(estado->maximal){
 		/* No se puede aumentar el flujo */
-		fprintf (stderr, "API: AumentarFlujo: No se pudo aumentar flujo\n");
+		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");
 		return 1;
 	}
 		
@@ -639,31 +624,28 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	/* Precondiciones */
 	ASSERT (estado != NULL);
-	
+
 	if ( VerbosidadInvalidaImprimir (verbosidad) ) {
 		/* Verbosidad no valida */
-		fprintf (stderr, "API: ImprimirFlujo: verbosidad inválida\n");
+		PRINTERR ("API: ImprimirFlujo: verbosidad inválida\n");
 		return -1;
 	}
-	
-	if (verbosidad == 0) {
-		goto end;
-	} else if (verbosidad == 1) {
-		if (estado->completo)
-			printf ("Valor del flujo maximal: %u\n\n", estado->flow_value);
-		else
-			printf ("Valor del flujo parcial: %u\n\n", estado->flow_value);
-		goto end;
-	} else {
+
+	if (verbosidad == 2) {
 		printf ("Flujo:\n");
 		if (estado->modoinput == 1)
 			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosAlf);
 		else
 			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosNum);
-		
-		
+	}
 	
-	end:
+	if (verbosidad != 0) {
+		if (estado->completo)
+			printf ("Valor del flujo maximal: %u\n\n", estado->flow_value);
+		else
+			printf ("Valor del flujo parcial: %u\n\n", estado->flow_value);
+	}
+	
 	return estado->flow_value;
 }
 
