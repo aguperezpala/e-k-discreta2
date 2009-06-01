@@ -5,44 +5,6 @@
 #include "edge.h"
 #include "network.h"
 
-
-
-
-
-/** ~~~~~~~~~~~~~~~~~~ FUNCIONES INTERNAS DE VERBOSIDAD ~~~~~~~~~~~~~~~~~~~~~ */
-static void printAumentarFlujo (EstadoNetwork *estado, int verbosidad)
-{
-	u32 path_flow = 0;
-	
-	switch (verbosidad) {
-	  case 0:
-	  	break;
-	  case 1:
-		path_flow = printCaminoActual(estado)
-	  case 2:
-
-	  case 3:
-	  
-	}
-}
-
-
-/** ~~~~~~~~~~~~~~~~~~~~ FUNCIONES AUXILIARES INTERNAS ~~~~~~~~~~~~~~~~~~~~~~ */
-
-/* Imprime el ultimo camino s<->t obtenido de EstadoNetwork, devolviendo
- * el incremento de flujo
- *
- * PRE: estado != NULL
- */
-static u32 printCaminoActual(EstadoNetwork *estado)
-{
-	u32 € = 0;
-	
-	/*! TODO */
-	
-	return €;
-}
-
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
  *
@@ -73,7 +35,7 @@ static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 		
 		estado->nodes[v2].backwardList = el_create ();
 		
-		if (estado->nodes[v2].backwardList == NULL)
+		if (estado->nodes[v2].forwardList == NULL)
 			/* v2 es vértice nuevo */
 			estado->nodes[v2].corrida = 0;
 	}
@@ -549,9 +511,9 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 
 }
 
-/*! TODO <COMPLETAR COMPLETAR> */
+
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
-
+	
 }
 
