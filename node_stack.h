@@ -20,7 +20,7 @@
 #include "node.h"
 
 typedef void (*node_cmd) (u32 node , node_t * nodes);
-typedef struct _node_s node_s;
+typedef struct _node_s * node_s;
 
 /* Algunos comandos aceptados */
 #define printf_alfa(n,c) printf ("Vertice:%c Color:%d\n", n, c);
@@ -30,7 +30,14 @@ typedef struct _node_s node_s;
  *    ns = ns_create()
  * POS: ns != NULL
  */
-node_s *ns_create (void);
+node_s ns_create (void);
+
+/* Destruye el stack de nodos
+ *
+ * PRE: ns != NULL
+ *    ns_destroy(ns)
+ */
+void ns_destroy (node_s ns);
 
 /* Agrega un nuevo vértice 'v' al comienzo del stack.
  *
@@ -38,13 +45,13 @@ node_s *ns_create (void);
  *    ns = ns_add_node (ns, v);
  * POS: "ns contiene a 'v' como último elemento"
  */
-node_s *ns_add_node (node_s *ns, u32 v);
+void ns_add_node (node_s ns, u32 v);
 
 /* Ejecuta el comando cmd para todos los nodos del stack en orden LIFO
  *
  * PRE: ns != NULL && nodes != NULL && {ns} == {nodes}
  *    ns_print (ns,nodes,cmd)
  */
-void ns_cmd (node_s *ns, node_t * nodes , node_cmd cmd);
+void ns_cmd (node_s ns, node_t * nodes , node_cmd cmd);
 
 #endif
