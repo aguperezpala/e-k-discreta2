@@ -513,7 +513,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		endwhile:/* Esta es la salida en caso de que lleguemos a t */
 	}
 
-	/* Actualizamos el estado según la verbosidad escogida */
+	/* Actualizamos el estado según la verbosidad escogida
+	 * Ver la librería actualizar_flujo.h */
 	switch (verbosidad) {
 		
 		case 0:
@@ -532,7 +533,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			ActualizarConCaminoYCorte (estado, q, s, t, e);
 			break;
 		default:
-			fprintf (stderr, "Networl: AumentarFlujo: falló la "
+			fprintf (stderr, "Network: AumentarFlujo: falló la "
 					"detección de verbosidad errónea\n");
 			return 2;
 			break;

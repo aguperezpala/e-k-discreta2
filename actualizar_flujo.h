@@ -53,5 +53,6 @@ void ActualizarConCorte (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo);
  */
 void ActualizarConCaminoYCorte (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo);
 
+
 #endif
 
