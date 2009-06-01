@@ -5,17 +5,21 @@
 struct _node_s {
 	struct _node_celd dummy;  /* 1º celda */
 	struct _node_celd *last;  /* Celda actual */
-};
+	void print_cmd;		  /* Comando para imprimir */ 
+}* node_s;
 
 struct _node_celd {
 	u32 node;	/* Nombre del vértice */
-	_node_celd *prev;
+	node_celd prev;
 }* node_celd;
 
-#define 
+/* Macros internas */
+#define printf_alfa(n,c) printf ("Vertice:%c Color:%d\n", n, c);
+#define printf_num (n,c) printf ("Vertice:%u Color:%d\n", n, c);
 
-/* Genera una nueva pila de impresión vacía
- *
+/* Genera una nueva pila de nodos vacía.
+ *      modoinput == 1  =>  se considera el código ascii de 'v'
+ *	modoinput == 2  =>  se considera el valor numérico de 'v'
  *    ns = ns_create()
  * POS: ns != NULL
  */
@@ -25,9 +29,14 @@ node_s *ns_create (int modoinput)
 	ASSERT ((modoinput == 1) || (modoinput == 2))
 
 	ns = (node_s *) malloc (sizeof (struct _node_s));
-	ASERT (ns != NULL)
+	ASSERT (ns != NULL)
 	
 	ns->last = &ns->dummy;
+
+	if ( modoinput == 1 )
+		ns->print_cmd = printf_alfa;
+	else
+		ns->print_cmd = printf_num;
 	
 	return ns;
 }
@@ -62,12 +71,12 @@ node_s *ns_add_node (node_s *ns, u32 v)
 /* Imprime la pila en orden LIFO, es decir, el último elemento agregado
  * será el primero en ser impreso
  *
- * PRE: ns != NULL  &&  modoinput == 1,2
+ * PRE: ns != NULL
  *    ns_print (ns, modoinput, flujo)
  * POS: modoinput == 1  =>  se considera el código ascii de 'v'
  *	modoinput == 2  =>  se considera el valor numérico de 'v'
  */
-void ns_print (node_s *ns, int modoinput,node_t * nodes)
+void ns_print (node_s *ns,node_t * nodes)
 {
 	node_s *aux;
 	
@@ -75,23 +84,14 @@ void ns_print (node_s *ns, int modoinput,node_t * nodes)
 	ASSERT (nodes != NULL)
 	
 	aux = ns->last;
-	if (modoinput == 1)
-		while (aux != &ns->dummy) {
-			/* Vamos imprimiendo todos los vértices */
-			printf ("Vertice:%c Color:%d\n", aux->node, nodes[aux->node].color);
-			
-			free (aux);
-			aux = aux->prev;
-		}
-	else
-		while (aux != &ns->dummy) {
-			/* Vamos imprimiendo todos los vértices */
-			printf ("Vertice:%u Color:%d\n", aux->node, nodes[aux->node].color);
-				
-			free (aux);
-			aux = aux->prev;
-		}
-		
+
+	while (aux != &ns->dummy) {
+		/* Vamos imprimiendo todos los vértices */
+		ns->print_cmd (aux->node, nodes[aux->node].color);
+		free (aux);
+		aux = aux->prev;
+	}
+	
 	free (aux);
 	aux = NULL;
 	free (ns);

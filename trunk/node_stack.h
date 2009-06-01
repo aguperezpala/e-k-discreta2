@@ -21,8 +21,9 @@
 
 typedef struct _node_s node_s;
 
-/* Genera una nueva pila de nodos vacía
- *
+/* Genera una nueva pila de nodos vacía.
+ *      modoinput == 1  =>  se considera el código ascii de 'v'
+ *	modoinput == 2  =>  se considera el valor numérico de 'v'
  *    ns = ns_create()
  * POS: ns != NULL
  */
@@ -44,6 +45,6 @@ node_s *ns_add_node (node_s *ns, u32 v);
  * POS: modoinput == 1  =>  se considera el código ascii de 'v'
  *	modoinput == 2  =>  se considera el valor numérico de 'v'
  */
-void ns_print (node_s *ns, int modoinput , node_t * nodes);
+void ns_print (node_s *ns, node_t * nodes);
 
 #endif
