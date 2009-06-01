@@ -5,6 +5,26 @@
 #include "edge.h"
 #include "network.h"
 
+
+
+/* Funcion de inicializacion de vertices 
+	REQUIRES;
+		nodes != NULL
+		node < MAX_N_NODES
+*/
+void initialize_node (u32 node , node_t * nodes)
+{
+	ASSERT (nodes != NULL)
+	ASSERT (node < MAX_N_NODS)
+	
+	nodes[node].corrida = 0;
+	nodes[node].color = 0;
+	
+}
+	
+
+
+
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
  *
@@ -256,12 +276,9 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 		n = MAX_N_NODES;
 	}
 	
-	/* Inicializamos los lados.. */
-	for (i = 0 ; i < n ; i++) {
-		estado->nodes[i].corrida = 0;
-		estado->nodes[i].corrida = 0;
-		
-	}
+	/* debemos inicializar los vertices */
+	
+	ns_cmd (estado->nstack, estado->nodes, initialize_node);
 	
 	
 	return ret;
