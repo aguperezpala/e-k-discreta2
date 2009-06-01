@@ -268,16 +268,14 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	if (modoinput == 1) {
 		/* Se espera input alfabético */
 		estado->modoinput = 1;
-		n = 123;  /* Esto cubre desde ASCII 32  para ' ' (el 1º)
-	 		   * hasta ASCII 122 para 'z' (el último) */
 	} else {
 		/* Se espera input numérico, y la pu~@#@ç$! */
 		estado->modoinput = 2;
-		n = MAX_N_NODES;
+		
 	}
 	
+	estado->colores = 0;
 	/* debemos inicializar los vertices */
-	
 	ns_cmd (estado->nstack, estado->nodes, initialize_node);
 	
 	
