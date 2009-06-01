@@ -111,6 +111,7 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	
 	
 	if (v1new) {
+		
 		if (v2new) {
 			/* Ambos vértices eran nuevos */
 			estado->nodes[v1].color = 1;
