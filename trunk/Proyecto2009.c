@@ -4,14 +4,6 @@
 #include "consts.h"
 #include "network.h"
 
-#define F_NUMERIC		"-numeric"		/* si es modo numerico */
-#define F_VERBOSE		"-v"			/* si vamos a insertar verbosidad */
-#define	F_MAX_FLOW		"-max-flow"		/* si queremos calcular max flow */
-#define F_COLOUR		"-colour"		/* si vamos a calcular coloreo */
-#define F_INCREMENTAL		"-inc"			/* calculamos incrementalmente */
-#define F_PARTIAL		"-partial"		/* si vamos a calcular parcialmente */
-#define F_COLOUR_TIME		"-ctime"		/* calculamos n veces el tiempo para coloreo*/
-#define F_FLOW_TIME		"-ftime"		/* calc n veces flow */
 
 
 
