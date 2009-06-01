@@ -31,11 +31,12 @@ typedef struct s_estado_network {
 	
 	node_t nodes[MAX_N_NODES];
 	quadList_t *cola;	/* Cola de las corridas E-K */
-	u32 flow_value;	/*! TODO <Estudiar si conviene!!!> */
+	u32 flow_value;	/* valor de flujo actual */
 	bool maximal;	/* si tenemos un flujo maximal */
 	bool completo;	/* si se ingresaron todos los lados */
 	bool coloreo;	/* si nos llamaron con la opción de coloreo */
 	short modoinput;
+	short menor;	/* vertice de "menor nombre" ingresado */
 	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
