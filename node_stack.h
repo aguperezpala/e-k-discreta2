@@ -43,7 +43,7 @@ node_s *ns_add_node (node_s *ns, u32 v);
 /* Ejecuta el comando cmd para todos los nodos del stack en orden LIFO
  *
  * PRE: ns != NULL && nodes != NULL && {ns} == {nodes}
- *    ns_print (ns, modoinput, flujo)
+ *    ns_print (ns,nodes,cmd)
  */
 void ns_cmd (node_s *ns, node_t * nodes , node_cmd cmd);
 
