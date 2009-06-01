@@ -26,18 +26,22 @@ static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 		
 		estado->nodes[v1].forwardList = el_create ();
 		
-		if (estado->nodes[v1].backwardList == NULL)
+		if (estado->nodes[v1].backwardList == NULL) {
 			/* v1 es vértice nuevo */
 			estado->nodes[v1].corrida = 0;
+			ns_add_node (estado->nstack, v1);
+		}
 	}
 	
 	if (estado->nodes[v2].backwardList == NULL) {
 		
 		estado->nodes[v2].backwardList = el_create ();
 		
-		if (estado->nodes[v2].forwardList == NULL)
+		if (estado->nodes[v2].forwardList == NULL) {
 			/* v2 es vértice nuevo */
 			estado->nodes[v2].corrida = 0;
+			ns_add_node (estado->nstack, v2);
+		}
 	}
 	
 	/* creamos la arista */
@@ -79,6 +83,7 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			/** Para coloreo */
 			v1new = true;
 			estado->nodes[v1].degree = 0;
+			ns_add_node (estado->nstack, v1);
 		}
 	}
 	
@@ -92,6 +97,9 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			/** Para coloreo */
 			v2new = true;
 			estado->nodes[v2].degree = 0;
+			
+			/* lo agregamos a la pila */
+			ns_add_node (estado->nstack, v2);
 		}
 	}
 	
@@ -206,6 +214,7 @@ EstadoNetwork *network_create (void)
 		ret->delta  = 0;
 		ret->colors = 0;
 		ret->l_con  = el_create ();
+		ret->nstack = ns_create ();
 		
 		/* esto es obligatorio aca lamentablemente :D */
 		for (i = MAX_N_NODES - 1; i <= 0; i--) {
@@ -248,11 +257,12 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	}
 	
 	/* Inicializamos los lados.. */
-	/*for (i = 0 ; i < n ; i++) {
-		estado->nodes[i].forwardList = NULL;
-		estado->nodes[i].backwardList = NULL;
+	for (i = 0 ; i < n ; i++) {
+		estado->nodes[i].corrida = 0;
+		estado->nodes[i].corrida = 0;
 		
-	}*/
+	}
+	
 	
 	return ret;
 }
