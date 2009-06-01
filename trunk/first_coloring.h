@@ -33,7 +33,7 @@
  *
  * POS: "estado posee coloreo propio" && "el coloreo emplea K colores"
  */
-short ResolverConflictos (EstadoNetwork *estado);
+unsigned short ResolverConflictos (EstadoNetwork *estado);
 
 
 #endif

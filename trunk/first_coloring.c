@@ -43,9 +43,6 @@ static bool HayConflicto (EstadoNetwork *estado, u32 N)
 	return true;
 }
 
-
-
-
 /* Dado un vértice 'N' busca el menor color aún libre entre sus vecinos
  *
  * PRE: estado != NULL && "existe el N-ésimo vértice de estado"
@@ -55,7 +52,7 @@ static Color MenorColorLibre (EstadoNetwork *estado, u32 N)
 {
 	Color c = 0;
 	Color *usedColors = NULL;
-	short d, i;
+	unsigned short d, i;
 	node_t vert;
 	u32 vecino;
 	edge_t *edge = NULL;
@@ -110,11 +107,11 @@ static Color MenorColorLibre (EstadoNetwork *estado, u32 N)
  *
  * POS: "estado posee coloreo propio" && "el coloreo emplea K colores"
  */
-short ResolverConflictos (EstadoNetwork *estado)
+unsigned short ResolverConflictos (EstadoNetwork *estado)
 {
-	short K = 0;  /* Nº de colores final empleado */
-	short M = 0;  /* Nº de aristas conflictivas */
-	short i;
+	unsigned short K = 0;  /* Nº de colores final empleado */
+	unsigned int M = 0;  /* Nº de aristas conflictivas */
+	unsigned int i;
 	Color c = 0;  /* Nuevo color escogido para un nodo */
 	u32 v1;  /* Vértice de origen  de un lado */
 	u32 v2;  /* Vértice de destino de un lado */

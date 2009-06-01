@@ -2,6 +2,9 @@
 #include "consts.h"
 #include "edge_list.h"
 #include "greedy.h"
+#include "node_stack.h"
+
+extern Color greedy_max_color = 0;
 
 static bool color_propio(node_t node, node_t * nodes)
 {
@@ -40,7 +43,7 @@ static bool color_propio(node_t node, node_t * nodes)
  * PRE: nodes != NULL && max_color < 0
  * POS: color_propio(node, nodes) && retorna el mayor color usado.
  */
-static Color coloring_node(node_t node, node_t * nodes , Color max_color)
+static Color coloring_node(node_t node, node_t * nodes)
 {
 	unsigned short i= 0;
 	unsigned short size = 0; 
@@ -49,10 +52,10 @@ static Color coloring_node(node_t node, node_t * nodes , Color max_color)
 	
 	/* Pre */
 	ASSERT(nodes != NULL)
-	ASSERT(max_color < 0)
+	ASSERT(greedy_max_color < 0)
 
 	/* Creo el arreglo de los colores actuales */
-	colors = (Color *) calloc ( (maxcolor*(-1) ) + 1, sizeof(Color));
+	colors = (Color *) calloc ( (greedy_max_color*(-1) ) + 1, sizeof(Color));
 
 	/* Obtengo los colores de los vecinos forward */
 	size = el_get_size (node.forwardList);
@@ -85,18 +88,18 @@ static Color coloring_node(node_t node, node_t * nodes , Color max_color)
 	/* Pos */
 	ASSERT(color_propio(node, nodes))
 
-	return (node.color < max_color) ? node.color : max_color;
+	greedy_max_color = (node.color < greedy_max_color) ? node.color : greedy_max_color;
 }  
 
-Color color_greedy (node_t * nodes, int size)
+Color color_greedy (node_s node_stack , node_t * nodes)
 {
 	int i = 0;
 	Color max_color = -1;
 
-	for(i = 0; i < size; i++ )
-		max_color = coloring_node (nodes[i], nodes, max_color);
 	
-	return max_color;
+		 coloring_node (nodes[i], nodes, max_color);
+	
+	return last_color;
 }
 
 
