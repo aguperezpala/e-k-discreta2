@@ -81,7 +81,13 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput);
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad);
 
 
-/*! TODO  <COMPLETAR COMPLETAR>  */
+/* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
+ * flujo = ImprimirFlujo (estado, verbosidad)
+ * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
+ *	  	         "se imprimió según (verbosidad)")
+ *	  flujo < 0  => "error"
+ *	}
+ */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
 
 

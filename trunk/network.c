@@ -128,6 +128,58 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 }
 
 
+/* Imprime por pantalla todos los lados froward (y sus flujos actuales)
+ * del elemendo de "nodes" que está en la posición "node"
+ * Considera a los vértices como caracteres alfabéticos (ascii)
+ *
+ * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
+ */
+static void ImpresiónFlujosAlf (u32 node, node_t *nodes)
+{
+	edge_list *fl; /* Lista de lados forward de modes[node] */
+	edge_t *edge;
+	int endList = 0;
+	
+	ASSERT (nodes != NULL)
+	ASSERT (nodes[node]->forwardList != NULL)
+	
+	fl = nodes[node];
+	el_start (fl);
+	edge = el_get_actual (fl);
+	
+	while (endList == 0) {
+		printf ("Lado (%c,%c): Flujo %u\n",
+			edge->nodeOrig, edge->nodeDest, edge->flow);
+		endLIst = el_avance (fl);
+	}
+}
+
+
+/* Imprime por pantalla todos los lados froward (y sus flujos actuales)
+ * del elemendo de "nodes" que está en la posición "node"
+ * Considera a los vértices como números (u32)
+ *
+ * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
+ */ 
+static void ImpresiónFlujosNum (u32 node, node_t *nodes)
+{
+	edge_list *fl; /* Lista de lados forward de modes[node] */
+	edge_t *edge;
+	int endList = 0;
+	
+	ASSERT (nodes != NULL)
+	ASSERT (nodes[node]->forwardList != NULL)
+	
+	fl = nodes[node];
+	el_start (fl);
+	edge = el_get_actual (fl);
+	
+	while (endList == 0) {
+		printf ("Lado (%u,%u): Flujo %u\n",
+			edge->nodeOrig, edge->nodeDest, edge->flow);
+		endLIst = el_avance (fl);
+	}
+}
 
 
 /** ~~~~~~~~~~~~~~~~~~~~~ FUNCIONES DE LA API (EXTERNAS) ~~~~~~~~~~~~~~~~~~~~ */
@@ -559,10 +611,16 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 }
 
 
-/*! TODO <COMPLETAR COMPLETAR> */
+/* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
+ * flujo = ImprimirFlujo (estado, verbosidad)
+ * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
+ *	  	         "se imprimió según (verbosidad)")
+ *	  flujo < 0  => "error"
+ *	}
+ */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
-
+	u32 result;
 }
 
 
