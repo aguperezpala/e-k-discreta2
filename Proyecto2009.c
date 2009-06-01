@@ -22,17 +22,114 @@ static void main_help (void)
 }
 	
 
+/* funcion que toma los lados en bloque
+	REQUIRES:
+		estado != NULL
+		pa != NULL
+	RETURNS:
+		0 si no trabajamos el max flow (solo ingreso de lados)
+		1 si no se puede seguir aumentando el flujo
+		2 caso de error (AumentarFlujo)
+*/
+static void block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
+{
+	bool finish = false;
+	register int i = 0;
+	int err = 0, verbose, flowsRun, blockReadSize;
+	
+	
+	ASSERT (estado != NULL)
+	ASSERT (pa != NULL)
+	
+	blockReadSize = pa_incremental (pa);
+	flowsRun = pa_partial (pa)
+	verbose = pa_verbose (pa);
+	
+	/* tenemos que leer en forma de bloque */
+	while (!finish && err != 2) {
+		for (i = 0; i < blockReadSize && !finish; i++) {
+			/* leemos un lado y nos fijamos si debemos salir */
+			finish = LeerUnLado(estado, inputMode) == 0;
+		}
+		
+		/*! ahora vemos si debemos actualizar o no el flujo
+		 * <<<Podriamos hacerlo mas eficiente separando toda esta
+		 * cochinada en 2 ciclos, y chequear antes si tenemos que buscar
+		 * o no el flujo>>>
+		 */
+		if (!pa_work_flow (pa))
+			/* no vamos a buscar el flujo maximal */
+			continue;
+		/* ahora vemos si tenemos que aumentar el flujo m veces
+		* o si lo tenemos que aumentar hasta el final */
+		if (flowsRun > 0) {
+			/* entonces debemos aumentar m veces el flujo */
+			err = 0;
+			for (i = 0; i < flowsRun && err == 0; i++) {
+				err = AumentarFlujo (estado, verbose);
+			}
+		} else 
+			/* simplemente aumentamos el flujo */
+			while (err == 0)
+				err = AumentarFlujo (estado, verbose);
+	}
+	return err;
+}
 
-
-
+/* funcion que actualiza el flujo pero tomando primero todos los datos
+	REQUIRES:
+		estado != NULL
+		pa 	!= NULL
+	RETURNS:
+		0 si no trabajamos el max flow (solo ingreso de lados)
+		1 si no se puede seguir aumentando el flujo
+		2 caso de error (AumentarFlujo)
+*/
+static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
+{
+	bool finish = false;
+	register int i = 0;
+	int err = 0, verbose, flowsRun;
+	
+	
+	ASSERT (estado != NULL)
+	ASSERT (pa != NULL)
+	
+	
+	flowsRun = pa_partial (pa)
+	verbose = pa_verbose (pa);
+	
+	/* tomamos primero todos los lados */
+	while (!finish)
+		finish = LeerUnLado(estado, inputMode) == 0;
+	
+	/*! vamos a verificar si debemos calcular el flujo, o solo es para coloreo */
+	if (!pa_work_flow (pa))
+		/* no vamos a buscar el flujo maximal */
+		return err;
+	
+	/* chequeamos si debemos aumentar parcialmente */
+	if (flowsRun > 0) {
+		/* entonces debemos aumentar m veces el flujo */
+		err = 0;
+		for (i = 0; i < flowsRun && err == 0; i++) {
+			err = AumentarFlujo (estado, verbose);
+		}
+	} else 
+		/* simplemente aumentamos el flujo */
+		while (err == 0)
+			err = AumentarFlujo (estado, verbose);
+		
+	return err;
+}
 
 int main (int argc, char ** args)
 {
 	parserArgs_t * pa = NULL;
 	EstadoNetwork * estado = NULL;
-	int result = 0, err = 0, inputMode = 0;
+	int result = 0, err = 0, inputMode = 0, verbose = 0;
 	int i = 0, blockReadSize = 0, flowsRun = 0;
-	bool finish = false;
+	
 	
 	
 	/* creamos el parserArgs */
@@ -77,51 +174,23 @@ int main (int argc, char ** args)
 		return 1;
 	}
 	
+	
 	/* Ahora vamos a verificar si debemos ingresar en forma de bloques o en forma
 	 * normal los lados */
 	blockReadSize = pa_incremental (pa);
-	flowsRun = pa_partial (pa)
 	
-	if (blockReadSize > 0){
-		/* tenemos que leer en forma de bloque */
-		while (!finish && err != 2) {
-			for (i = 0; i < blockReadSize && !finish; i++) {
-				/* leemos un lado y nos fijamos si debemos salir */
-				finish = LeerUnLado(estado, inputMode) == 0;
-			}
-			/* ahora vemos si tenemos que aumentar el flujo m veces
-			 * o si lo tenemos que aumentar hasta el final */
-			
-			if (flowsRun > 0) {
-				/* entonces debemos aumentar m veces el flujo */
-				err = 0;
-				for (i = 0; i < flowsRun && err == 0; i++) {
-					err = AumentarFlujo (estado, pa_verbose (pa));
-				}
-			} else 
-				/* simplemente aumentamos el flujo */
-				while (err == 0)
-					err = AumentarFlujo (estado, pa_verbose (pa));
+	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
+	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
+	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
+		/* inicializamos el network */
+		Inicializar(estado, inputMode);
+		if (blockReadSize > 0){
+			err = block_read (estado, pa, inputMode);
+		} else {
+			err = normal_read (estado, pa, inputMode);
 		}
-	} else {
-		/* tomamos primero todos los lados */
-		while (!finish)
-			finish = LeerUnLado(estado, inputMode) == 0;
-		
-		err = 0;
-		/* chequeamos si debemos aumentar parcialmente */
-		if (flowsRun > 0) {
-				/* entonces debemos aumentar m veces el flujo */
-				err = 0;
-				for (i = 0; i < flowsRun && err == 0; i++) {
-					err = AumentarFlujo (estado, pa_verbose (pa));
-				}
-			} else 
-				/* simplemente aumentamos el flujo */
-				while (err == 0)
-					err = AumentarFlujo (estado, pa_verbose (pa));
 	}
-	
+	/* ahora vamos a verificar si debemos imprimir el flujo o no */
 	
 	
 	return 0;
