@@ -52,12 +52,17 @@ void ActualizarSilencioso (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo
  */
 void ActualizarConCamino (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo)
 {
+	edge_t *edge;
+	print_s *ps;  /* Pila de impresión (ver print_stack.h) */
+	
 	ASSERT (estado != NULL)
 	ASSERT (0 <= q <= MAX_N_NODES)
 	ASSERT (0 <= s <= MAX_N_NODES)
 	ASSERT (0 <= t <= MAX_N_NODES)
 	
 	if (q == t) {
+		ps = ps_create();
+		
 		/* Actualizamos el flujo total */
 		estado->flow_value += flujo;
 		
@@ -68,14 +73,24 @@ void ActualizarConCamino (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 flujo)
 			ASSERT (nIsFromEdge(q, edge))
 			ASSERT (!NotInQueue(&estado->nodes[q], estado->corrida))
 			
-			if (edge->nodeDest == q)
-				edge->flow += e;  /* Es lado forward */
-			else
-				edge->flow -= e; /* Es lado backward */
+			if (edge->nodeDest == q) { /* Es lado forward */
+				edge->flow += e;
+				ps = ps_add_node (ps, q, estado->modoinput, 1);
+						
+			} else {		  /* Es lado backward */
+				edge->flow -= e;
+				ps = ps_add_node (ps, q, estado->modoinput, 2);
+			}
 			
 			qt_go_parent (estado->cola);
 			q = qt_get_actual_node (estado->cola);
 		}
+		/* Nos faltó agregar 's' */
+		ps = ps_add_node (ps, q, estado->modoinput, 1);
+		
+		/* Imprimimos el camino hallado */
+		ps_print (ps);
+		ps_destroy (ps);
 		
 	} else
 		estado->maximal = true;
