@@ -4,7 +4,7 @@
 /* Para flowAndColour vamos a dividir los 2 primeros bytes para flujo y los
  * 2 otros bytes para coloreo */
 #define getFlowPrint(x)		((x & 0xFFFF0000) >> 16)
-#define getColourPrint(x)	((x & 0x0000FFFF) >> 16)
+#define getColourPrint(x)	(x & 0x0000FFFF)
 #define setFlowPrint(x)		(x << 16)
 #define setColourPrint(x)	(x)
 
