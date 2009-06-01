@@ -175,8 +175,25 @@ static void ImpresiónFlujosNum (u32 node, node_t *nodes)
 	edge = el_get_actual (fl);
 	
 	while (endList == 0) {
-		printf ("Lado (%u,%u): Flujo %u\n",
-			edge->nodeOrig, edge->nodeDest, edge->flow);
+		PrintFlowNum (edge->nodeOrig, edge->nodeDest, edge->flow);
+		
+		if (edge->nodeOrig == 0)
+			printf ("Lado (s,%u): Flujo %u\n",
+				edge->nodeDest, edge->flow);
+		else if (edge->nodeDest == 0)
+			printf ("Lado (%u,s): Flujo %u\n",
+				edge->nodeDest, edge->flow);
+		if (edge->nodeOrig == 1)
+			printf ("Lado (t,%u): Flujo %u\n",
+				edge->nodeDest, edge->flow);
+		else if (edge->nodeDest == 1)
+			printf ("Lado (%u,t): Flujo %u\n",
+				edge->nodeDest, edge->flow);
+		else
+			printf ("Lado (%u,%u): Flujo %u\n",
+				edge->nodeOrig, edge->nodeDest, edge->flow);
+			
+		
 		endLIst = el_avance (fl);
 	}
 }
@@ -223,7 +240,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	/* Precondiciones */
 	ASSERT(estado != NULL)
 	if ( ModoinputInvalido (modoinput) ) {
-		fprintf (stderr, "Network: Inicializar: modoinput inválido\n");
+		fprintf (stderr, "API: Inicializar: modoinput inválido\n");
 		return 1;
 	}
 
@@ -262,12 +279,12 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	ASSERT (estado != NULL)
 			
 	if ( ModoinputInvalido (modoinput) ) {
-		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n");
+		fprintf (stderr, "API: LeerUnLado: modoinput inválido\n");
 		estado->completo = true;
 		return 0;
 		
 	} else if (modoinput != estado->modoinput) {
-		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n"
+		fprintf (stderr, "API: LeerUnLado: modoinput inválido\n"
 				"Ingresó %d y antes había escogido %d\nSe ruega"
 				" coherencia\n", modoinput, estado->modoinput);
 		estado->completo = true;
@@ -441,13 +458,13 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 
 	if ( VerbosidadInvalidaAumentar (verbosidad) ) {
 		/* Verbosidad no valida */
-		fprintf (stderr, "Network: AumentarFlujo: verbosidad inválida\n");
+		fprintf (stderr, "API: AumentarFlujo: verbosidad inválida\n");
 		return 2;
 	}
 
 	if(estado->maximal){
 		/* No se puede aumentar el flujo */
-		fprintf (stderr, "Network: AumentarFlujo: No se pudo aumentar flujo\n");
+		fprintf (stderr, "API: AumentarFlujo: No se pudo aumentar flujo\n");
 		return 1;
 	}
 		
@@ -620,7 +637,34 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
  */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
-	u32 result;
+	/* Precondiciones */
+	ASSERT (estado != NULL);
+	
+	if ( VerbosidadInvalidaImprimir (verbosidad) ) {
+		/* Verbosidad no valida */
+		fprintf (stderr, "API: ImprimirFlujo: verbosidad inválida\n");
+		return -1;
+	}
+	
+	if (verbosidad == 0) {
+		goto end;
+	} else if (verbosidad == 1) {
+		if (estado->completo)
+			printf ("Valor del flujo maximal: %u\n\n", estado->flow_value);
+		else
+			printf ("Valor del flujo parcial: %u\n\n", estado->flow_value);
+		goto end;
+	} else {
+		printf ("Flujo:\n");
+		if (estado->modoinput == 1)
+			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosAlf);
+		else
+			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosNum);
+		
+		
+	
+	end:
+	return estado->flow_value;
 }
 
 

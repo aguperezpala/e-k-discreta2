@@ -65,6 +65,12 @@ typedef signed short Color;
 #define   NotInQueue(x,c)   (x->corrida < c)
 
 
+#define   PrintFlowNum(x,y,f)  ((x == 0) ? \
+				printf ("Lado (s,%u): Flujo %u\n", y, f); \
+					 : \
+				(y == 0) ? \
+				printf ("Lado (%u,s): Flujo
+
 #ifndef INLINE
 # if __GNUC__
 #  define INLINE extern inline
