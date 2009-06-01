@@ -43,16 +43,19 @@ static bool color_propio(node_t node, node_t * nodes)
  * PRE: nodes != NULL && max_color < 0
  * POS: color_propio(node, nodes) && retorna el mayor color usado.
  */
-static Color coloring_node(node_t node, node_t * nodes)
+extern void coloring_node(u32 node_i, node_t * nodes )
 {
 	unsigned short i= 0;
 	unsigned short size = 0; 
+	node_t * node;
 	Color *colors = NULL;
 	edge_t *edge = NULL;
 	
 	/* Pre */
 	ASSERT(nodes != NULL)
 	ASSERT(greedy_max_color < 0)
+
+	node = &nodes[node_i];
 
 	/* Creo el arreglo de los colores actuales */
 	colors = (Color *) calloc ( (greedy_max_color*(-1) ) + 1, sizeof(Color));
@@ -94,10 +97,8 @@ static Color coloring_node(node_t node, node_t * nodes)
 Color color_greedy (node_s node_stack , node_t * nodes)
 {
 	int i = 0;
-	Color max_color = -1;
 
-	
-		 coloring_node (nodes[i], nodes, max_color);
+	ns_cmd (node_stack, nodes, coloring_node);
 	
 	return last_color;
 }

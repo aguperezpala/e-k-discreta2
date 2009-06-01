@@ -14,7 +14,7 @@
  *
  */
 
-#ifnedf NODE_STK_H
+#ifndef NODE_STK_H
 #define NODE_STK_H
 
 #include "node.h"
@@ -23,8 +23,8 @@ typedef void (*node_cmd) (u32 node , node_t * nodes);
 typedef struct _node_s * node_s;
 
 /* Algunos comandos aceptados */
-#define printf_alfa(n,c) printf ("Vertice:%c Color:%d\n", n, c);
-#define printf_num (n,c) printf ("Vertice:%u Color:%d\n", n, c);
+#define color_printf_alfa(n,c) printf ("Vertice:%c Color:%d\n", n, c);
+#define color_printf_num (n,c) printf ("Vertice:%u Color:%d\n", n, c);
 
 /* Genera un nuevo stack de nodos vacía.
  *    ns = ns_create()
