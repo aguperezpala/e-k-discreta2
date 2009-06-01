@@ -69,9 +69,13 @@ int Inicializar(EstadoNetwork *estado, int modoinput);
 int LeerUnLado(EstadoNetwork *estado, int modoinput);
 
 
+
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
  * ret = AumentarFlujo (estado, verbosidad)
- * POS: {ret == 0 => *//*! TODO <COMPLETAR COMPLETAR> */
+ * POS: {(ret == 0 => Se pudo aumentar el flujo)	&&
+ *	 (ret == 1 => No se pudo aumentar el flujo)	&&
+ *	 (ret == 2 => Se produjo un error)			 }
+ */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad);
 
 
