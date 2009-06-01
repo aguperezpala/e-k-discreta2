@@ -63,7 +63,7 @@ void ps_destroy (print_s *ps)
 /* Añade un nuevo vértice 'v' al comienzo de la pila de impresión.
  *
  * PRE: ps != NULL  &&  sentido == 1,2
- *    ps = ps_add_node (ps, v, modoinput, sentido);
+ *    ps = ps_add_node (ps, v, sentido);
  * POS: "ps contiene a 'v' como último elemento" &&
  *	sentido == ','  =>  se considera "forward" la relación entre 'v'
  *			    y el vértice anterior de la pila
@@ -94,11 +94,11 @@ print_s *ps_add_node (print_s *ps, u32 v, char sentido)
  * será el primero en ser impreso
  *
  * PRE: ps != NULL  &&  modoinput == 1,2
- *    ps_print (ps)
+ *    ps_print (ps, modoinput, flujo)
  * POS: modoinput == 1  =>  se considera el código ascii de 'v'
  *	modoinput == 2  =>  se considera el valor numérico de 'v'
  */
-void ps_print (print_s *ps, int modoinput)
+void ps_print (print_s *ps, int modoinput, u32 flujo)
 {
 	print_s *aux;
 	
@@ -119,7 +119,7 @@ void ps_print (print_s *ps, int modoinput)
 	
 	/* Imprimimos 't' (o el último vértice, que DEBERIA ser lo mismo) */
 	if (modoinput == 1)
-			printf ("%c\n", aux->node);
+			printf ("%c: %u\n", aux->node, flujo);
 	else
-			printf ("%u\n", aux->node);
+			printf ("%u: %u\n", aux->node, flujo);
 }
