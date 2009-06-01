@@ -12,41 +12,26 @@ struct _node_celd {
 	node_celd prev;
 }* node_celd;
 
-
-
-/* Genera una nueva pila de nodos vacía.
- *      modoinput == 1  =>  se considera el código ascii de 'v'
- *	modoinput == 2  =>  se considera el valor numérico de 'v'
+/* Genera un nuevo stack de nodos vacía.
  *    ns = ns_create()
  * POS: ns != NULL
  */
-node_s *ns_create (int modoinput)
+node_s *ns_create (void)
 {
-	node_s ns;
-	ASSERT ((modoinput == 1) || (modoinput == 2))
 
 	ns = (node_s *) malloc (sizeof (struct _node_s));
 	ASSERT (ns != NULL)
 	
 	ns->last = &ns->dummy;
 
-	if ( modoinput == 1 )
-		ns->print_cmd = printf_alfa;
-	else
-		ns->print_cmd = printf_num;
-	
 	return ns;
 }
 
-/* Añade un nuevo vértice 'v' al comienzo de la pila de impresión.
+/* Agrega un nuevo vértice 'v' al comienzo del stack.
  *
- * PRE: ns != NULL  &&  sentido == 1,2
- *    ns = ns_add_node (ns, v, sentido);
- * POS: "ns contiene a 'v' como último elemento" &&
- *	sentido == ','  =>  se considera "forward" la relación entre 'v'
- *			    y el vértice anterior de la pila
- *	sentido == '<'  =>  se considera "backward" la relación entre 'v'
- *			    y el vértice anterior de la pila
+ * PRE: ns != NULL  
+ *    ns = ns_add_node (ns, v);
+ * POS: "ns contiene a 'v' como último elemento"
  */
 void ns_add_node (node_s *ns, u32 v)
 {
@@ -62,28 +47,22 @@ void ns_add_node (node_s *ns, u32 v)
 	ns->last = new;
 }
 
-void ns_get_node
-
-
-/* Imprime la pila en orden LIFO, es decir, el último elemento agregado
- * será el primero en ser impreso
+/* Ejecuta el comando cmd para todos los nodos del stack en orden LIFO
  *
- * PRE: ns != NULL
+ * PRE: ns != NULL && nodes != NULL && {ns} == {nodes}
  *    ns_print (ns, modoinput, flujo)
- * POS: modoinput == 1  =>  se considera el código ascii de 'v'
- *	modoinput == 2  =>  se considera el valor numérico de 'v'
  */
-void ns_print (node_s *ns,node_t * nodes , cmd )
+void ns_cmd (node_s *ns,node_t * nodes , node_cmd cmd )
 {
-	register node_s *aux;
+	node_s *aux;
 	
 	ASSERT (ns != NULL)
 	ASSERT (nodes != NULL)
 	
 	aux = ns->last;
-
+	
+	/* Realizamos la ejecucion de cmd para todos los vertices */
 	while (aux != &ns->dummy) {
-		/* Vamos imprimiendo todos los vértices */
 		cmd (aux->node, nodes);
 		free (aux);
 		aux = aux->prev;
