@@ -20,6 +20,10 @@
 #include "node.h"
 #include "consts.h"
 
+/* Comandos para impresion de colores */
+#define color_printf_alfa(n,c) printf ("Vertice:%c Color:%i\n", n, -c);
+#define color_printf_num (n,c) printf ("Vertice:%u Color:%i\n", n, -c);
+
 /* Funcion que le aplica un coloreo propio a nodes y 
  * retorna la cantidad de colores usados.
    REQUIRES:
@@ -29,6 +33,6 @@
    NOTE: Recordar que los colores van a ser negativos. Ademas 
  	     suponemos que puede contener un coloreo "positivo" previo.	
  */
-Color color_greedy ( node_t * nodes );
+Color color_greedy (node_s node_stack , node_t * nodes);
 
 #endif

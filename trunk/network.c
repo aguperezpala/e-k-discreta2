@@ -4,8 +4,8 @@
 /* Librerías personales */
 #include "edge.h"
 #include "network.h"
-
-
+#include "greedy.h"
+#include "first_coloring.h"
 
 /* Funcion de inicializacion de vertices 
 	REQUIRES;
@@ -20,9 +20,6 @@ void initialize_node (u32 node , node_t * nodes)
 	nodes[node].corrida = 0;
 }
 	
-
-
-
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
  *
@@ -30,13 +27,9 @@ void initialize_node (u32 node , node_t * nodes)
  */
 static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
-	u32  m;
 	edge_t *edge;
 	
 	ASSERT (estado != NULL)
-	
-	m = max(v1, v2);
-	if (m > estado->mayor) estado->mayor = m;
 	
 	/* Generamos las listas forward y/o backward si es necesario */
 	
@@ -80,14 +73,11 @@ static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  */
 static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
-	u32  m;
+	u32 m;
 	edge_t *edge;
 	bool v1new = false, v2new = false;
 	
 	ASSERT (estado != NULL)
-	
-	m = max(v1, v2);
-	if (m > estado->mayor) estado->mayor = m;
 	
 	/* Generamos las listas forward y/o backward si es necesario */
 	
@@ -153,7 +143,6 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 		el_add_edge (estado->l_con, edge);
 }
 
-
 /* Imprime por pantalla todos los lados froward (y sus flujos actuales)
  * del elemendo de "nodes" que está en la posición "node"
  * Considera a los vértices como caracteres alfabéticos (ascii)
@@ -176,10 +165,9 @@ extern void ImpresiónFlujosAlf (u32 node, node_t *nodes)
 	while (endList == 0) {
 		printf ("Lado (%c,%c): Flujo %u\n",
 			edge->nodeOrig, edge->nodeDest, edge->flow);
-		endLIst = el_avance (fl);
+		endList = el_avance (fl);
 	}
 }
-
 
 /* Imprime por pantalla todos los lados froward (y sus flujos actuales)
  * del elemendo de "nodes" que está en la posición "node"
@@ -207,9 +195,7 @@ extern void ImpresiónFlujosNum (u32 node, node_t *nodes)
 	}
 }
 
-
 /** ~~~~~~~~~~~~~~~~~~~~~ FUNCIONES DE LA API (EXTERNAS) ~~~~~~~~~~~~~~~~~~~~ */
-
 
 /* Construye un objeto EstadoNetwork.
  * ret = network_create();
@@ -245,12 +231,11 @@ EstadoNetwork *network_create (void)
 	return ret;
 }
 
-
 /* PRE : {estado != NULL && (modmoinput==1 || modoinput==2)}
  * ret = Inicializar(estado,modoinput);
  * POS : {(ret == 1 => estado tiene capacidad, según modoinput para almacenar 
  *		nodos) && (ret == 0 => no hay memoria para alojar los nodos)}
- */
+ *//*! Falta terminar!!*/
 int Inicializar (EstadoNetwork *estado, int modoinput)
 {
 	int ret = 0, i, n;
@@ -262,24 +247,13 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 		return 1;
 	}
 
-	/* {modoinput == 1 || modoinput == 2} */
-	if (modoinput == 1) {
-		/* Se espera input alfabético */
-		estado->modoinput = 1;
-	} else {
-		/* Se espera input numérico, y la pu~@#@ç$! */
-		estado->modoinput = 2;
-		
-	}
-	
+	estado->modoinput  = modoinput;
 	estado->colores = 0;
 	/* debemos inicializar los vertices */
 	ns_cmd (estado->nstack, estado->nodes, initialize_node);
-	
-	
+
 	return ret;
 }
-
 
 /* PRE : {estado != NULL && (modmoinput==1 || modoinput==2)} 
    ret = LeerUnLado(estado,modoinput);
@@ -453,7 +427,6 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	
 	return 1;
 }
-
 
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
  * ret = AumentarFlujo (estado, verbosidad)
@@ -645,24 +618,17 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	return result;
 }
 
-
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
  * flujo = ImprimirFlujo (estado, verbosidad)
  * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
  *	  	         "se imprimió según (verbosidad)")
- *	  flujo < 0  => "error"
  *	}
  */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	/* Precondiciones */
-	ASSERT (estado != NULL);
-
-	if ( VerbosidadInvalidaImprimir (verbosidad) ) {
-		/* Verbosidad no valida */
-		PRINTERR ("API: ImprimirFlujo: verbosidad inválida\n");
-		return -1;
-	}
+	ASSERT (estado != NULL)
+	ASSERT(!VerbosidadInvalidaImprimir (verbosidad))
 
 	if (verbosidad == 2) {
 		printf ("Flujo:\n");
@@ -682,49 +648,46 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 	return estado->flow_value;
 }
 
-
+/* PRE: {estado != NULL && verbosidad € {0, 1} }
+ * colores = ColorearNetwork  (estado, verbosidad)
+ * POS: { colores >= 0 => ( colores  == "cantidad de colores utilizados"  
+ *	  	  && "se imprimió según (verbosidad)")}
+ */
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
 	unsigned short K = 0;
+	node_cmd printNC;/* Comando para imprimir el nodo y su color */
 
 	/* Precondiciones */
-	ASSERT(VerbosidadInvalidaColorear(verbosidad))
-
-	K = ResolverConflictos(estado);
+	ASSERT(!VerbosidadInvalidaColorear(verbosidad))
+	ASSERT(estado->coloreo)
 	
 	/* Imprimo el coloreo obtenido por first_coloring */
-	if ( verbosidad == 1 ) {
+	printNC = ( verbosidad == 1 ) ? color_printf_alfa : color_printf_num;
+	
+	if (estado->colores > 0){
+		/*Se realizo un coloreo previo */
+		K = ResolverConflictos(estado);
+		ASSERT (k>0)
 
-		printf("Coloreo con First Coloring : %d" , K );  
-
-		if ( estado->modoinput  == 1)
-			ns_cmd (estado->nstack , estado->nodes, color_printf_alfa );
-		else
-			ns_cmd (estado->nstack , estado->nodes, color_printf_num );
-
-		printf("Cantidad de Colores utilizados: %d" , K ); 
+		if ( verbosidad == 1 ) {
+			printf("Coloreo con First Coloring : %d" , K );  
+			ns_cmd (estado->nstack , estado->nodes, printNC );
+			printf("Cantidad de Colores utilizados: %d" , K ); 
+		}
+		if ( K <= estado->delta )return K;
 	}
-
-	if ( K > estado->delta )
-		K = color_greedy( estado->nstack , estado->nodes);
-	else
-		return K;
-
+	
+	K = color_greedy( estado->nstack , estado->nodes);
+	ASSERT (k>0)
 	/* Imprimo el coloreo obtenido por greedy.
 	   NOTA!: Los colores se imprimen en negativo , luego lo arreglare con una
 		  funcion aparte. */
 	if ( verbosidad == 1 ) {
-
-		printf("Coloreo con Greedy : %d" , K ); 
-
-		if ( estado->modoinput  == 1)
-			ns_cmd (estado->nstack , estado->nodes, color_printf_alfa );
-		else
-			ns_cmd (estado->nstack , estado->nodes, color_printf_num );
-
+		printf("Coloreo con Greedy : %d" , K );  
+		ns_cmd (estado->nstack , estado->nodes, printNC );
 		printf("Cantidad de Colores utilizados: %d" , K ); 
 	}
-
-	return K*(-1);
+	
+	return K;
 }
-
