@@ -78,7 +78,7 @@ node_s *ns_add_node (node_s *ns, u32 v)
  */
 void ns_print (node_s *ns,node_t * nodes)
 {
-	node_s *aux;
+	register node_s *aux;
 	
 	ASSERT (ns != NULL)
 	ASSERT (nodes != NULL)

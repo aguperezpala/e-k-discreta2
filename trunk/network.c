@@ -524,7 +524,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		if (verbosidad == 2 || verbosidad == 3) {
 			/* Hay que imprimir el corte */
 			u32 cap = 0;
-			unsigned short i;
+			register unsigned short i;
 			short nn = qt_get_size (estado->cola);
 			/* nn == nº de vértices del corte */
 			
