@@ -46,12 +46,12 @@ void ps_destroy (print_s *ps);
  * PRE: ps != NULL  &&  sentido == 1,2
  *    ps = ps_add_node (ps, v, modoinput, sentido);
  * POS: "ps contiene a 'v' como último elemento" &&
- *	sentido == 1  =>  se considera "forward" la relación entre 'v'
- *			  y el vértice anterior de la pila
- *	sentido == 1  =>  se considera "backward" la relación entre 'v'
- *			  y el vértice anterior de la pila
+ *	sentido == ','  =>  se considera "forward" la relación entre 'v'
+ *			    y el vértice anterior de la pila
+ *	sentido == '<'  =>  se considera "backward" la relación entre 'v'
+ *			    y el vértice anterior de la pila
  */
-print_s *ps_add_node (print_s *ps, u32 v, int sentido);
+print_s *ps_add_node (print_s *ps, u32 v, char sentido);
 
 
 /* Imprime la pila en orden LIFO, es decir, el último elemento agregado
