@@ -6,7 +6,7 @@
  * Discreta 2, FaMAF, año 2009
  * Este TAD representa la cola de una corrida E-K (o sea una ejecución de
  * AumentarFlujo)
- * Su nombre deriva de los elementos que la componen cada una de sus celdas:
+ * Su nombre deriva de los elementos que componen cada una de sus celdas:
  * 	·Nombre del vértice
  *	·Nombre del padre (y que satanas te guarde)
  *	·Flujo soportado por el lado padre--vértice

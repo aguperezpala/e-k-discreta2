@@ -207,7 +207,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	
 	/* Precondiciones */
 	ASSERT(estado != NULL)
-	if ( ! ModoinputValido(modoinput) ) {
+	if ( ModoinputInvalido (modoinput) ) {
 		fprintf (stderr, "Network: Inicializar: modoinput inválido\n");
 		return 1;
 	}
@@ -245,8 +245,16 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	char *scan = NULL;
 	
 	ASSERT (estado != NULL)
-	if (! ModoinputValido(modoinput) ) {
+			
+	if ( ModoinputInvalido (modoinput) ) {
 		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n");
+		estado->completo = true;
+		return 0;
+		
+	} else if (modoinput != estado->modoinput) {
+		fprintf (stderr, "Network: LeerUnLado: modoinput inválido\n"
+				"Ingresó %d y antes había escogido %d\nSe ruega"
+				" coherencia\n", modoinput, estado->modoinput);
 		estado->completo = true;
 		return 0;
 	}
@@ -300,6 +308,8 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			else
 				AñadirLado (estado, v1, v2, cap);
 		}
+		
+		if (estado->maximal) estado->maximal = false;
 		
 	} else {
 		/** Input numérico */
@@ -387,6 +397,8 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			AñadirLadoColor (estado, v1, v2, cap);
 		else
 			AñadirLado (estado, v1, v2, cap);
+		
+		if (estado->maximal) estado->maximal = false;
 	}
 	
 	return 1;
@@ -394,12 +406,11 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 
 
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
-ret = AumentarFlujo (estado, verbosidad)
-POS: {(ret == 0 => Se pudo aumentar el flujo) 	 &&
-* 	  (ret == 1 => No se pudo aumentar el flujo) &&
-* 	  (ret == 2 => Se produjo un error)			 }
-*/
-
+ * ret = AumentarFlujo (estado, verbosidad)
+ * POS: {(ret == 0 => Se pudo aumentar el flujo)	&&
+ *	 (ret == 1 => No se pudo aumentar el flujo)	&&
+ *	 (ret == 2 => Se produjo un error)			 }
+ */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	int result = 0;
@@ -413,13 +424,13 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	/* Precondiciones */
 	ASSERT (estado != NULL)
 
-	if (!((x == 0) || (x == 1) || (x == 2) || (x == 3))) {
+	if ( VerbosidadInvalidaAumentar (verbosidad) ) {
 		/* Verbosidad no valida */
 		fprintf (stderr, "Network: AumentarFlujo: verbosidad inválida\n");
 		return 2;
 	}
 
-	if(estado->maximal && estado->completo){
+	if(estado->maximal){
 		/* No se puede aumentar el flujo */
 		fprintf (stderr, "Network: AumentarFlujo: No se pudo aumentar flujo\n");
 		return 1;
@@ -496,33 +507,35 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		}
 
 		nextNode:/* Nos movemos al siguiente nodo */
-		empty = (qt_avance(estado->cola) != 1);
-		q = qt_get_actual_node (estado->cola);
+			empty = (qt_avance(estado->cola) != 1);
+			q = qt_get_actual_node (estado->cola);
+		
 		endwhile:/* Esta es la salida en caso de que lleguemos a t */
 	}
 
-	if (q == t){
-		/* Actualizo el flujo total */
-		estado->flow_value += e;
-		/* Actualizo el flujo del network */
-		while (q != s){
-			edge = qt_get_actual_edge (estado->cola);
-
-			ASSERT (nIsFromEdge(q, edge))
-			if (edge->nodeDest == q) {
-				ASSERT (!NotInQueue(estado->nodes[edge->nodeDest]))
-				edge->flow += e;
-			} else {
-				ASSERT (!NotInQueue(estado->nodes[edge->nodeOrig]))
-				edge->flow -= e;
-			}
-				
-			qt_go_parent (estado->cola);
-			q = qt_get_actual_node (estado->cola);
-		}
+	/* Actualizamos el estado según la verbosidad escogida */
+	switch (verbosidad) {
 		
-	}else{
-		estado->maximal = true;
+		case 0:
+			ActualizarSilencioso (estado, q, s, t, e);
+			break;
+			
+		case 1:
+			ActualizarConCamino (estado, q, s, t, e);
+			break;
+			
+		case 2:
+			ActualizarConCorte (estado, q, s, t, e);
+			break;
+			
+		case 3:
+			ActualizarConCaminoYCorte (estado, q, s, t, e);
+			break;
+		default:
+			fprintf (stderr, "Networl: AumentarFlujo: falló la "
+					"detección de verbosidad errónea\n");
+			return 2;
+			break;
 	}
 	
 	return result;
