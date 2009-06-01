@@ -6,7 +6,6 @@
 struct _print_s {
 	struct _print_celd dummy;  /* 1º celda */
 	struct _print_celd *last;  /* Celda actual */
-	int size;
 };
 
 struct _print_celd {
@@ -26,7 +25,7 @@ print_s *ps_create (void)
 	print_s ps;
 	
 	ps = (print_s *) malloc (sizeof (struct _print_s));
-	ASERT (ps != NULL);
+	ASERT (ps != NULL)
 	
 	ps->last = &ps->dummy;
 	ps->size = 0;
@@ -74,8 +73,8 @@ print_s *ps_add_node (print_s *ps, u32 v, char sentido)
 {
 	_print_celd *new;
 	
-	ASSERT (ps != NULL);
-	ASSERT ((sentido == 1) || (sentido == 2));
+	ASSERT (ps != NULL)
+	ASSERT ((sentido == ',') || (sentido == '<'))
 	
 	new = (_print_celd *) malloc (sizeof (struct _print_celd));
 	ASSERT (new != NULL);
@@ -102,8 +101,8 @@ void ps_print (print_s *ps, int modoinput, u32 flujo)
 {
 	print_s *aux;
 	
-	ASSERT (ps != NULL);
-	ASSERT ((modoinput == 1) || (modoinput == 2));
+	ASSERT (ps != NULL)
+	ASSERT ((modoinput == 1) || (modoinput == 2))
 	
 	aux = ps->last;
 	
@@ -119,7 +118,7 @@ void ps_print (print_s *ps, int modoinput, u32 flujo)
 	
 	/* Imprimimos 't' (o el último vértice, que DEBERIA ser lo mismo) */
 	if (modoinput == 1)
-			printf ("%c: %u\n", aux->node, flujo);
+			printf ("%c: %u\n\n", aux->node, flujo);
 	else
-			printf ("%u: %u\n", aux->node, flujo);
+			printf ("%u: %u\n\n", aux->node, flujo);
 }

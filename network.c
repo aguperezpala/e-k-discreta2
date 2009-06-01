@@ -474,31 +474,84 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		
 		endwhile:/* Esta es la salida en caso de que lleguemos a t */
 	}
-
-	/* Actualizamos el estado según la verbosidad escogida
-	 * Ver la librería actualizar_flujo.h */
-	switch (verbosidad) {
+	
+	
+	if (q == t) {
+		/* Llegamos a 't' => hay que actualizar flujo */
 		
-		case 0:
-			ActualizarSilencioso (estado, q, s, t, e);
-			break;
+		if (verbosidad == 1 || verbosidad == 3)
+			/* Debemos imprimir el camino */
+			ps = ps_create();
+		
+		/* Actualizamos el flujo total */
+		estado->flow_value += flujo;
+		
+		/* Actualizamos el flujo del network */
+		while (q != s){
+			edge = qt_get_actual_edge (estado->cola);
+	
+			ASSERT (nIsFromEdge(q, edge))
+			ASSERT (!NotInQueue(&estado->nodes[q], estado->corrida))
 			
-		case 1:
-			ActualizarConCamino (estado, q, s, t, e);
-			break;
+			if (edge->nodeDest == q) { /* Es lado forward */
+				edge->flow += e;
+				if (verbosidad == 1 || verbosidad == 3)
+					ps = ps_add_node (ps, q, ',');
+						
+			} else {		  /* Es lado backward */
+				edge->flow -= e;
+				if (verbosidad == 1 || verbosidad == 3)
+					ps = ps_add_node (ps, q, '<');
+			}
 			
-		case 2:
-			ActualizarConCorte (estado, q, s, t, e);
-			break;
+			qt_go_parent (estado->cola);
+			q = qt_get_actual_node (estado->cola);
+		}
+		
+		if (verbosidad == 1 || verbosidad == 3) {
+			/* Nos faltó agregar 's' */
+			ps = ps_add_node (ps, q, estado->modoinput, ',');
+		
+			/* Imprimimos el camino hallado */
+			ps_print (ps, estado->modoinput, qt_get_actual_flow(estado->cola));
+			ps_destroy (ps);
+		}
+		
+	} else {
+		estado->maximal = true;
+		
+		if (verbosidad == 2 || verbosidad == 3) {
+			/* Hay que imprimir el corte */
+			u32 cap = 0;
+			unsigned short i;
+			short nn = qt_get_size (estado->cola);
+			/* nn == nº de vértices del corte */
 			
-		case 3:
-			ActualizarConCaminoYCorte (estado, q, s, t, e);
-			break;
-		default:
-			fprintf (stderr, "Network: AumentarFlujo: falló la "
-					"detección de verbosidad errónea\n");
-			return 2;
-			break;
+			printf ("Corte Minimal: S={");
+			qt_start (estado->cola);
+			
+			/* Vamos imprimiendo todos los vértices del corte */
+			for (i = 0 ; i < nn-1 ; i++) {
+				q = qt_get_actual_node (estado->cola);
+				
+				if (estado->modoinput == 1)
+					printf ("%c, ",q);
+				else
+					printf ("%u, ",q);
+				
+				cap += (qt_get_actual_edge(estado->cola))->capacity;
+				
+				qt_avance (estado->cola);
+			}
+			/* Nos faltó el último */
+			q = qt_get_actual_node (estado->cola);
+			if (estado->modoinput == 1)
+				printf ("%c}\n", q)
+			else
+				printf ("%u}\n", q);
+			
+			printf ("Capacidad del corte: %u\n\n", cap);
+		}
 	}
 	
 	return result;

@@ -110,8 +110,8 @@ short qt_get_size (quadList_t * qt);
 
 /*! ~~~~~~~~~~~~~~~~  Funciones de "movimientos" ~~~~~~~~~~~~~~~~~~~ */
 
-/* Funcion que avanza el visor al siguiente elemento, si esta en el ultimo elemento
- * entonces el "visor" vuelve al comienzo. (una especie de lista circular)
+/* Funcion que avanza el visor al siguiente elemento
+ * Si esta en el ultimo elemento no avanzamos.
  *	REQUIRES:
  *		qt != NULL
  *	RETURNS:
@@ -127,8 +127,7 @@ int qt_avance (quadList_t * qt);
  void qt_go_parent (quadList_t * qt);
 
  
-/* Funcion que avanza el visor al siguiente elemento
- * Si esta en el ultimo elemento no avanzamos.
+/* Funcion que mueve el visor al comienzo de la lista
  *	REQUIRES:
  *		qt != NULL
  *	RETURNS:
