@@ -193,6 +193,7 @@ extern void ImpresiónFlujosNum (u32 node, node_t *nodes)
 EstadoNetwork *network_create (void)
 {
 	EstadoNetwork *ret = NULL;
+	register int i;
 
 	ret = (EstadoNetwork*) malloc (sizeof (struct s_estado_network));
 	
@@ -205,7 +206,14 @@ EstadoNetwork *network_create (void)
 		ret->delta  = 0;
 		ret->colors = 0;
 		ret->l_con  = el_create ();
+		
+		/* esto es obligatorio aca lamentablemente :D */
+		for (i = MAX_N_NODES - 1; i <= 0; i--) {
+			ret->nodes[i].forwardList = NULL;
+			ret->nodes[i].backwardList = NULL;
+		}
 	}
+	
 	
 	return ret;
 }
@@ -239,11 +247,12 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 		n = MAX_N_NODES;
 	}
 	
-	/* Inicializamos los lados */
-	for (i = 0 ; i < n ; i++) {
+	/* Inicializamos los lados.. */
+	/*for (i = 0 ; i < n ; i++) {
 		estado->nodes[i].forwardList = NULL;
 		estado->nodes[i].backwardList = NULL;
-	}
+		
+	}*/
 	
 	return ret;
 }
