@@ -130,3 +130,51 @@ void ActualizarConCaminoYCorte (EstadoNetwork *estado, u32 q, u32 s, u32 t, u32 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (q == t) {
+		if (verbosidad == 1 || verbosidad == 3)
+		ps = ps_create();
+		
+		/* Actualizamos el flujo total */
+		estado->flow_value += flujo;
+		
+		/* Actualizamos el flujo del network */
+		while (q != s){
+			edge = qt_get_actual_edge (estado->cola);
+	
+			ASSERT (nIsFromEdge(q, edge))
+			ASSERT (!NotInQueue(&estado->nodes[q], estado->corrida))
+			
+			if (edge->nodeDest == q) { /* Es lado forward */
+				edge->flow += e;
+				ps = ps_add_node (ps, q, 1);
+						
+			} else {		  /* Es lado backward */
+				edge->flow -= e;
+				ps = ps_add_node (ps, q, 2);
+			}
+			
+			qt_go_parent (estado->cola);
+			q = qt_get_actual_node (estado->cola);
+		}
+		/* Nos faltó agregar 's' */
+		ps = ps_add_node (ps, q, estado->modoinput, 1);
+		
+		/* Imprimimos el camino hallado */
+		ps_print (ps, estado->modoinput);
+		ps_destroy (ps);
+		
+	} else
+		estado->maximal = true;
