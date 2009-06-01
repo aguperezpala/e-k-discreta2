@@ -34,7 +34,7 @@ struct _parserArgs {
  * 	(res == false &&
  *	  < E i : 0 <= i < strlen(string) : string[i] ¬€ {0, ..., 9} > )
  */
-bool is_int (const char *string, long int *num)
+static bool is_int (const char *string, long int *num)
 {
 	bool result = false;
 	char *endptr = '\0';
@@ -229,7 +229,7 @@ int pa_parse (parserArgs_t * pa, int argc, char ** args)
 
 	while (i < argc && result > -2) {
 		
-		result = result = pa_real_parse(args, argc, i);
+		result = pa_real_parse(args, argc, i);
 		
 		switch (pa_map_arg (args[i])) {
 			case 0:
@@ -295,3 +295,72 @@ int pa_parse (parserArgs_t * pa, int argc, char ** args)
 	return result;
 	
 }
+
+
+/*! ~~~~~~~~	Funciones para obtener los flags ~~~~~~~*/
+
+bool pa_is_numeric (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return pa->isNumeric;
+}
+
+
+bool pa_work_flow (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return (getFlowPrint(pa->flowAndColour) != 0);
+}
+
+
+bool pa_work_colour (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return (getColourPrint(pa->flowAndColour) != 0);
+}
+
+bool pa_verbose (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return pa->verbose;
+}
+
+
+
+int pa_incremental (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return pa->incremental;
+}
+
+
+
+int pa_partial (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return pa->partialRun;
+}
+
+int pa_max_flow_repeat (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return pa->maxFlowRepeat;
+}
+
+
+int pa_colour_repeat (parserArgs_t * pa)
+{
+	ASSERT (pa != NULL)
+	
+	return pa->colourRepeat;
+}
+
+
+
