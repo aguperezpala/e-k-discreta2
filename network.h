@@ -88,7 +88,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad);
  *	  	         "se imprimió según (verbosidad)")
  *	  flujo < 0  => "error"
  *	}
- */
+ *//*!TODO:Imposible < 0 */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
 
 

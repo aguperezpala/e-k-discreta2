@@ -64,7 +64,7 @@ bool pa_work_colour (parserArgs_t * pa);
 	REQUIRES:
 		pa != NULL
 */
-bool pa_verbose (parserArgs_t * pa);
+int pa_verbose (parserArgs_t * pa);
 
 /* tenemos que leer incrementalmente?
 	REQUIRES:

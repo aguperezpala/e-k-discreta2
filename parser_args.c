@@ -322,7 +322,7 @@ bool pa_work_colour (parserArgs_t * pa)
 	return (getColourPrint(pa->flowAndColour) != 0);
 }
 
-bool pa_verbose (parserArgs_t * pa)
+int pa_verbose (parserArgs_t * pa)
 {
 	ASSERT (pa != NULL)
 	
