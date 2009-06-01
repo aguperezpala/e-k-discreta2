@@ -29,7 +29,6 @@
 
 
 typedef struct s_estado_network {
-	
 	node_t nodes[MAX_N_NODES];
 	quadList_t *cola;	/* Cola de las corridas E-K */
 	u32 flow_value;	/* valor de flujo actual */
@@ -41,10 +40,9 @@ typedef struct s_estado_network {
 	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
-	edgeList_t l_con;	/* Lista de lados conflictivos para el coloreo */
-	node_s nstack	/* Stack que guarda los nodos que fueron agregados */
-	
-} EstadoNetwork ;
+	edgeList_t * l_con;	/* Lista de lados conflictivos para el coloreo */
+	node_s nstack;	/* Stack que guarda los nodos que fueron agregados */
+} EstadoNetwork;
 
 
 

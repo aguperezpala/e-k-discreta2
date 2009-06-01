@@ -18,8 +18,6 @@ void initialize_node (u32 node , node_t * nodes)
 	ASSERT (node < MAX_N_NODS)
 	
 	nodes[node].corrida = 0;
-	nodes[node].color = 0;
-	
 }
 	
 

@@ -31,7 +31,7 @@ static void main_help (void)
 		1 si no se puede seguir aumentando el flujo
 		2 caso de error (AumentarFlujo)
 */
-static void block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
+static int block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
 {
 	bool finish = false;
 	register int i = 0;
@@ -42,7 +42,7 @@ static void block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 	ASSERT (pa != NULL)
 	
 	blockReadSize = pa_incremental (pa);
-	flowsRun = pa_partial (pa)
+	flowsRun = pa_partial (pa);
 	verbose = pa_verbose (pa);
 	
 	/* tenemos que leer en forma de bloque */
@@ -97,7 +97,7 @@ static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 	ASSERT (pa != NULL)
 	
 	
-	flowsRun = pa_partial (pa)
+	flowsRun = pa_partial (pa);
 	verbose = pa_verbose (pa);
 	
 	/* tomamos primero todos los lados */
@@ -201,7 +201,7 @@ int main (int argc, char ** args)
 	if (pa_work_colour (pa)) {
 		/* ahora vamos a chequear cuantas veces deberiamos correr el
 		 * coloreo */
-		for (i = pa_colour_repeat; i > 0; i--) {
+		for (i = pa_colour_repeat (pa); i > 0; i--) {
 			/*! inicializamos aca siempre o no? */
 			colours = ColorearNetwork (estado, verbose);
 		}
