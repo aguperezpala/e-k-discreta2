@@ -1,27 +1,11 @@
-/* MACK-EK versión 1.0
- * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
- * maximal en un network
- *
- * TAD print_s (pila de impresión) Es utilizado para la impresión de los
- * caminos hallados por las corridas de AumentarFlujo
- *
- * Autores:  Budde, Carlos E.
- *	     Kondrasky, Alejandro
- *	     Pérez Paladini, Agustín
- *	     Soldevilla, Mallku R.
- *
- * Revisión: Penazzi, Daniel
- *
- */
+#include <stdio.h>
+
+#include "print_stack.h"
 
 
-#ifnedf PRINT_L_H
-#define PRINT_L_H
-
-
-
-typedef struct _print_s print_s;
-
+struct _print_s {
+	
+};
 
 
 /* Genera una nueva pila de impresión vacía
@@ -29,7 +13,12 @@ typedef struct _print_s print_s;
  *    ps = ps_create()
  * POS: ps != NULL
  */
-print_s *ps_create (void);
+print_s *ps_create (void)
+{
+	print_s ps;
+	
+	return ps;
+}
 
 
 /* Destruye la pila de impresión
@@ -38,7 +27,10 @@ print_s *ps_create (void);
  *    ps_destroy(ps)
  * POS: los recursos de memoria de ps han sido liberados
  */
-void ps_destroy (print_s *ps);
+void ps_destroy (print_s *ps)
+{
+	
+}
 
 
 /* Añade un nuevo vértice 'v' al comienzo de la pila de impresión.
@@ -52,7 +44,11 @@ void ps_destroy (print_s *ps);
  *	sentido   == 1 => se considera "backward" la relación entre 'v'
  *			  y el próximo vértice que se agregue
 */
-print_s *ps_add_node (print_s *ps, u32 v, int modoinput, int sentido);
+print_s *ps_add_node (print_s *ps, u32 v, int modoinput, int sentido)
+{
+	
+	return ps;
+}
 
 
 /* Imprime la pila en orden LIFO, es decir, el último elemento agregado
@@ -61,8 +57,7 @@ print_s *ps_add_node (print_s *ps, u32 v, int modoinput, int sentido);
  * PRE: ps != NULL
  *    ps_print (ps)
  */
-void ps_print (print_s *ps);
-
-
-#endif
-
+void ps_print (print_s *ps)
+{
+	
+}
