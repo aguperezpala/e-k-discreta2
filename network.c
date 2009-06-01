@@ -176,6 +176,7 @@ extern void ImpresiónFlujosNum (u32 node, node_t *nodes)
 	
 	while (endList == 0) {
 		PrintFlowNum (edge->nodeOrig, edge->nodeDest, edge->flow);
+		/* Por PrintFlowNum ver consts.h */
 		endLIst = el_avance (fl);
 	}
 }
