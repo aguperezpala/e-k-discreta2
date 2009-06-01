@@ -5,7 +5,6 @@
 struct _node_s {
 	struct _node_celd dummy;  /* 1º celda */
 	struct _node_celd *last;  /* Celda actual */
-	void print_cmd;		  /* Comando para imprimir */ 
 }* node_s;
 
 struct _node_celd {
@@ -13,9 +12,7 @@ struct _node_celd {
 	node_celd prev;
 }* node_celd;
 
-/* Macros internas */
-#define printf_alfa(n,c) printf ("Vertice:%c Color:%d\n", n, c);
-#define printf_num (n,c) printf ("Vertice:%u Color:%d\n", n, c);
+
 
 /* Genera una nueva pila de nodos vacía.
  *      modoinput == 1  =>  se considera el código ascii de 'v'
@@ -51,7 +48,7 @@ node_s *ns_create (int modoinput)
  *	sentido == '<'  =>  se considera "backward" la relación entre 'v'
  *			    y el vértice anterior de la pila
  */
-node_s *ns_add_node (node_s *ns, u32 v)
+void ns_add_node (node_s *ns, u32 v)
 {
 	node_celd new;
 	
@@ -63,9 +60,9 @@ node_s *ns_add_node (node_s *ns, u32 v)
 	new->node = v;
 	new->prev = ns->last;
 	ns->last = new;
-	
-	return ns;
 }
+
+void ns_get_node
 
 
 /* Imprime la pila en orden LIFO, es decir, el último elemento agregado
@@ -76,7 +73,7 @@ node_s *ns_add_node (node_s *ns, u32 v)
  * POS: modoinput == 1  =>  se considera el código ascii de 'v'
  *	modoinput == 2  =>  se considera el valor numérico de 'v'
  */
-void ns_print (node_s *ns,node_t * nodes)
+void ns_print (node_s *ns,node_t * nodes , cmd )
 {
 	register node_s *aux;
 	
@@ -87,13 +84,11 @@ void ns_print (node_s *ns,node_t * nodes)
 
 	while (aux != &ns->dummy) {
 		/* Vamos imprimiendo todos los vértices */
-		ns->print_cmd (aux->node, nodes[aux->node].color);
+		cmd (aux->node, nodes);
 		free (aux);
 		aux = aux->prev;
 	}
 	
-	free (aux);
-	aux = NULL;
 	free (ns);
 	ns = NULL;
 }
