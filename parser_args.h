@@ -106,7 +106,15 @@ int pa_colour_repeat (parserArgs_t * pa);
 
 
 
+#ifdef __DEBUG
 
+/* Imprime la estructura
+	REQUIRES:
+		pa != NULL
+*/
+void pa_print (parserArgs_t * pa);
+
+#endif
 
 
 
