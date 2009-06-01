@@ -29,7 +29,11 @@ static void main_help (void)
 int main (int argc, char ** args)
 {
 	parserArgs_t * pa = NULL;
-	int result = 0;
+	EstadoNetwork * estado = NULL;
+	int result = 0, err = 0, inputMode = 0;
+	int i = 0, blockReadSize = 0, flowsRun = 0;
+	bool finish = false;
+	
 	
 	/* creamos el parserArgs */
 	pa = pa_create ();
@@ -53,6 +57,44 @@ int main (int argc, char ** args)
 #ifdef __DEBUG
 	pa_print (pa);
 #endif
+	
+	/* creamos el network */
+	estado = network_create ();
+	if (estado == NULL) {
+		printf ("No se pudo crear el network, memoria insuficiente\n");
+		return 1;
+	}
+	/* vemos si es modo numerico o alfabetico */
+	if (pa_is_numeric (pa))
+		inputMode = 2;
+	else
+		inputMode = 1;
+	/* inicializamos */
+	err = Inicializar(estado, inputMode);
+	
+	if (err == 0){
+		printf ("No se pudo inicializar el network\n");
+		return 1;
+	}
+	
+	/* Ahora vamos a verificar si debemos ingresar en forma de bloques o en forma
+	 * normal los lados */
+	blockReadSize = pa_incremental (pa);
+	flowsRun = pa_partial (pa)
+	
+	if (blockReadSize > 0){
+		/* tenemos que leer en forma de bloque */
+		while (!finish) {
+			for (i = 0; i < blockReadSize && !finish; i++) {
+				/* leemos un lado y nos fijamos si debemos salir */
+				finish = LeerUnLado(estado, inputMode) == 0;
+			}
+			/* ahora vemos si tenemos que aumentar el flujo m veces
+			 * o si lo tenemos que aumentar hasta el final */
+			err = AumentarFlujo (estado, pa_verbose (pa));
+			
+			
+	
 	
 	
 	return 0;
