@@ -91,7 +91,7 @@ extern void coloring_node(u32 node_i, node_t * nodes )
 	/* Pos */
 	ASSERT(color_propio(node, nodes))
 
-	greedy_max_color = (node.color < greedy_max_color) ? node.color : greedy_max_color;
+	greedy_max_color = min (node.color, greedy_max_color);
 }  
 
 Color color_greedy (node_s node_stack , node_t * nodes)
@@ -100,7 +100,7 @@ Color color_greedy (node_s node_stack , node_t * nodes)
 
 	ns_cmd (node_stack, nodes, coloring_node);
 	
-	return last_color;
+	return greedy_max_color*(-1);
 }
 
 

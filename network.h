@@ -36,8 +36,6 @@ typedef struct s_estado_network {
 	bool completo;	/* si se ingresaron todos los lados */
 	bool coloreo;	/* si nos llamaron con la opción de coloreo */
 	short modoinput;
-	short menor;	/* vertice de "menor nombre" ingresado */
-	short mayor;	/* vértice de "mayor nombre" ingresado */
 	short delta;	/* Considerandolo grafo, el delta */
 	short colores;	/* Nº de colores obtenido por el coloreo */
 	edgeList_t * l_con;	/* Lista de lados conflictivos para el coloreo */
@@ -84,13 +82,16 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad);
  * flujo = ImprimirFlujo (estado, verbosidad)
  * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
  *	  	         "se imprimió según (verbosidad)")
- *	  flujo < 0  => "error"
  *	}
- *//*!TODO:Imposible < 0 */
+ */
 u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
 
 
-/*! TODO <COMPLETAR COMPLETAR> */
+/* PRE: {estado != NULL && verbosidad € {0, 1} }
+ * colores = ColorearNetwork  (estado, verbosidad)
+ * POS: { colores >= 0 => ( colores  == "cantidad de colores utilizados"  
+ *	  	  && "se imprimió según (verbosidad)")}
+ */
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad);
 
 
