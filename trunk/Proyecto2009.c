@@ -92,6 +92,7 @@ static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 	int err = 0, verbose, flowsRun;
 	
 	
+	
 	ASSERT (estado != NULL)
 	ASSERT (pa != NULL)
 	
@@ -127,8 +128,9 @@ int main (int argc, char ** args)
 {
 	parserArgs_t * pa = NULL;
 	EstadoNetwork * estado = NULL;
-	int result = 0, err = 0, inputMode = 0, verbose = 0;
-	int i = 0, blockReadSize = 0, flowsRun = 0;
+	int result = 0, err = 0, inputMode, verbose, blockReadSize;
+	register int i = 0;
+	u32 colours = 0;
 	
 	
 	
@@ -166,8 +168,6 @@ int main (int argc, char ** args)
 		inputMode = 2;
 	else
 		inputMode = 1;
-	/* inicializamos */
-	err = Inicializar(estado, inputMode);
 	
 	if (err == 0){
 		printf ("No se pudo inicializar el network\n");
@@ -178,7 +178,7 @@ int main (int argc, char ** args)
 	/* Ahora vamos a verificar si debemos ingresar en forma de bloques o en forma
 	 * normal los lados */
 	blockReadSize = pa_incremental (pa);
-	
+	verbose = pa_verbose (pa);
 	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
 	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
 	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
@@ -190,7 +190,17 @@ int main (int argc, char ** args)
 			err = normal_read (estado, pa, inputMode);
 		}
 	}
-	/* ahora vamos a verificar si debemos imprimir el flujo o no */
+	/* ahora vamos a verificar si debemos buscar color o no */
+	if (pa_work_colour (pa)) {
+		/* ahora vamos a chequear cuantas veces deberiamos correr el
+		 * coloreo */
+		for (i = pa_colour_repeat; i > 0; i--) {
+			/*! inicializamos aca siempre o no? */
+			colours = ColorearNetwork (estado, verbose);
+		}
+	}
+	/* imprimimos el flujo */
+	ImprimirFlujo (estado, verbose);
 	
 	
 	return 0;
