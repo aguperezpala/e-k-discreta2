@@ -5,7 +5,7 @@
 struct _node_s {
 	struct _node_celd dummy;  /* 1º celda */
 	node_celd last;  /* Celda ultima */
-}* node_s;
+};
 
 struct _node_celd {
 	u32 node;	/* Nombre del vértice */
