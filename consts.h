@@ -76,9 +76,9 @@ typedef int Color;
 #define   NotInQueue(x,c)   (x->corrida < c)
 
 
-/* Imprime la cadena: "Lado (x,y): Flujo f" donde 'x', 'y' y 'f'
- * son valores u32. Si 'x' o 'y' son '0' o '1' son cambiados por
- * los caracteres 's' o 't' respectivamente */
+/* Imprime la cadena: "Lado (x,y): Flujo f"
+ * donde 'f', 'x' e 'y' son valores u32. Si 'x' o 'y' son '0' o '1'
+ * son cambiados por los caracteres 's' o 't' respectivamente */
 #define   PrintFlowNum(x,y,f)  (((x != 0) && (x != 1) && (y != 0) && (y != 1)) ? \
 				(printf ("Lado (%u,%u): Flujo %u\n", x, y, f);)  \
 					 : ( \
