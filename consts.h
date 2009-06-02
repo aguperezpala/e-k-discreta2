@@ -85,14 +85,14 @@ typedef int Color;
 				((x == 0) && (y != 0) && (y != 1)) ? \
 				(printf ("Lado (s,%u): Flujo %u\n", y, f);) \
 					 : ( \
+				((x != 0) && (x != 1) && (y == 1)) ? \
+				(printf ("Lado (%u,t): Flujo %u\n", x, f);) \
+					 : ( \
 				((x == 1) && (y != 0) && (y != 1)) ? \
 				(printf ("Lado (t,%u): Flujo %u\n", y, f);) \
 					 : ( \
 				((x != 0) && (x != 1) && (y == 0)) ? \
 				(printf ("Lado (%u,s): Flujo %u\n", x, f);) \
-					 : ( \
-				((x != 0) && (x != 1) && (y == 1)) ? \
-				(printf ("Lado (%u,t): Flujo %u\n", x, f);) \
 					 : ( \
 				(printf ("Lado (s,t): Flujo %u\n");) \
 					) ) ) ) ) \

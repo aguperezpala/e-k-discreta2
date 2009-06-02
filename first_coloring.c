@@ -55,7 +55,6 @@ static Color MenorColorLibre (EstadoNetwork *estado, u32 N)
 	unsigned short d, i;
 	node_t vert;
 	u32 vecino;
-	edge_t *edge = NULL;
 	
 	vert = estado->nodes[N];
 	
@@ -65,16 +64,18 @@ static Color MenorColorLibre (EstadoNetwork *estado, u32 N)
 	/* Registramos los colores de los vecinos hacia adelante */
 	d = el_get_size (vert.forwardList);
 	for (i = 0 ; i < d ; i++) {
-		edge = el_get_actual (vert.forwardList);
-		usedColors[edge->nodeDest.color]++; /* Registramos el color hallado */
+		vecino = (el_get_actual (vert.forwardList))->nodeDest;
+		c = estado->nodes[vecino].color;
+		usedColors[c]++; /* Registramos el color hallado */
 		el_avance (vert.forwardList);
 	}
 	
 	/* Registramos los colores de los vecinos hacia atrás */
 	d = el_get_size (vert.backwardList);
 	for (i = 0 ; i < d ; i++) {
-		edge = el_get_actual (vert.backwardList);
-		usedColors[edge->nodeOrig.color]++; /* Registramos el color hallado */
+		vecino = (el_get_actual(vert.backwardList))->nodeOrig;
+		c = estado->nodes[vecino].color;
+		usedColors[c]++; /* Registramos el color hallado */
 		el_avance (vert.backwardList);
 	}
 	
@@ -115,6 +116,7 @@ unsigned short ResolverConflictos (EstadoNetwork *estado)
 	Color c = 0;  /* Nuevo color escogido para un nodo */
 	u32 v1;  /* Vértice de origen  de un lado */
 	u32 v2;  /* Vértice de destino de un lado */
+	edge_t *edge;
 	
 	
 	ASSERT (estado != NULL)
