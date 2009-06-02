@@ -7,12 +7,18 @@
 #include "greedy.h"
 #include "first_coloring.h"
 
+
+
+
+/**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
+/** ~~~~~~~~~~~~~~~~~~ FUNCIONES STATIC (DE USO INTERNO) ~~~~~~~~~~~~~~~~~~~~ */
+
 /* Funcion de inicializacion de vertices 
 	REQUIRES;
 		nodes != NULL
 		node < MAX_N_NODES
 */
-void initialize_node (u32 node , node_t * nodes)
+static void initialize_node (u32 node , node_t * nodes)
 {
 	ASSERT (nodes != NULL)
 	ASSERT (node < MAX_N_NODS)
@@ -195,6 +201,8 @@ extern void ImpresiónFlujosNum (u32 node, node_t *nodes)
 	}
 }
 
+
+/**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
 /** ~~~~~~~~~~~~~~~~~~~~~ FUNCIONES DE LA API (EXTERNAS) ~~~~~~~~~~~~~~~~~~~~ */
 
 /* Construye un objeto EstadoNetwork.
@@ -632,6 +640,10 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 
 	if (verbosidad == 2) {
 		printf ("Flujo:\n");
+		/* Llamamos a una función de node_stack (ns_cmd) que toma
+		 * un conjunto de nodos y a cada uno le aplica la directiva
+		 * pasada como 3º argumento. En este caso la directiva es
+		 * el static ImpresiónFlujosAlf o ImpresiónFlujosNum */
 		if (estado->modoinput == 1)
 			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosAlf);
 		else
@@ -639,7 +651,7 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 	}
 	
 	if (verbosidad != 0) {
-		if (estado->completo)
+		if (estado->maximal)
 			printf ("Valor del flujo maximal: %u\n\n", estado->flow_value);
 		else
 			printf ("Valor del flujo parcial: %u\n\n", estado->flow_value);
