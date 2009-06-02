@@ -27,6 +27,7 @@ print_s *ps_create (void)
 	ps = (print_s *) malloc (sizeof (struct _print_s));
 	ASERT (ps != NULL)
 	
+	ps->last->prev = NULL;
 	ps->last = &ps->dummy;
 	ps->size = 0;
 	
@@ -99,12 +100,14 @@ print_s *ps_add_node (print_s *ps, u32 v, char sentido)
  */
 void ps_print (print_s *ps, int modoinput, u32 flujo)
 {
-	print_s *aux;
+	_print_celd *aux;
 	
 	ASSERT (ps != NULL)
 	ASSERT ((modoinput == 1) || (modoinput == 2))
 	
 	aux = ps->last;
+	
+	if (aux == &ps->dummy) return; /* Pila vacía */
 	
 	while (aux->prev != &ps->dummy) {
 		/* Vamos imprimiendo todos los vértices */
@@ -116,7 +119,6 @@ void ps_print (print_s *ps, int modoinput, u32 flujo)
 		aux = aux->prev;
 	}
 	
-	/* Imprimimos 't' (o el último vértice, que DEBERIA ser lo mismo) */
 	if (modoinput == 1)
 			printf ("%c: %u\n\n", aux->node, flujo);
 	else
