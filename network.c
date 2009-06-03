@@ -1,11 +1,14 @@
 /* Librerías públicas */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 /* Librerías personales */
 #include "edge.h"
 #include "network.h"
 #include "greedy.h"
 #include "first_coloring.h"
+
+
 
 
 
@@ -21,7 +24,7 @@
 static void initialize_node (u32 node , node_t * nodes)
 {
 	ASSERT (nodes != NULL)
-	ASSERT (node < MAX_N_NODS)
+	ASSERT (node < MAX_N_NODES)
 	
 	nodes[node].corrida = 0;
 }
@@ -31,7 +34,7 @@ static void initialize_node (u32 node , node_t * nodes)
  *
  * PRE: estado != NULL
  */
-static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	edge_t *edge;
 	
@@ -77,7 +80,7 @@ static void AñadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  *
  * PRE: estado != NULL
  */
-static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
+static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32 m;
 	edge_t *edge;
@@ -129,7 +132,7 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	/** De acá para abajo, para coloreo */
 	/* Seteamos el delta de todo el network/grafo */
 	m = max (estado->nodes[v1].degree, estado->nodes[v2].degree);
-	if (estado->delta < m) estado->delta = m;
+	if ((unsigned)estado->delta < m) estado->delta = m;
 	
 	
 	if (v1new) {
@@ -155,16 +158,16 @@ static void AñadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  *
  * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
  */
-extern void ImpresiónFlujosAlf (u32 node, node_t *nodes)
+static void ImpresionFlujosAlf (u32 node, node_t *nodes)
 {
-	edge_list *fl; /* Lista de lados forward de modes[node] */
+	edgeList_t *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
 	int endList = 0;
 	
 	ASSERT (nodes != NULL)
-	ASSERT (nodes[node]->forwardList != NULL)
+	ASSERT (nodes[node].forwardList != NULL)
 	
-	fl = nodes[node];
+	fl = nodes[node].forwardList;
 	el_start (fl);
 	edge = el_get_actual (fl);
 	
@@ -181,23 +184,23 @@ extern void ImpresiónFlujosAlf (u32 node, node_t *nodes)
  *
  * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
  */ 
-extern void ImpresiónFlujosNum (u32 node, node_t *nodes)
+static void ImpresionFlujosNum (u32 node, node_t *nodes)
 {
-	edge_list *fl; /* Lista de lados forward de modes[node] */
+	edgeList_t *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
 	int endList = 0;
 	
 	ASSERT (nodes != NULL)
-	ASSERT (nodes[node]->forwardList != NULL)
+	ASSERT (nodes[node].forwardList != NULL)
 	
-	fl = nodes[node];
+	fl = nodes[node].forwardList;
 	el_start (fl);
 	edge = el_get_actual (fl);
 	
 	while (endList == 0) {
 		PrintFlowNum (edge->nodeOrig, edge->nodeDest, edge->flow);
 		/* Por PrintFlowNum ver consts.h */
-		endLIst = el_avance (fl);
+		endList = el_avance (fl);
 	}
 }
 
@@ -222,9 +225,9 @@ EstadoNetwork *network_create (void)
 		ret->flow_value = 0;
 		ret->maximal  = false;
 		ret->completo = false;
-		ret->mayor  = 0;
+		/*ret->mayor  = 0;*/
 		ret->delta  = 0;
-		ret->colors = 0;
+		ret->colores = 0;
 		ret->l_con  = el_create ();
 		ret->nstack = ns_create ();
 		
@@ -246,12 +249,10 @@ EstadoNetwork *network_create (void)
  *//*! Falta terminar!!*/
 int Inicializar (EstadoNetwork *estado, int modoinput)
 {
-	int ret = 0, i, n;
-	
 	/* Precondiciones */
 	ASSERT(estado != NULL)
-	if ( ModoinputInvalido (modoinput) ) {
-		PRINTERR ("API: Inicializar: modoinput inválido\n");
+	if ( ModoinputInvalido(modoinput) ) {
+		PRINTERR("API: Inicializar: modoinput inválido\n");
 		return 1;
 	}
 
@@ -260,7 +261,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	/* debemos inicializar los vertices */
 	ns_cmd (estado->nstack, estado->nodes, initialize_node);
 
-	return ret;
+	return 0;
 }
 
 /* PRE : {estado != NULL && (modmoinput==1 || modoinput==2)} 
@@ -297,7 +298,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		char edge[15];
 		
 		/* Guardamos en "edge" lo leído */
-		scanf ("%[^\n]", &edge);
+		scanf ("%[^\n]", edge);
 		getchar ();
 		
 		if (edge[2] != ' ') {
@@ -308,7 +309,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		}
 		
 		
-		if (strlen (edge+3) > 10) {
+		if (strlen (edge+3)  > 10) {
 			/* Capacidad mayor que u32 */
 			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
@@ -336,9 +337,9 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			return 0;
 		} else {
 			if (estado->coloreo)
-				AñadirLadoColor (estado, v1, v2, cap);
+				AniadirLadoColor (estado, v1, v2, cap);
 			else
-				AñadirLado (estado, v1, v2, cap);
+				AniadirLado (estado, v1, v2, cap);
 		}
 		
 		if (estado->maximal) estado->maximal = false;
@@ -426,9 +427,9 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		}
 		
 		if (estado->coloreo)
-			AñadirLadoColor (estado, v1, v2, cap);
+			AniadirLadoColor (estado, v1, v2, cap);
 		else
-			AñadirLado (estado, v1, v2, cap);
+			AniadirLado (estado, v1, v2, cap);
 		
 		if (estado->maximal) estado->maximal = false;
 	}
@@ -505,7 +506,11 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				e = qt_get_actual_flow (estado->cola);
 				if((edge->capacity - edge->flow) < e)
 					e = (edge->capacity - edge->flow);
-				qt_add_quad (estado->cola, e, edge->nodeDest, edge, false);
+				/*! aca agregamos con false lo que es igual a?
+				 * qt_add_quad (estado->cola, e, edge->nodeDest, edge, false);
+				 * NOTE: ACA DEBEMOS SETEAR EL FORDWARD O BACKWARD
+				 */
+				qt_add_quad (estado->cola, e, edge->nodeDest, edge);
 				
 				if (edge->nodeDest == t) {
 					/* Obtuvimos t , terminamos el ciclo */
@@ -531,7 +536,10 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				e = qt_get_actual_flow (estado->cola);
 				if(edge->flow < e)
 					e = edge->flow;
-				qt_add_quad (estado->cola, e, edge->nodeOrig , edge, true);
+				/*!NOTE:
+				 * qt_add_quad (estado->cola, e, edge->nodeOrig , edge, true);
+				*/
+				qt_add_quad (estado->cola, e, edge->nodeOrig , edge);
 			}
 			
 			endList = el_avance (actual->backwardList);
@@ -645,9 +653,9 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 		 * pasada como 3º argumento. En este caso la directiva es
 		 * el static ImpresiónFlujosAlf o ImpresiónFlujosNum */
 		if (estado->modoinput == 1)
-			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosAlf);
+			ns_cmd (estado->nstack, estado->nodes, &ImpresionFlujosAlf);
 		else
-			ns_cmd (estado->nstack, estado->nodes, &ImpresiónFlujosNum);
+			ns_cmd (estado->nstack, estado->nodes, &ImpresionFlujosNum);
 	}
 	
 	if (verbosidad != 0) {
