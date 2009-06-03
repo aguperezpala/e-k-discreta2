@@ -137,7 +137,7 @@ INLINE u32 qt_get_actual_flow (quadList_t * qt)
 	RETURNS:
 		edge
  */
-INLINE edge_t qt_get_actual_edge (quadList_t * qt)
+INLINE edge_t * qt_get_actual_edge (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	return qt->prev->next->edge;
