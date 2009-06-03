@@ -74,7 +74,7 @@ void qt_normal_destroy (quadList_t * qt);
 NOTE: antes de cada corrida debemos inicializar la estructura, tomamos el nodo
 * principal de todos (s).
 */
-void qt_initialize (quadList_t * qt, u32 indexNode);
+void qt_initialize (quadList_t * qt, u32 indexNode, u32 flow);
 
 /*! ~~~~~~~~~~~~  Funciones para obtener elementos ~~~~~~~~~~~~~~~~~~~ */
 
