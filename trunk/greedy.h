@@ -40,7 +40,7 @@ Color color_greedy (node_s node_stack , node_t * nodes);
 
 
 
-/* Dado un el nodo busca el menor color aún libre entre sus vecinos
+/* Dado un nodo busca el menor color aún libre entre sus vecinos
 *
 * PRE: nodes != NULL && max_color < 0
 * POS: color_propio(node, nodes) && retorna el mayor color usado.

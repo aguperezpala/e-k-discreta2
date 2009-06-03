@@ -20,14 +20,14 @@
 	REQUIRES;
 		nodes != NULL
 		node < MAX_N_NODES
-*/
+
 static void initialize_node (u32 node , node_t * nodes)
 {
 	ASSERT (nodes != NULL)
 	ASSERT (node < MAX_N_NODES)
 	
 	nodes[node].corrida = 0;
-}
+}*/
 	
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
@@ -256,10 +256,10 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 		return 1;
 	}
 
-	estado->modoinput  = modoinput;
+	estado->modoinput = modoinput;
 	estado->colores = 0;
-	/* debemos inicializar los vertices */
-	ns_cmd (estado->nstack, estado->nodes, initialize_node);
+	estado->flow_value = 0;
+	estado->maximal = 0;
 
 	return 0;
 }
