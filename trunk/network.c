@@ -550,9 +550,9 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			empty = (qt_avance(estado->cola) != 1);
 			q = qt_get_actual_node (estado->cola);
 		
-
 	}
 	endwhile:/* Esta es la salida en caso de que lleguemos a t */
+	
 	
 	
 	if (q == t) {
