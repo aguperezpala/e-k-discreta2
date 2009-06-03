@@ -93,13 +93,15 @@ void qt_normal_destroy (quadList_t * qt)
 		qt != NULL
 NOTE: antes de cada corrida debemos inicializar la estructura 
 */
-void qt_initialize (quadList_t * qt, u32 indexNode)
+void qt_initialize (quadList_t * qt, u32 indexNode, u32 flow)
 {
 	ASSERT (qt != NULL)
 	
 	qt->size = 0;
 	qt->prev = qt->plast = &(qt->first);
-	qt->first.node = indexNode;
+	qt->first.next->node = indexNode;
+	qt->first.next->flow = flow;
+	qt->first.next->pparent = NULL;
 	qt->first.pparent = NULL;
 	
 }

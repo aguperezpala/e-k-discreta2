@@ -479,8 +479,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		t = 1;
 	}
 	
-	/* Borramos la cola vieja */
-	qt_initialize (estado->cola, s);
+	/* Borramos la cola vieja, inicializamos con el maximo flow posible */
+	qt_initialize (estado->cola, s, 0xFFFFFFFF);
 	/* Nos paramos en 's' */
 	qt_start (estado->cola);
 	/* Aumentamos y registramos la versión de corrida E-K */
