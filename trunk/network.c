@@ -7,7 +7,7 @@
 #include "network.h"
 #include "greedy.h"
 #include "first_coloring.h"
-
+#include "print_stack.h"
 
 
 
@@ -452,6 +452,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	edge_t *edge;
 	bool empty = false;
 	int endList = 0;
+	print_s * ps;
 	
 	/* Precondiciones */
 	ASSERT (estado != NULL)
@@ -549,8 +550,9 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			empty = (qt_avance(estado->cola) != 1);
 			q = qt_get_actual_node (estado->cola);
 		
-		endwhile:/* Esta es la salida en caso de que lleguemos a t */
+
 	}
+	endwhile:/* Esta es la salida en caso de que lleguemos a t */
 	
 	
 	if (q == t) {
@@ -568,7 +570,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			edge = qt_get_actual_edge (estado->cola);
 	
 			ASSERT (nIsFromEdge(q, edge))
-			ASSERT (!NotInQueue(&estado->nodes[q], estado->corrida))
+			ASSERT (!NotInQueue((&(estado->nodes[q])), corrida))
 			
 			if (edge->nodeDest == q) { /* Es lado forward */
 				edge->flow += e;

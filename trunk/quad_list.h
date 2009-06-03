@@ -100,7 +100,7 @@ u32 qt_get_actual_flow (quadList_t * qt);
 	RETURNS:
 		edge
 */
-edge_t qt_get_actual_edge (quadList_t * qt);
+edge_t * qt_get_actual_edge (quadList_t * qt);
 
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si qt == NULL ==> size = 0
