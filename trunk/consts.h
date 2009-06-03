@@ -35,9 +35,9 @@
 /* Impresión de errores, para debuggeo */
 #ifdef __DEBUG
 	#include <stdio.h>
-	#define PRINTERR (x)	fprintf(stderr, x)
+	#define PRINTERR(x)	fprintf(stderr, x)
 #else
-	#define PRINTERR (x)
+	#define PRINTERR(x)
 #endif
 
 
@@ -79,7 +79,7 @@ typedef int Color;
 /* Imprime la cadena: "Lado (x,y): Flujo f"
  * donde 'f', 'x' e 'y' son valores u32. Si 'x' o 'y' son '0' o '1'
  * son cambiados por los caracteres 's' o 't' respectivamente */
-#define   PrintFlowNum(x,y,f)  (((x != 0) && (x != 1) && (y != 0) && (y != 1)) ? \
+#define   PrintFlowNum(x,y,f)  /*(((x != 0) && (x != 1) && (y != 0) && (y != 1)) ? \
 				(printf ("Lado (%u,%u): Flujo %u\n", x, y, f);)  \
 					 : ( \
 				((x == 0) && (y != 0) && (y != 1)) ? \
@@ -96,7 +96,7 @@ typedef int Color;
 					 : ( \
 				(printf ("Lado (s,t): Flujo %u\n");) \
 					) ) ) ) ) \
-				)
+				)*/
 	
 
 #ifndef INLINE
