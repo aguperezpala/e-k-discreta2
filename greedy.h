@@ -19,6 +19,9 @@
 
 #include "node.h"
 #include "consts.h"
+#include "node_stack.h"
+
+Color greedy_max_color = 0;
 
 /* Comandos para impresion de colores */
 #define color_printf_alfa(n,c) printf ("Vertice:%c Color:%i\n", n, -c);
@@ -34,5 +37,17 @@
  	     suponemos que puede contener un coloreo "positivo" previo.	
  */
 Color color_greedy (node_s node_stack , node_t * nodes);
+
+
+
+/* Dado un el nodo busca el menor color aún libre entre sus vecinos
+*
+* PRE: nodes != NULL && max_color < 0
+* POS: color_propio(node, nodes) && retorna el mayor color usado.
+*/
+void coloring_node(u32 node_i, node_t * nodes);
+
+
+
 
 #endif

@@ -4,9 +4,9 @@
 #include "greedy.h"
 #include "node_stack.h"
 
-extern Color greedy_max_color = 0;
 
-static bool color_propio(node_t node, node_t * nodes)
+
+static bool color_propio(node_t * node, node_t * nodes)
 {
 	unsigned short i= 0;
 	unsigned short size = 0;
@@ -16,23 +16,23 @@ static bool color_propio(node_t node, node_t * nodes)
 	ASSERT(nodes != NULL)
 
 	/* Chequeo los colores de los vecinos forward */
-	size = el_get_size (node.forwardList);
-	if (size > 0) el_start (node.forwardList);
+	size = el_get_size (node->forwardList);
+	if (size > 0) el_start (node->forwardList);
 	for(i=0 ; i < size ; i++){
-		edge = el_get_actual (node.forwardList);
-		if (nodes[edge->nodeDest].color == node.color)
+		edge = el_get_actual (node->forwardList);
+		if (nodes[edge->nodeDest].color == node->color)
 			return false;
-		el_avance (node.forwardList);
+		el_avance (node->forwardList);
 	}
 
 	/* Chequeo los colores de los vecinos backward */
-	size = el_get_size (node.backwardList);
-	if (size > 0) el_start (node.backwardList);
+	size = el_get_size (node->backwardList);
+	if (size > 0) el_start (node->backwardList);
 	for(i=0 ; i < size ; i++){
-		edge = el_get_actual (node.backwardList);
-		if (nodes[edge->nodeOrig].color == node.color)
+		edge = el_get_actual (node->backwardList);
+		if (nodes[edge->nodeOrig].color == node->color)
 			return false;
-		el_avance (node.backwardList);
+		el_avance (node->backwardList);
 	}
 
 	return true;
@@ -43,9 +43,9 @@ static bool color_propio(node_t node, node_t * nodes)
  * PRE: nodes != NULL && max_color < 0
  * POS: color_propio(node, nodes) && retorna el mayor color usado.
  */
-extern void coloring_node(u32 node_i, node_t * nodes )
+void coloring_node(u32 node_i, node_t * nodes )
 {
-	unsigned short i= 0;
+	register unsigned short i = 0;
 	unsigned short size = 0; 
 	node_t * node;
 	Color *colors = NULL;
@@ -61,28 +61,28 @@ extern void coloring_node(u32 node_i, node_t * nodes )
 	colors = (Color *) calloc ( (greedy_max_color*(-1) ) + 1, sizeof(Color));
 
 	/* Obtengo los colores de los vecinos forward */
-	size = el_get_size (node.forwardList);
-	if (size > 0) el_start (node.forwardList);
+	size = el_get_size (node->forwardList);
+	if (size > 0) el_start (node->forwardList);
 	for(i=0 ; i < size ; i++){
-		edge = el_get_actual (node.forwardList);
+		edge = el_get_actual (node->forwardList);
 		if ( nodes[edge->nodeDest].color < 0 )
 			colors[(nodes[edge->nodeDest].color*(-1))]++;
-		el_avance (node.forwardList);
+		el_avance (node->forwardList);
 	}
 
 	/* Obtengo los colores de los vecinos backward */
-	size = el_get_size (node.backwardList);
-	if (size > 0) el_start (node.backwardList);
+	size = el_get_size (node->backwardList);
+	if (size > 0) el_start (node->backwardList);
 	for(i=0 ; i < size ; i++){
-		edge = el_get_actual (node.backwardList);
+		edge = el_get_actual (node->backwardList);
 		if ( nodes[edge->nodeOrig].color < 0 )
 			colors[(nodes[edge->nodeOrig].color*(-1))]++;
-		el_avance (node.backwardList);
+		el_avance (node->backwardList);
 	}
 	
 	/* Buscando el minimo color no usado */
-	for (i = 1; (i <= max_color) && colors[i]; i++);
-	node.color = (Color) -i;
+	for (i = 1; (i <= greedy_max_color) && colors[i]; i++);
+	node->color = (Color) -i;
 
 	/* Destruyo la lista de colores */
 	free (colors);
@@ -91,13 +91,12 @@ extern void coloring_node(u32 node_i, node_t * nodes )
 	/* Pos */
 	ASSERT(color_propio(node, nodes))
 
-	greedy_max_color = min (node.color, greedy_max_color);
+	greedy_max_color = min (node->color, greedy_max_color);
 }  
 
 Color color_greedy (node_s node_stack , node_t * nodes)
 {
-	int i = 0;
-
+	
 	ns_cmd (node_stack, nodes, coloring_node);
 	
 	return greedy_max_color*(-1);
