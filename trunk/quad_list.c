@@ -97,7 +97,7 @@ void qt_initialize (quadList_t * qt, u32 indexNode, u32 flow)
 {
 	ASSERT (qt != NULL)
 	
-	qt->size = 0;
+	qt->size = 1;	/*! nodo s */
 	qt->prev = qt->plast = &(qt->first);
 	qt->first.next->node = indexNode;
 	qt->first.next->flow = flow;

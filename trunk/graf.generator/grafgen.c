@@ -4,6 +4,7 @@
 #include <glib.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <math.h>
 
 #define ExitBadArg(i)	printf ("Error en el argumento %d\n",i);return 1;
 #define MAX_FLOW_SIDE	0x000FFFFF
@@ -48,6 +49,7 @@ static void exists_and_delete (GList * list, unsigned int n)
 {
 	GList * aux = NULL;
 	GList * del = NULL;
+	unsigned int * num = NULL;
 	
 	
 	assert (list != NULL);
@@ -55,7 +57,8 @@ static void exists_and_delete (GList * list, unsigned int n)
 	aux = g_list_first (list);
 	
 	while (aux != NULL) {
-		if (*((unsigned int *) aux->data) == n) {
+		num = (unsigned int *) aux->data;
+		if (num != NULL && *num == n) {
 			del = aux;
 			list = g_list_remove_link (list, del);
 			g_list_free (del);
@@ -87,7 +90,7 @@ static GList * generate_neighbour (unsigned int from, unsigned int to,
 	assert (to - from > nCount);
 	x = (to - from) / nCount;
 	
-	for (least = 0; least < nCount; least += x) {
+	for (least = 0; least < nCount; least++) {
 		
 		if (from != exept){
 			number = (unsigned int *) malloc (sizeof (unsigned int));
@@ -96,7 +99,8 @@ static GList * generate_neighbour (unsigned int from, unsigned int to,
 		}
 		from += x;
 	}
-	
+	result = g_list_first (result);
+	assert (result != NULL);
 	return result;
 }
 
@@ -109,10 +113,11 @@ static void print_and_check_network (FILE * f, GList * network)
 {
 	unsigned int i = 0;
 	unsigned int j = 0;
-	unsigned int backSide = 0;
+	unsigned int * backSide = 0;
 	unsigned int flow = 0;
 	char dataOut[100];
 	GList * side = NULL;
+	GList * backList = NULL;
 	
 	assert (f != NULL);
 	assert (network != NULL);
@@ -122,12 +127,16 @@ static void print_and_check_network (FILE * f, GList * network)
 	for (i = 0; i < g_list_length (network); i++) {
 		side = g_list_nth_data (network, i);
 		for (j = 0; j < g_list_length (side) && i != 1; j++) {
-			backSide = *((unsigned int *) g_list_nth_data (side, j));
-			/* eliminamos el nodo para evitar que haya duplicados */
-			exists_and_delete ( g_list_nth_data (network, backSide), i);
-			flow = (unsigned int) random () % MAX_FLOW_SIDE;
-			sprintf (dataOut, "%u.%u %u",i,j,flow);
-			fprintf (f, "%s\n", dataOut);
+			backSide = ((unsigned int *) g_list_nth_data (side, j));
+			if (backSide != NULL) {
+				/* eliminamos el nodo para evitar que haya duplicados */
+				backList = g_list_nth_data (network, *backSide);
+				if (backList != NULL)
+					exists_and_delete ( backList, i);
+				flow = (unsigned int) random () % MAX_FLOW_SIDE;
+				sprintf (dataOut, "%u.%u %u",i,j,flow);
+				fprintf (f, "%s\n", dataOut);
+			}
 		}
 	}
 }
@@ -176,10 +185,10 @@ int main (int argc, char ** args)
 	network = g_list_append (network, side);
 	/*! t es vacio */
 	
-	generate_neighbor (0, 3, 0, 2);
+	side = generate_neighbour (0, 3, 0, 2);
 	network = g_list_append (network, side);
 	for (i = 2; i < n; i++) {
-		from = (random () % n) - 1;
+		from = abs ((random () % n) - 1);
 		to = n;
 		nCount = (m % (to - from - 1)) + 1;
 		side = generate_neighbour (from, to, 0, nCount);
