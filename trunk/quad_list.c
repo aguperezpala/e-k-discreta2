@@ -114,7 +114,7 @@ void qt_initialize (quadList_t * qt, u32 indexNode, u32 flow)
 	RETURNS:
 		indice
 */
-INLINE u32 qt_get_actual_node (quadList_t * qt)
+u32 qt_get_actual_node (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	ASSERT (qt->size >= 1)
@@ -127,7 +127,7 @@ INLINE u32 qt_get_actual_node (quadList_t * qt)
 	RETURNS:
 		flow
 */
-INLINE u32 qt_get_actual_flow (quadList_t * qt)
+u32 qt_get_actual_flow (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	return qt->prev->next->flow;
@@ -139,7 +139,7 @@ INLINE u32 qt_get_actual_flow (quadList_t * qt)
 	RETURNS:
 		edge
  */
-INLINE edge_t * qt_get_actual_edge (quadList_t * qt)
+edge_t * qt_get_actual_edge (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	return qt->prev->next->edge;
@@ -148,7 +148,7 @@ INLINE edge_t * qt_get_actual_edge (quadList_t * qt)
 /* Funcion que devuelve el tamaño de la lista
  * NOTE: si qt == NULL ==> size = 0
  */
-INLINE short qt_get_size (quadList_t * qt)
+short qt_get_size (quadList_t * qt)
 {
 	if (qt == NULL)
 		return 0;
@@ -167,7 +167,7 @@ INLINE short qt_get_size (quadList_t * qt)
  *		0, si avanzamos normalmente
  *		1, si estamos al final de la cola
  */
-INLINE int qt_avance (quadList_t * qt)
+int qt_avance (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 			
@@ -184,7 +184,7 @@ INLINE int qt_avance (quadList_t * qt)
 	REQUIRES:
 		el != NULL
 */
-INLINE void qt_go_parent (quadList_t * qt)
+void qt_go_parent (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	qt->prev = qt->prev->next->pparent;
@@ -195,7 +195,7 @@ INLINE void qt_go_parent (quadList_t * qt)
 	REQUIRES:
 		el != NULL
 */
-INLINE void qt_start (quadList_t * qt)
+void qt_start (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	qt->prev = qt->plast = &(qt->first);
@@ -210,7 +210,7 @@ el != NULL
 NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
 avanzar el "visor" (actual) al final.
 */
-INLINE void qt_move_last (quadList_t * qt)
+void qt_move_last (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 	qt->prev = qt->plast;
@@ -226,7 +226,7 @@ INLINE void qt_move_last (quadList_t * qt)
 		edge	!= NULL
 		indexNode	<= MAX_N_NODES
 */
-void qt_add_triple (quadList_t * qt,  u32 flow, u32 indexNode , edge_t * edge )
+void qt_add_quad (quadList_t * qt,  u32 flow, u32 indexNode , edge_t * edge )
 {	
 	struct quadCeld * celd;
 	/* pre */

@@ -69,7 +69,7 @@ typedef int Color;
 /* Indica si en nodo pertenece a dicho edge.
  * bool nIsFromEdge(u32 n , edge_t * e )
  */
-#define nIsFromEdge(n,e) ((e->nodeOrig == n) != (e->nodeDest == q))
+#define nIsFromEdge(n,e) ((e->nodeOrig == n) != (e->nodeDest == n))
 
 
 /* Indica si el vértice 'x' está en la cola de E-K corrida nº 'c'  */
@@ -99,32 +99,35 @@ typedef int Color;
 				)*/
 
 
-/*! FUNCIONES PARA DETERMINAR SI UN NODO ES O NO BACKWARD/FORDWARD Y SETEARLOS
+
+/* FUNCIONES PARA DETERMINAR SI UN NODO ES O NO BACKWARD/FORDWARD Y SETEARLOS
  * COMO FORD/BACK WARD
- */
-/* Mini explicacion: Lo que hacemos es peligroso, porque? porque estamos trabajando
+ *
+ * Mini explicacion: Lo que hacemos es peligroso, porque? porque estamos trabajando
  * sobre indices en un arreglo, osea, un nodo se identifica por su indice en el
  * arreglo, estas funciones (sobretodo las de setear como backward) modifican
  * ese indice agrgandole bits = 1 en los bits de alto orden, por lo que un nodo
  * seteado como backward va a indicar que esta en la posicion >>>>>>> 7000 en el
  * arreglo (SUPER SIGSEV).
  * NOTE: Por eso siempre antes de usar cualquier nodo se debe setear a modo normal
-	 SOLO EN LOS BACKWARDS (los fordwards no hace falta
- */
+ *	 SOLO EN LOS BACKWARDS (los fordwards no hace falta
+ 
 #define IsBackward(x)	(x & 0xF0000000)
-#define IsFordward(x)	!IsBackward(x)	/* kakaso pero no hay otra forma, asique
-					 * chequeen si es backward nada mas
-					 * es mas rapido :D.
-					 */
-/* para setear un nodo como fordward */
+#define IsFordward(x)	!IsBackward(x)	 * kakaso pero no hay otra forma, asique \
+					 * chequeen si es backward nada mas \
+					 * es mas rapido :D \
+					 *
+					 
+ * para setear un nodo como fordward 
 #define SetBackward(x)	(x | 0xF0000000)
 #define SetFordward(x)	(x & 0x0FFFFFFF)
-/* adicional al pedo pero bueno, sirve para transformar a una direccion segura
+
+ * adicional al pedo pero bueno, sirve para transformar a una direccion segura
  * ya que usamos solo 2¹³ (osea 13 bits, ahi nos podemos pasar pero no deberia
  * suceder NUNCA 
- */
+ 
 #define SetNormalIndexPos(x) (x & 0x0000FFFF)
-
+*/
 
 #ifndef INLINE
 # if __GNUC__
