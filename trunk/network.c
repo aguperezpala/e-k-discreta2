@@ -502,12 +502,12 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		return 2;
 	}
 	
-	if(estado->maximal){
-		/* No se puede aumentar el flujo */
+	/*if(estado->maximal){
+		No se puede aumentar el flujo
 		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");
 		return 1;
 	}
-		
+	*/	
 	if (estado->modoinput == 1) {
 		/** Modo alfabético */
 		s = 115; /* 115 == ASCII('s') */
@@ -523,6 +523,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	/* Nos paramos en 's' */
 	qt_start (estado->cola);
 	/* Aumentamos y registramos la versión de corrida E-K */
+	
 	estado->nodes[s].corrida++;
 	corrida = estado->nodes[s].corrida;
 	
@@ -547,7 +548,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				flujo = qt_get_actual_flow (estado->cola);
 				if((edge->capacity - edge->flow) < flujo)
 					flujo = (edge->capacity - edge->flow);
-				
+				vecino->corrida = corrida;
 				qt_add_quad (estado->cola, flujo, edge->nodeDest, edge);
 				
 				if (edge->nodeDest == t) {
@@ -574,7 +575,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				flujo = qt_get_actual_flow (estado->cola);
 				if(edge->flow < flujo)
 					flujo = edge->flow;
-				
+				vecino->corrida = corrida;
 				qt_add_quad (estado->cola, flujo, edge->nodeOrig , edge);
 			}
 			
@@ -582,7 +583,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		}
 
 		nextNode:/* Nos movemos al siguiente nodo */
-			empty = (qt_avance(estado->cola) != 1);
+			empty = (qt_avance(estado->cola) == 1);
 			q = qt_get_actual_node (estado->cola);
 		
 	}
@@ -592,7 +593,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	
 	if (q == t) {
 		/* Llegamos a 't' => hay que actualizar flujo */
-		
+		/* nos movemos al final de la cola */
+		qt_move_last (estado->cola);
 		if (verbosidad == 1 || verbosidad == 3)
 			/* Debemos imprimir el camino */
 			ps = ps_create();
@@ -633,6 +635,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		
 	} else {
 		estado->maximal = true;
+		result = 1;
 		
 		if (verbosidad == 2 || verbosidad == 3) {
 			/* Hay que imprimir el corte */
