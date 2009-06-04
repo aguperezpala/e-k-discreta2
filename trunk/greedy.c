@@ -4,6 +4,10 @@
 #include "greedy.h"
 #include "node_stack.h"
 
+
+static Color greedy_max_color = 0;
+
+
 static bool color_propio(u32 node_i , node_t * nodes)
 {
 	edge_t *edge = NULL;
