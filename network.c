@@ -298,7 +298,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	estado->modoinput = modoinput;
 	estado->colores = 0;
 	estado->flow_value = 0;
-	estado->maximal = 0;
+	estado->maximal = false;
 
 	return 0;
 }
