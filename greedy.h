@@ -21,7 +21,6 @@
 #include "consts.h"
 #include "node_stack.h"
 
-Color greedy_max_color = 0;
 
 /* Funcion que le aplica un coloreo propio a nodes y 
  * retorna la cantidad de colores usados.
