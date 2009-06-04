@@ -1,6 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "print_stack.h"
+
+
+
+struct _print_celd {
+	u32 node;	/* Nombre del vértice */
+	char sentido;	/* ',' => forward ; '<' => backward */
+	struct _print_celd *prev;
+};
 
 
 struct _print_s {
@@ -8,11 +17,6 @@ struct _print_s {
 	struct _print_celd *last;  /* Celda actual */
 };
 
-struct _print_celd {
-	u32 node;	/* Nombre del vértice */
-	char sentido;	/* ',' => forward ; '<' => backward */
-	_print_celd *prev;
-};
 
 
 /* Genera una nueva pila de impresión vacía
@@ -22,14 +26,13 @@ struct _print_celd {
  */
 print_s *ps_create (void)
 {
-	print_s ps;
+	print_s *ps;
 	
 	ps = (print_s *) malloc (sizeof (struct _print_s));
-	ASERT (ps != NULL)
+	ASSERT (ps != NULL)
 	
 	ps->last->prev = NULL;
 	ps->last = &ps->dummy;
-	ps->size = 0;
 	
 	return ps;
 }
@@ -43,13 +46,13 @@ print_s *ps_create (void)
  */
 void ps_destroy (print_s *ps)
 {
-	print_s *aux;
+	struct _print_celd *aux;
 	
 	ASSERT (ps != NULL)
 	
 	aux = ps->last;
 	
-	while (aux != &ps->first) {
+	while (aux != &ps->dummy) {
 		/* Destruimos hacia atrás hasta llegar al comienzo */
 		ps->last = ps->last->prev;
 		free (aux);
@@ -72,12 +75,12 @@ void ps_destroy (print_s *ps)
  */
 print_s *ps_add_node (print_s *ps, u32 v, char sentido)
 {
-	_print_celd *new;
+	struct _print_celd *new;
 	
 	ASSERT (ps != NULL)
 	ASSERT ((sentido == ',') || (sentido == '<'))
 	
-	new = (_print_celd *) malloc (sizeof (struct _print_celd));
+	new = (struct _print_celd *) malloc (sizeof (struct _print_celd));
 	ASSERT (new != NULL);
 	
 	new->node = v;
@@ -100,7 +103,7 @@ print_s *ps_add_node (print_s *ps, u32 v, char sentido)
  */
 void ps_print (print_s *ps, int modoinput, u32 flujo)
 {
-	_print_celd *aux;
+	struct _print_celd *aux;
 	
 	ASSERT (ps != NULL)
 	ASSERT ((modoinput == 1) || (modoinput == 2))
