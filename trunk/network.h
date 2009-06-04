@@ -82,9 +82,10 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad);
  * flujo = ImprimirFlujo (estado, verbosidad)
  * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
  *	  	         "se imprimió según (verbosidad)")
+ *	  flujo < 0 => (error de ejecución)
  *	}
  */
-u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
+long int ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
 
 
 /* PRE: {estado != NULL && verbosidad € {0, 1} }

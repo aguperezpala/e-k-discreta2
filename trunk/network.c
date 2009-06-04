@@ -205,6 +205,13 @@ static void ImpresionFlujosNum (u32 node, node_t *nodes)
 }
 
 
+/* Comandos para impresion de colores */
+static void Color_printf_alfa (u32 n, int c) { printf ("Vertice:%c Color:%i\n", n, c); }
+
+static void Color_printf_num  (u32 n, int c) { printf ("Vertice:%u Color:%i\n", n, c); }
+
+
+
 /**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
 /** ~~~~~~~~~~~~~~~~~~~~~ FUNCIONES DE LA API (EXTERNAS) ~~~~~~~~~~~~~~~~~~~~ */
 
@@ -446,7 +453,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	int result = 0;
-	u32 s, t, q , p , e;
+	u32 s, t, q, flujo = 0;
 	unsigned short corrida;
 	node_t *actual, *vecino;
 	edge_t *edge;
@@ -504,14 +511,11 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			if (NotInQueue(vecino,corrida) &&
 				(edge->flow < edge->capacity)){
 				/* Encolo el vertice */
-				e = qt_get_actual_flow (estado->cola);
-				if((edge->capacity - edge->flow) < e)
-					e = (edge->capacity - edge->flow);
-				/*! aca agregamos con false lo que es igual a?
-				 * qt_add_quad (estado->cola, e, edge->nodeDest, edge, false);
-				 * NOTE: ACA DEBEMOS SETEAR EL FORDWARD O BACKWARD
-				 */
-				qt_add_quad (estado->cola, e, edge->nodeDest, edge);
+				flujo = qt_get_actual_flow (estado->cola);
+				if((edge->capacity - edge->flow) < flujo)
+					flujo = (edge->capacity - edge->flow);
+				
+				qt_add_quad (estado->cola, flujo, edge->nodeDest, edge);
 				
 				if (edge->nodeDest == t) {
 					/* Obtuvimos t , terminamos el ciclo */
@@ -534,13 +538,11 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			if (NotInQueue(vecino,corrida) &&
 				(edge->flow > 0)){
 				/* Encolo el vertice */
-				e = qt_get_actual_flow (estado->cola);
-				if(edge->flow < e)
-					e = edge->flow;
-				/*!NOTE:
-				 * qt_add_quad (estado->cola, e, edge->nodeOrig , edge, true);
-				*/
-				qt_add_quad (estado->cola, e, edge->nodeOrig , edge);
+				flujo = qt_get_actual_flow (estado->cola);
+				if(edge->flow < flujo)
+					flujo = edge->flow;
+				
+				qt_add_quad (estado->cola, flujo, edge->nodeOrig , edge);
 			}
 			
 			endList = el_avance (actual->backwardList);
@@ -573,12 +575,12 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			ASSERT (!NotInQueue((&(estado->nodes[q])), corrida))
 			
 			if (edge->nodeDest == q) { /* Es lado forward */
-				edge->flow += e;
+				edge->flow += flujo;
 				if (verbosidad == 1 || verbosidad == 3)
 					ps = ps_add_node (ps, q, ',');
 						
 			} else {		  /* Es lado backward */
-				edge->flow -= e;
+				edge->flow -= flujo;
 				if (verbosidad == 1 || verbosidad == 3)
 					ps = ps_add_node (ps, q, '<');
 			}
@@ -589,10 +591,10 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		
 		if (verbosidad == 1 || verbosidad == 3) {
 			/* Nos faltó agregar 's' */
-			ps = ps_add_node (ps, q, estado->modoinput, ',');
+			ps = ps_add_node (ps, q, ',');
 		
 			/* Imprimimos el camino hallado */
-			ps_print (ps, estado->modoinput, qt_get_actual_flow(estado->cola));
+			ps_print (ps, estado->modoinput, flujo);
 			ps_destroy (ps);
 		}
 		
@@ -613,10 +615,16 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			for (i = 0 ; i < nn-1 ; i++) {
 				q = qt_get_actual_node (estado->cola);
 				
-				if (estado->modoinput == 1)
+				ASSERT (q != t)
+				
+				if (estado->modoinput == 1) /* Alfabético */
 					printf ("%c, ",q);
-				else
-					printf ("%u, ",q);
+				else {
+					if (q == s)
+						printf ("s, ");
+					else
+						printf ("%u, ",q);
+				}
 				
 				cap += (qt_get_actual_edge(estado->cola))->capacity;
 				
@@ -624,10 +632,19 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			}
 			/* Nos faltó el último */
 			q = qt_get_actual_node (estado->cola);
+			
+			ASSERT (q != t)
+			
 			if (estado->modoinput == 1)
-				printf ("%c}\n", q)
-			else
-				printf ("%u}\n", q);
+				printf ("%c}\n", q);
+			else {
+				if (q == s)
+					printf ("s}\n");
+				else
+					printf ("%u}\n",q);
+			}
+			
+			cap += (qt_get_actual_edge(estado->cola))->capacity;
 			
 			printf ("Capacidad del corte: %u\n\n", cap);
 		}
@@ -640,20 +657,26 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
  * flujo = ImprimirFlujo (estado, verbosidad)
  * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
  *	  	         "se imprimió según (verbosidad)")
+ *	  flujo < 0 => (error de ejecución)
  *	}
  */
-u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
+long int ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 {
 	/* Precondiciones */
 	ASSERT (estado != NULL)
-	ASSERT(!VerbosidadInvalidaImprimir (verbosidad))
-
+	if ( VerbosidadInvalidaImprimir (verbosidad) ) {
+		/* Verbosidad no valida */
+		PRINTERR ("API: ImprimirFlujo: verbosidad inválida\n");
+		return -1;
+	}
+	
 	if (verbosidad == 2) {
 		printf ("Flujo:\n");
 		/* Llamamos a una función de node_stack (ns_cmd) que toma
-		 * un conjunto de nodos y a cada uno le aplica la directiva
-		 * pasada como 3º argumento. En este caso la directiva es
-		 * el static ImpresiónFlujosAlf o ImpresiónFlujosNum */
+		 * un conjunto de nodos (estado->nodes) y un conjunto de 
+		 * índices (estado->nstack) que a cada nodo que esté
+		 * contemplado en los índices le aplica la directiva
+		 * pasada como 3º argumento (ImpresionFlujosAlf/Num) */
 		if (estado->modoinput == 1)
 			ns_cmd (estado->nstack, estado->nodes, &ImpresionFlujosAlf);
 		else
@@ -678,30 +701,30 @@ u32 ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
 	unsigned short K = 0;
-	node_cmd printNC;/* Comando para imprimir el nodo y su color */
+	void (*printNC) (u32 node, int color);/* Comando para imprimir el nodo y su color */
 
 	/* Precondiciones */
 	ASSERT(!VerbosidadInvalidaColorear(verbosidad))
 	ASSERT(estado->coloreo)
 	
 	/* Imprimo el coloreo obtenido por first_coloring */
-	printNC = ( verbosidad == 1 ) ? color_printf_alfa : color_printf_num;
+	printNC = ( verbosidad == 1 ) ? &Color_printf_alfa : &Color_printf_num;
 	
 	if (estado->colores > 0){
 		/*Se realizo un coloreo previo */
 		K = ResolverConflictos(estado);
-		ASSERT (k>0)
+		ASSERT (K>0)
 
 		if ( verbosidad == 1 ) {
 			printf("Coloreo con First Coloring : %d" , K );  
-			ns_cmd (estado->nstack , estado->nodes, printNC );
+/** TODO <NS CMD> */			ns_cmd (estado->nstack , estado->nodes, printNC );
 			printf("Cantidad de Colores utilizados: %d" , K ); 
 		}
 		if ( K <= estado->delta )return K;
 	}
 	
 	K = color_greedy( estado->nstack , estado->nodes);
-	ASSERT (k>0)
+	ASSERT (K > 0)
 	/* Imprimo el coloreo obtenido por greedy.
 	   NOTA!: Los colores se imprimen en negativo , luego lo arreglare con una
 		  funcion aparte. */
