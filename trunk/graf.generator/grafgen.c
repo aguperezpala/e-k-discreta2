@@ -49,6 +49,7 @@ static void exists_and_delete (GList * list, unsigned int n)
 {
 	GList * aux = NULL;
 	GList * del = NULL;
+	GList * prev = NULL, * next = NULL;
 	unsigned int * num = NULL;
 	
 	
@@ -60,8 +61,14 @@ static void exists_and_delete (GList * list, unsigned int n)
 		num = (unsigned int *) aux->data;
 		if (num != NULL && *num == n) {
 			del = aux;
-			list = g_list_remove_link (list, del);
-			g_list_free (del);
+			prev = aux->prev;
+			next = aux->next;
+			if (prev != NULL)
+				prev->next = next;
+			if (next != NULL)
+				next->prev = prev;
+			free (aux->data);
+			
 			break;
 		}
 			
@@ -111,7 +118,7 @@ static GList * generate_neighbour (unsigned int from, unsigned int to,
 */
 static void print_and_check_network (FILE * f, GList * network)
 {
-	unsigned int i = 0;
+	int i = 0;
 	unsigned int j = 0;
 	unsigned int * backSide = 0;
 	unsigned int flow = 0;
@@ -124,18 +131,19 @@ static void print_and_check_network (FILE * f, GList * network)
 	assert (network != NULL);
 	
 	/* bien ineficiente :D */
-	for (i = 0; i < g_list_length (network); i++) {
+	for (i = g_list_length (network) - 1; i >= 0 ; i--) {
 		side = g_list_nth_data (network, i);
-		for (j = 0; j < g_list_length (side) && i != 1; j++) {
+		for (j = 1; j < g_list_length (side) && i != 1 && (unsigned) i != j; j++) {
 			backSide = ((unsigned int *) g_list_nth_data (side, j));
 			if (backSide != NULL) {
 				/* eliminamos el nodo para evitar que haya duplicados */
 				backList = g_list_nth_data (network, *backSide);
 				if (backList != NULL)
-					exists_and_delete ( backList, i);
-				flow = (unsigned int) random () % MAX_FLOW_SIDE;
-				sprintf (dataOut, "%u.%u %u",i,j,flow);
+					exists_and_delete ( backList, (unsigned) i);
+				flow = (unsigned int) (random () * 31 * 37 * 13 * 11) % MAX_FLOW_SIDE;
+				sprintf (dataOut, "%u.%u %u",(unsigned)i,j,flow);
 				fprintf (f, "%s\n", dataOut);
+				/*printf ("%s\n", dataOut);*/
 			}
 		}
 	}
@@ -178,9 +186,9 @@ int main (int argc, char ** args)
 	
 	/* creamos el network */
 	/* cargamos a s y nunca a t */
-	from = (random () % n) - 1;
+	from = 0;
 	to = n;
-	nCount = (m % (to - from)) - 1;
+	nCount = (m % (to - from - 1)) + 1;
 	side = generate_neighbour (from, to, 1, nCount);
 	network = g_list_append (network, side);
 	/*! t es vacio */
@@ -195,11 +203,12 @@ int main (int argc, char ** args)
 		network = g_list_append (network, side);
 	}	
 	
-	fclose (file);
+	
 	
 	print_and_check_network (file, network);
 	for (i = 0; i < n; i++) {
 		g_list_free (g_list_nth_data (network, i));
 	}
+	fclose (file);
 	return 0;
 }
