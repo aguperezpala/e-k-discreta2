@@ -13,11 +13,10 @@
  * Revisión: Penazzi, Daniel
  *
  */
-
-
 #ifndef PRINT_L_H
 #define PRINT_L_H
 
+#include "consts.h"
 
 
 typedef struct _print_s print_s;
