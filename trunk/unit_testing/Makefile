@@ -1,7 +1,7 @@
 TARGET=runner
 CC=gcc
 CFLAGS+= -I.. -ansi -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast -Wcast-qual -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -pedantic -g `pkg-config --cflags glib-2.0`#-Werror
-LDFLAGS=-lcheck `pkg-config --libs glib-2.0`
+LDFLAGS=-lcheck `pkg-config --libs glib-2.0` -D_DEBUG
 SOURCES=$(shell echo *.c)
 OBJECTS=$(SOURCES:.c=.o)
 # Aquí no usamos un wildcard para no traer el main
