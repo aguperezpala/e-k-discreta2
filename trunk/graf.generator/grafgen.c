@@ -73,9 +73,9 @@ static void exists_and_delete (GList * list, unsigned int n)
 		from < to
 		nCount > to - from
 	RETURNS:
-		list of neighbor
+		list of neighbour
 */
-static GList * generate_neighbor (unsigned int from, unsigned int to, 
+static GList * generate_neighbour (unsigned int from, unsigned int to, 
 				   unsigned int exept, unsigned int nCount /*cantidad de vecinos*/)
 {
 	GList * result = NULL;
@@ -170,7 +170,7 @@ int main (int argc, char ** args)
 	from = (random () % n) - 1;
 	to = n;
 	nCount = (random () % (to - from)) - 1;
-	side = generate_neighbor (from, to, 1, nCount);
+	side = generate_neighbour (from, to, 1, nCount);
 	
 	/*! t es vacio */
 	
@@ -180,7 +180,7 @@ int main (int argc, char ** args)
 		from = (random () % n) - 1;
 		to = n;
 		nCount = (random () % (to - from)) - 1;
-		side = generate_neighbor (from, to, 0, nCount);
+		side = generate_neighbour (from, to, 0, nCount);
 		g_list_append (network, side);
 	}	
 	

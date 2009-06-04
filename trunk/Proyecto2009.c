@@ -1,3 +1,20 @@
+
+/* MACK-EK versión 1.0
+ * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
+ * maximal en un network
+ *
+ * Autores:  Budde, Carlos E.
+ *	     Kondrasky, Alejandro
+ *	     Pérez Paladini, Agustín
+ *	     Soldevilla, Mallku R.
+ *
+ * Revisión: Penazzi, Daniel
+ *
+ */
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "parser_args.h"
@@ -9,7 +26,9 @@
 
 static void main_help (void)
 {
-	printf ("\n\nModo de uso:\n\n"
+	printf (
+	
+	"\n\n\t\t    Bienvenido a MACK-EK versión 1.0\n\nModo de uso:\n\n"
 	"  Para setear:  ·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
 	"		·verbosidad: -v <grado>\n\n"
 	"  Si vamos a calcular:  ·el flujo maximo: -max-flow\n"
@@ -18,7 +37,8 @@ static void main_help (void)
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
 	"  Para ejecutar n veces:  ·para medir el tiempo: -ctime <n>\n"
 	"			  ·para medir el flujo: -ftime <n>\n\n"
-	"NOTA: son obligatorios los campos <>\n");
+	"NOTA: son obligatorios los campos <>\n"
+	       );
 }
 	
 
