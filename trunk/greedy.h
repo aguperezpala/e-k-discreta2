@@ -23,10 +23,6 @@
 
 Color greedy_max_color = 0;
 
-/* Comandos para impresion de colores */
-#define color_printf_alfa(n,c) printf ("Vertice:%c Color:%i\n", n, -c);
-#define color_printf_num (n,c) printf ("Vertice:%u Color:%i\n", n, -c);
-
 /* Funcion que le aplica un coloreo propio a nodes y 
  * retorna la cantidad de colores usados.
    REQUIRES:
