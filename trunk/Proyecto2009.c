@@ -9,16 +9,16 @@
 
 static void main_help (void)
 {
-	printf ("\n\n\n\nModo de uso:\n"
-	"Para setear modo numerico: -numeric (por defecto es modo alfanumerico)\n"
-	"verbosidad: -v <grado>\n"
-	"si vamos a calcular el flujo maximo: -max-flow\n"
-	"si vamos a calcular coloreo: -colour\n"
-	"si vamos a agregar bloques incrementalmente: -inc <n>\n"
-	"si vamos a calcular parcialmente: -partial <m>\n"
-	"para ejecutar n veces para medir el tiempo: -ctime <n>\n"
-	"para ejecutar n veces para medir el flujo: -ftime <n>\n"
-	"\n\nNOTA: son obligatorios los campos <>\n");
+	printf ("\n\nModo de uso:\n\n"
+	"  Para setear:  ·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
+	"		·verbosidad: -v <grado>\n\n"
+	"  Si vamos a calcular:  ·el flujo maximo: -max-flow\n"
+	"			·coloreo: -colour\n"
+	"			·parcialmente: -partial <m>\n\n"
+	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
+	"  Para ejecutar n veces:  ·para medir el tiempo: -ctime <n>\n"
+	"			  ·para medir el flujo: -ftime <n>\n\n"
+	"NOTA: son obligatorios los campos <>\n");
 }
 	
 
@@ -140,7 +140,7 @@ int main (int argc, char ** args)
 
 	main_help ();
 	if (argc <= 1) {
-		printf ("Se requieren argumentos\n");
+		printf ("\nError de ejecución: ¡se requieren argumentos!\n\n");
 		return -1;
 	}
 	
