@@ -31,7 +31,7 @@ print_s *ps_create (void)
 	ps = (print_s *) malloc (sizeof (struct _print_s));
 	ASSERT (ps != NULL)
 	
-	ps->last->prev = NULL;
+	ps->dummy.prev = NULL;
 	ps->last = &ps->dummy;
 	
 	return ps;
