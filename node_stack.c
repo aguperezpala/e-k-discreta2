@@ -2,24 +2,27 @@
 
 #include "node_stack.h"
 
+typedef struct _node_celd_s * node_celd;
+
+struct _node_celd_s {
+	u32 node;	/* Nombre del vértice */
+	node_celd prev;
+};
+
 struct _node_s {
-	struct _node_celd dummy;  /* 1º celda */
+	node_celd dummy;  /* 1º celda */
 	node_celd last;  /* Celda ultima */
 };
 
-struct _node_celd {
-	u32 node;	/* Nombre del vértice */
-	node_celd prev;
-}* node_celd;
-
-node_s *ns_create (void)
+node_s ns_create (void)
 {
-
-	ns = (node_s *) malloc (sizeof (struct _node_s));
+	node_s ns = (node_s) malloc (sizeof (struct _node_s));
 	ASSERT (ns != NULL)
+
+	ns->dummy = (node_celd) malloc (sizeof (struct _node_celd_s));
+	ASSERT (ns->dummy != NULL)
 	
-	ns->actual = &ns->dummy;
-	ns->last = &ns->dummy;
+	ns->last = ns->dummy;
 
 	return ns;
 }
@@ -30,12 +33,11 @@ void ns_destroy (node_s ns)
 	node_celd target;
 	
 	ASSERT (ns != NULL)
-	ASSERT (nodes != NULL)
 	
 	aux = ns->last;
 	
 	/* Destruye todos los nodos */
-	while (aux != &ns->dummy) {
+	while (aux != ns->dummy) {
 		target = aux;
 		aux = aux->prev;
 		free(target);
@@ -43,6 +45,8 @@ void ns_destroy (node_s ns)
 	}
 	
 	/* Destruye el stack */
+	free (ns->dummy);
+	ns->dummy = NULL;
 	aux = NULL;
 	free (ns);
 	ns = NULL;
@@ -54,7 +58,7 @@ void ns_add_node (node_s ns, u32 v)
 	
 	ASSERT (ns != NULL)
 	
-	new = (node_celd) malloc (sizeof (struct _node_celd));
+	new = (node_celd) malloc (sizeof(struct _node_celd_s));
 	ASSERT (new != NULL)
 	
 	new->node = v;
@@ -72,7 +76,7 @@ void ns_cmd (node_s ns,node_t * nodes , node_cmd cmd )
 	aux = ns->last;
 	
 	/* Realizamos la ejecucion de cmd para todos los vertices */
-	while (aux != &ns->dummy) {
+	while (aux != ns->dummy) {
 		cmd (aux->node, nodes);
 		aux = aux->prev;
 	}
