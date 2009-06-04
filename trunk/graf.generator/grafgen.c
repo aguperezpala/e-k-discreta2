@@ -26,7 +26,7 @@ static bool is_int (const char *string, long int *num)
 	char *endptr = '\0';
 	size_t size = 0;
 	
-	ASSERT ((string != NULL) && (num != NULL))
+	assert ((string != NULL) && (num != NULL));
 	
 	*num = strtol (string, &endptr, 10);
 	size = strlen (string);
@@ -55,9 +55,9 @@ static void exists_and_delete (GList * list, unsigned int n)
 	aux = g_list_first (list);
 	
 	while (aux != NULL) {
-		if (*((unsigned int) aux->data) == n) {
+		if (*((unsigned int *) aux->data) == n) {
 			del = aux;
-			g_list_remove_link (list, del);
+			list = g_list_remove_link (list, del);
 			g_list_free (del);
 			break;
 		}
@@ -79,19 +79,21 @@ static GList * generate_neighbour (unsigned int from, unsigned int to,
 				   unsigned int exept, unsigned int nCount /*cantidad de vecinos*/)
 {
 	GList * result = NULL;
-	int least = 0, x = 0;
+	unsigned int least = 0, x = 0;
 	unsigned int *number = NULL;
 	
 	/*! bien ineficiente como la gran choripan */
 	assert (from < to);
-	assert (to - from < nCount);
+	assert (to - from > nCount);
 	x = (to - from) / nCount;
 	
 	for (least = 0; least < nCount; least += x) {
-		number = (unsigned int *) malloc (sizeof (unsigned int));
-		*number = from;
-		if (from != exept)
+		
+		if (from != exept){
+			number = (unsigned int *) malloc (sizeof (unsigned int));
+			*number = from;
 			result = g_list_append (result, number);
+		}
 		from += x;
 	}
 	
@@ -119,13 +121,13 @@ static void print_and_check_network (FILE * f, GList * network)
 	/* bien ineficiente :D */
 	for (i = 0; i < g_list_length (network); i++) {
 		side = g_list_nth_data (network, i);
-		for (j = 0; j < g_list_length (side); j++) {
-			backSide = *((unsigned int) g_list_nth_data (side, j));
+		for (j = 0; j < g_list_length (side) && i != 1; j++) {
+			backSide = *((unsigned int *) g_list_nth_data (side, j));
 			/* eliminamos el nodo para evitar que haya duplicados */
-			exists_and_delete (network[backSide], i);
+			exists_and_delete ( g_list_nth_data (network, backSide), i);
 			flow = (unsigned int) random () % MAX_FLOW_SIDE;
-			sprintf (dataOut, "%u%u %u\n",i,j,flow);
-			fprintf (f, dataOut);
+			sprintf (dataOut, "%u.%u %u",i,j,flow);
+			fprintf (f, "%s\n", dataOut);
 		}
 	}
 }
@@ -136,7 +138,7 @@ int main (int argc, char ** args)
 	unsigned int i = 0;
 	int from = 0, to = 0, nCount = 0;
 	char * fName = NULL;
-	bool isNumeric = false;
+	long int isNumeric = false;
 	FILE * file = NULL;
 	GList * network = NULL;
 	GList * side = NULL;
@@ -147,13 +149,13 @@ int main (int argc, char ** args)
 	
 	/* cargamos los argumentos */
 	
-	if (!is_int (args[1], &n) {
+	if (!is_int (args[1], &n)) {
 		ExitBadArg(1);
 	}
-	if (!is_int (args[2], &m) {
+	if (!is_int (args[2], &m)) {
 		ExitBadArg(2);
 	}
-	if (!is_int (args[3], &disNumeric) {
+	if (!is_int (args[3], &isNumeric)) {
 		ExitBadArg(3);
 	}
 	
@@ -169,22 +171,26 @@ int main (int argc, char ** args)
 	/* cargamos a s y nunca a t */
 	from = (random () % n) - 1;
 	to = n;
-	nCount = (random () % (to - from)) - 1;
+	nCount = (m % (to - from)) - 1;
 	side = generate_neighbour (from, to, 1, nCount);
-	
+	network = g_list_append (network, side);
 	/*! t es vacio */
 	
-	side = g_list_alloc ();
-	g_list_append (network, side);
+	generate_neighbor (0, 3, 0, 2);
+	network = g_list_append (network, side);
 	for (i = 2; i < n; i++) {
 		from = (random () % n) - 1;
 		to = n;
-		nCount = (random () % (to - from)) - 1;
+		nCount = (m % (to - from - 1)) + 1;
 		side = generate_neighbour (from, to, 0, nCount);
-		g_list_append (network, side);
+		network = g_list_append (network, side);
 	}	
 	
-	print_and_check_network (file, network);
+	fclose (file);
 	
+	print_and_check_network (file, network);
+	for (i = 0; i < n; i++) {
+		g_list_free (g_list_nth_data (network, i));
+	}
 	return 0;
 }
