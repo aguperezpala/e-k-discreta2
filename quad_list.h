@@ -8,8 +8,8 @@
  * AumentarFlujo)
  * Su nombre deriva de los elementos que componen cada una de sus celdas:
  * 	·Nombre del vértice
- *	·Nombre del padre (y que satanas te guarde)
- *	·Flujo soportado por el lado padre--vértice
+ *	·Nombre del padre (y del espíritu santo, amén)
+ *	·Flujo actual del lado padre--vértice
  *	·Lado que une al vertice con su padre ( si , es un embarazo paterno :P )
  *
  * Autores:  Budde, Carlos E.
