@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "parser_args.h"
 #include "consts.h"
 #include "network.h"
@@ -190,6 +191,11 @@ int main (int argc, char ** args)
 		inputMode = 1;
 	
 	
+	/** NOTE <EMPIEZA LA JODA> */
+	/* inicializamos el network */
+	err = Inicializar(estado, inputMode);
+	
+	
 	/* Ahora vamos a verificar si debemos ingresar en forma de bloques o en forma
 	 * normal los lados */
 	blockReadSize = pa_incremental (pa);
@@ -205,8 +211,6 @@ int main (int argc, char ** args)
 	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
 	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
 	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
-		/* inicializamos el network */
-		err = Inicializar(estado, inputMode);
 		/* ahora lo que hacemos es aumentar el fucking flow */
 		while (err == 0)
 			err = AumentarFlujo (estado, verbose);
