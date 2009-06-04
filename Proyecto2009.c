@@ -189,11 +189,6 @@ int main (int argc, char ** args)
 	else
 		inputMode = 1;
 	
-	if (err == 0){
-		printf ("No se pudo inicializar el network\n");
-		return 1;
-	}
-	
 	
 	/* Ahora vamos a verificar si debemos ingresar en forma de bloques o en forma
 	 * normal los lados */
@@ -211,7 +206,7 @@ int main (int argc, char ** args)
 	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
 	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
 		/* inicializamos el network */
-		Inicializar(estado, inputMode);
+		err = Inicializar(estado, inputMode);
 		/* ahora lo que hacemos es aumentar el fucking flow */
 		while (err == 0)
 			err = AumentarFlujo (estado, verbose);
