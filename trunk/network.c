@@ -152,22 +152,23 @@ static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 		el_add_edge (estado->l_con, edge);
 }
 
+
 /* Imprime por pantalla todos los lados froward (y sus flujos actuales)
- * del elemendo de "nodes" que está en la posición "node"
+ * del elemendo de "nodes" que está en la posición "node_i"
  * Considera a los vértices como caracteres alfabéticos (ascii)
  *
- * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
+ * PRE: nodes != NULL  &&  nodes[node].forardList != NULL
  */
-static void ImpresionFlujosAlf (u32 node, node_t *nodes)
+static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 {
 	edgeList_t *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
 	int endList = 0;
 	
 	ASSERT (nodes != NULL)
-	ASSERT (nodes[node].forwardList != NULL)
+	ASSERT (nodes[node_i].forwardList != NULL)
 	
-	fl = nodes[node].forwardList;
+	fl = nodes[node_i].forwardList;
 	el_start (fl);
 	edge = el_get_actual (fl);
 	
@@ -178,22 +179,23 @@ static void ImpresionFlujosAlf (u32 node, node_t *nodes)
 	}
 }
 
+
 /* Imprime por pantalla todos los lados froward (y sus flujos actuales)
- * del elemendo de "nodes" que está en la posición "node"
+ * del elemendo de "nodes" que está en la posición "node_i"
  * Considera a los vértices como números (u32)
  *
- * PRE: nodes != NULL  &&  nodes[node]->forardList != NULL
+ * PRE: nodes != NULL  &&  nodes[node].forardList != NULL
  */ 
-static void ImpresionFlujosNum (u32 node, node_t *nodes)
+static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 {
 	edgeList_t *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
 	int endList = 0;
 	
 	ASSERT (nodes != NULL)
-	ASSERT (nodes[node].forwardList != NULL)
+	ASSERT (nodes[node_i].forwardList != NULL)
 	
-	fl = nodes[node].forwardList;
+	fl = nodes[node_i].forwardList;
 	el_start (fl);
 	edge = el_get_actual (fl);
 	
@@ -205,10 +207,36 @@ static void ImpresionFlujosNum (u32 node, node_t *nodes)
 }
 
 
-/* Comandos para impresion de colores */
-static void Color_printf_alfa (u32 n, int c) { printf ("Vertice:%c Color:%i\n", n, c); }
+/* Imprime por pantalla el vértice de "nodes" que está en la
+ * posición "node_i" en formato alfabético junto con su color
+ *
+ * PRE: nodes != NULL  &&  nodes[node].color != 0
+ */
+static void ImpresionColoresAlf (u32 node_i, node_t *nodes)
+{
+	ASSERT (nodes != NULL)
+	printf ("Vertice %c: Color %d\n", node_i, nodes[node_i].color);
+}
 
-static void Color_printf_num  (u32 n, int c) { printf ("Vertice:%u Color:%i\n", n, c); }
+
+/* Imprime por pantalla el vértice de "nodes" que está en la
+ * posición "node_i" en formato numérico junto con su color
+ *
+ * PRE: nodes != NULL  &&  nodes[node_i].color != 0
+ */
+static void ImpresionColoresNum (u32 node_i, node_t *nodes)
+{
+	ASSERT (nodes != NULL)
+	
+	if (node_i != 0 && node_i != 1)
+		printf ("Vertice %u: Color %d\n", node_i, nodes[node_i].color);
+	else if (node_i == 0)
+		printf ("Vertice s: Color %d\n",  nodes[node_i].color);
+	else
+		printf ("Vertice t: Color %d\n",  nodes[node_i].color);
+}
+
+
 
 
 
@@ -701,14 +729,14 @@ long int ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 {
 	unsigned short K = 0;
-	void (*printNC) (u32 node, int color);/* Comando para imprimir el nodo y su color */
+	node_cmd printNC; /* Comando para imprimir el nodo y su color */
 
 	/* Precondiciones */
 	ASSERT(!VerbosidadInvalidaColorear(verbosidad))
 	ASSERT(estado->coloreo)
 	
 	/* Imprimo el coloreo obtenido por first_coloring */
-	printNC = ( verbosidad == 1 ) ? &Color_printf_alfa : &Color_printf_num;
+	printNC = ( verbosidad == 1 ) ? &ImpresionColoresAlf : &ImpresionColoresNum;
 	
 	if (estado->colores > 0){
 		/*Se realizo un coloreo previo */
@@ -717,7 +745,7 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 
 		if ( verbosidad == 1 ) {
 			printf("Coloreo con First Coloring : %d" , K );  
-/** TODO <NS CMD> */			ns_cmd (estado->nstack , estado->nodes, printNC );
+			ns_cmd (estado->nstack , estado->nodes, printNC );
 			printf("Cantidad de Colores utilizados: %d" , K ); 
 		}
 		if ( K <= estado->delta )return K;
