@@ -22,3 +22,5 @@ It 15
 Jt 7
 
 Flujo maximal de este network: 64
+Corte minimal de este network: {s, B, D, E, G, I, J}
+/* El corte es el que obtiene Dinic */
