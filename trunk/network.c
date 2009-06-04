@@ -50,6 +50,7 @@ static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			/* v1 es vértice nuevo */
 			estado->nodes[v1].corrida = 0;
 			ns_add_node (estado->nstack, v1);
+			estado->nodes[v1].degree = 0;
 		}
 	}
 	
@@ -61,6 +62,7 @@ static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			/* v2 es vértice nuevo */
 			estado->nodes[v2].corrida = 0;
 			ns_add_node (estado->nstack, v2);
+			estado->nodes[v2].degree = 0;
 		}
 	}
 	
@@ -69,7 +71,9 @@ static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	
 	/* Agregamos a ambas listas */
 	el_add_edge (estado->nodes[v1].forwardList, edge);
+	estado->nodes[v1].degree++;
 	el_add_edge (estado->nodes[v2].backwardList, edge);
+	estado->nodes[v2].degree++;
 	
 }
 
@@ -519,7 +523,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	/* Nos paramos en 's' */
 	qt_start (estado->cola);
 	/* Aumentamos y registramos la versión de corrida E-K */
-	corrida = estado->nodes[s].corrida++;
+	estado->nodes[s].corrida++;
+	corrida = estado->nodes[s].corrida;
 	
 	q = qt_get_actual_node (estado->cola);
 	
@@ -556,7 +561,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		}
 		
 		backwards: /* Ciclo "lados backward" */
-		if (actual->forwardList == NULL ) goto nextNode;
+		if (actual->backwardList == NULL ) goto nextNode;
 		el_start (actual->backwardList);
 		endList = 0;
 		while (endList == 0) { 
