@@ -36,7 +36,7 @@ static void initialize_node (u32 node , node_t * nodes)
  */
 static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
-	edge_t *edge;
+	edge_t *edge = NULL;
 	
 	ASSERT (estado != NULL)
 	
@@ -86,8 +86,8 @@ static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  */
 static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
-	u32 m;
-	edge_t *edge;
+	u32 m = 0;
+	edge_t *edge = NULL;
 	bool v1new = false, v2new = false;
 	
 	ASSERT (estado != NULL)
@@ -165,8 +165,8 @@ static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  */
 static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 {
-	edgeList_t *fl; /* Lista de lados forward de modes[node] */
-	edge_t *edge;
+	edgeList_t *fl = NULL; /* Lista de lados forward de modes[node] */
+	edge_t *edge = NULL;
 	int endList = 0;
 	
 	/* La idea es imprimir todos los lados forward y con eso cubrir 
@@ -196,8 +196,8 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
  */ 
 static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 {
-	edgeList_t *fl; /* Lista de lados forward de modes[node] */
-	edge_t *edge;
+	edgeList_t *fl = NULL; /* Lista de lados forward de modes[node] */
+	edge_t *edge = NULL;
 	int endList = 0;
 	
 	/* La idea es imprimir todos los lados forward y con eso cubrir 
@@ -318,7 +318,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 */
 int LeerUnLado(EstadoNetwork *estado, int modoinput)
 {
-	u32 v1, v2, cap;
+	u32 v1 = 0, v2 = 0, cap = 0;
 	char *scan = NULL;
 	
 	ASSERT (estado != NULL)
@@ -345,6 +345,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		char edge[15];
 		
 		/* Guardamos en "edge" lo leído */
+		memset (edge, '\0', 15);
 		scanf ("%[^\n]", edge);
 		getchar ();
 		
@@ -388,6 +389,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		char edge[30];
 		char *ptr1 = NULL, *ptr2 = NULL;
 		
+		memset (edge, '\0', 30);
 		getchar();
 		scanf ("%[^\n]", (char *) &edge);
 		
@@ -470,9 +472,9 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 	estado->maximal = false;
 
 	if (estado->coloreo)
-			AniadirLadoColor (estado, v1, v2, cap);
-		else
-			AniadirLado (estado, v1, v2, cap);
+		AniadirLadoColor (estado, v1, v2, cap);
+	else
+		AniadirLado (estado, v1, v2, cap);
 	
 	return 1;
 }

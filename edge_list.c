@@ -18,7 +18,7 @@ struct s_edgeList {
 
 edgeList_t * el_create (void)
 {
-	edgeList_t * list = (edgeList_t *) malloc (sizeof (struct s_edgeList));
+	edgeList_t * list = (edgeList_t *) calloc (1, sizeof (struct s_edgeList));
 	
 	ASSERT (list != NULL)
 	
@@ -98,7 +98,7 @@ edge_t * el_get_actual (edgeList_t * el)
 */
 void el_add_edge (edgeList_t * el,  edge_t * edge)
 {
-	struct edgeCeld * celd = (struct edgeCeld *) malloc (sizeof (struct edgeCeld));
+	struct edgeCeld * celd = (struct edgeCeld *) calloc (1, sizeof (struct edgeCeld));
 	/* pre */
 	ASSERT (el != NULL)
 	ASSERT (edge != NULL)
@@ -128,7 +128,7 @@ short el_get_size (edgeList_t * el)
 */
 void el_del_edge (edgeList_t * el)
 {
-	struct edgeCeld * celd;
+	struct edgeCeld * celd = NULL;
 	
 	/* pres */
 	ASSERT (el != NULL)
