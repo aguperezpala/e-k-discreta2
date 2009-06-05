@@ -21,7 +21,7 @@
 #include "parser_args.h"
 #include "consts.h"
 #include "network.h"
-
+#include "cycle_ms.h"
 
 
 
@@ -37,6 +37,7 @@ static void main_help (void)
 	"			·parcialmente: -partial <m>\n\n"
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
 	"  Para ejecutar n veces:  ·para medir el tiempo: -ctime <n>\n"
+	"									.para medir los ciclos consumidos: -ccycle <n>\n"
 	"			  ·para medir el flujo: -ftime <n>\n\n"
 	"NOTA: son obligatorios los campos <>\n"
 	       );
@@ -152,9 +153,11 @@ int main (int argc, char ** args)
 	int result = 0, err = 0, inputMode, verbose, blockReadSize;
 	register int i = 0;
 	u32 colours = 0;
-	
-	
-	
+	/* Para realizar la medición de tiempo */
+	clock_t start=0,end=0;
+	unsigned long long double res = 0;
+	/* Para realizar la medición de ciclos de CPU */
+	ticks
 	/* creamos el parserArgs */
 	pa = pa_create ();
 
@@ -200,33 +203,70 @@ int main (int argc, char ** args)
 	 * normal los lados */
 	blockReadSize = pa_incremental (pa);
 	verbose = pa_verbose (pa);
-	
-	/* primero vamos a hacer una corrida normal y cargar el grafo */
-	if (blockReadSize > 0){
-		err = block_read (estado, pa, inputMode);
-	} else {
-		err = normal_read (estado, pa, inputMode);
-	}
-	
-	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
-	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
-	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
-		/* ahora lo que hacemos es aumentar el fucking flow */
-		while (err == 0)
-			err = AumentarFlujo (estado, verbose);
-		
+	/* Para no tener que calcular los ciclos (y el tiempo) consumidos
+		por un condicional, dejamos una copia del código en la rama
+		"else" para el caso en el que no se pidió una medición de
+		tiempo-ciclos consumidos ( o al revés, es lo mismo...)
+   */
+	if (pa_max_flow_repeat(pa) > 0){
+		/* {pa_timeMeasurement(pa) || pa_cycleMeasurement(pa)} */
+		if (pa_timeMeasurement(pa)){
+			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+				/* ia! */
+				start = clock(); 
+				/* primero vamos a hacer una corrida normal y cargar el grafo */
+				if (blockReadSize > 0){
+					err = block_read (estado, pa, inputMode);
+				} else {
+					err = normal_read (estado, pa, inputMode);
+				}
+				
+				/* ahora lo que hacemos es aumentar el fucking flow */
+				while (err == 0)
+					err = AumentarFlujo (estado, verbose);
+				end = clock();
+				res +=((long double)(end-start))/CLOCKS_PER_SEC;
+			}
+			/* Calculamos un promedio */
+			res = res/pa_max_flow_repeat(pa);
+			printf("\nTiempo estimado: %llu\n",res);
+		}
+		else{
+			
+			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+				/* ia! */
+				start = clock(); 
+				/* primero vamos a hacer una corrida normal y cargar el grafo */
+				if (blockReadSize > 0){
+					err = block_read (estado, pa, inputMode);
+				} else {
+					err = normal_read (estado, pa, inputMode);
+				}
+				
+				/* ahora lo que hacemos es aumentar el fucking flow */
+				while (err == 0)
+					err = AumentarFlujo (estado, verbose);
+				end = clock();
+				res +=((long double)(end-start))/CLOCKS_PER_SEC;
+			}
+			/* Calculamos un promedio */
+			res = res/pa_max_flow_repeat(pa);
+			printf("\nTiempo estimado: %llu\n",res);
+		}
 	}
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)) {
 		/* ahora vamos a chequear cuantas veces deberiamos correr el
-		 * coloreo */
+		* coloreo */
 		for (i = pa_colour_repeat (pa); i > 0; i--) {
 			/*! inicializamos aca siempre o no? */
 			colours = ColorearNetwork (estado, verbose);
 		}
 	}
 	/* imprimimos el flujo */
+	/* Corregir lo que se imprime mientras se realiza la medición */
 	ImprimirFlujo (estado, verbose);
+	
 	
 	
 	return 0;
