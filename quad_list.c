@@ -198,7 +198,8 @@ void qt_go_parent (quadList_t * qt)
 void qt_start (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
-	qt->prev = qt->plast = &(qt->first);
+	/*qt->prev = qt->plast = &(qt->first);*/
+	qt->prev = &(qt->first);
 }
 
 
