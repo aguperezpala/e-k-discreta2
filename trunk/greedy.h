@@ -21,6 +21,12 @@
 #include "consts.h"
 #include "node_stack.h"
 
+/* Dado un nodo chequea el color de esta no es conflictivo con el
+ * de sus vecinos.
+ *
+ * PRE: nodes != NULL
+ */
+bool color_propio(u32 node_i , node_t * nodes);
 
 /* Funcion que le aplica un coloreo propio a nodes y 
  * retorna la cantidad de colores usados.
@@ -37,7 +43,7 @@ Color color_greedy (node_s node_stack , node_t * nodes);
 
 /* Dado un el nodo busca el menor color aún libre entre sus vecinos
 *
-* PRE: nodes != NULL && max_color < 0
+* PRE: nodes != NULL
 * POS: color_propio(node, nodes) && retorna el mayor color usado.
 */
 void coloring_node(u32 node_i, node_t * nodes);

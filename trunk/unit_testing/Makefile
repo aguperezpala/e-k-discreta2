@@ -1,11 +1,11 @@
 TARGET=runner
 CC=gcc
-CFLAGS+= -I.. -ansi -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast -Wcast-qual -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -pedantic `pkg-config --cflags glib-2.0` -Werror
-LDFLAGS=-lcheck `pkg-config --libs glib-2.0` -D_DEBUG
+CFLAGS+= -I.. -ansi -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast -Wcast-qual -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -pedantic `pkg-config --cflags glib-2.0` -Werror -D_DEBUG
+LDFLAGS=-lcheck `pkg-config --libs glib-2.0`-D_DEBUG
 SOURCES=$(shell echo *.c)
 OBJECTS=$(SOURCES:.c=.o)
 # Aquí no usamos un wildcard para no traer el main
-TESTED_OBJECTS= ../node_stack.o ../edge_list.o ../edge.o
+TESTED_OBJECTS= ../node_stack.o ../edge_list.o ../edge.o ../greedy.o
 
 all: $(TARGET)
 

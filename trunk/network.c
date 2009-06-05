@@ -354,8 +354,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			estado->completo = true;
 			return 0;
 		}
-		
-		
+			
 		if (strlen (edge+3)  > 10) {
 			/* Capacidad mayor que u32 */
 			PRINTERR ("Finalizó la lectura de lados\n");
@@ -382,9 +381,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
-		}
-		
-		if (estado->maximal) estado->maximal = false;
+		} 
 		
 	} else {
 		/** Input numérico */
@@ -468,13 +465,14 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			return 0;
 		}
 		
-		if (estado->maximal) estado->maximal = false;
 	}
-	
+
+	estado->maximal = false;
+
 	if (estado->coloreo)
-		AniadirLadoColor (estado, v1, v2, cap);
-	else
-		AniadirLado (estado, v1, v2, cap);
+			AniadirLadoColor (estado, v1, v2, cap);
+		else
+			AniadirLado (estado, v1, v2, cap);
 	
 	return 1;
 }
