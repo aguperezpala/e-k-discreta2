@@ -1,0 +1,27 @@
+sA 10
+sB 21
+sC 10
+AE 10
+AF 9
+BD 21
+CL 7
+CM 10
+DA 7
+DE 7
+DG 7
+EG 7
+Et 10
+FH 21
+GI 10
+HJ 21
+IK 10
+JK 21
+Kt 31
+LF 5
+LN 7
+MN 4
+NF 5
+
+Flujo maximal de este network: 39
+Corte minimal de este network: {s, A, B, D, E, G}
+/* El corte es el que obtiene Edmonds-Karp */
