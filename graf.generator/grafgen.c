@@ -196,7 +196,7 @@ int main (int argc, char ** args)
 	side = generate_neighbour (0, 3, 0, 2);
 	network = g_list_append (network, side);
 	for (i = 2; i < n; i++) {
-		from = abs ((random () % n) - 1);
+		from = abs (((random ()*31*37*11*19) % n) - 1);
 		to = n;
 		nCount = (m % (to - from - 1)) + 1;
 		side = generate_neighbour (from, to, 0, nCount);
