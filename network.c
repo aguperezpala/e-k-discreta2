@@ -650,8 +650,9 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			if (estado->modoinput != 1)
 				/* debemos imprimir s al principio de todo SIEMPRE */
 				printf ("s, ");
+			else
+				printf ("0, ");
 			
-			qt_avance (estado->cola);
 			qt_avance (estado->cola);
 			/* Vamos imprimiendo todos los vértices del corte */
 			for (i = 0 ; i < nn-1 ; i++) {
