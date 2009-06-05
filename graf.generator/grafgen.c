@@ -141,7 +141,7 @@ static void print_and_check_network (FILE * f, GList * network)
 				if (backList != NULL)
 					exists_and_delete ( backList, (unsigned) i);
 				flow = (unsigned int) (random () * 31 * 37 * 13 * 11) % MAX_FLOW_SIDE;
-				sprintf (dataOut, "%u.%u %u",(unsigned)i,j,flow);
+				sprintf (dataOut, "%u %u %u",(unsigned)i,j,flow);
 				fprintf (f, "%s\n", dataOut);
 				/*printf ("%s\n", dataOut);*/
 			}
