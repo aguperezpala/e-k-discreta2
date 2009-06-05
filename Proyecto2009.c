@@ -82,9 +82,9 @@ static int block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
 			continue;
 		/* ahora vemos si tenemos que aumentar el flujo m veces
 		* o si lo tenemos que aumentar hasta el final */
+		err = 0;
 		if (flowsRun > 0) {
 			/* entonces debemos aumentar m veces el flujo */
-			err = 0;
 			for (i = 0; i < flowsRun && err == 0; i++) {
 				err = AumentarFlujo (estado, verbose);
 			}
