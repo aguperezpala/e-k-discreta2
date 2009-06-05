@@ -109,7 +109,7 @@ static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 {
 	bool finish = false;
 	register int i = 0;
-	int err = 0, verbose, flowsRun;
+	int err, verbose, flowsRun;
 	
 	
 	
@@ -129,10 +129,10 @@ static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 		/* no vamos a buscar el flujo maximal */
 		return err;
 	
+	err = 0;
 	/* chequeamos si debemos aumentar parcialmente */
 	if (flowsRun > 0) {
 		/* entonces debemos aumentar m veces el flujo */
-		err = 0;
 		for (i = 0; i < flowsRun && err == 0; i++) {
 			err = AumentarFlujo (estado, verbose);
 		}
@@ -209,7 +209,7 @@ int main (int argc, char ** args)
 	
 	
 	/** ### ### Para calcular el tiempo hay que setear verbose a 0 ### ### */
-	verbose = 0;
+	/*verbose = 0;*/
 	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
 	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
 	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
@@ -231,7 +231,7 @@ int main (int argc, char ** args)
 		}
 	}
 	/* imprimimos el flujo solo si verbose <= 1*/
-	if (verbose <= 1)
+	if (verbose <= 2)
 		ImprimirFlujo (estado, verbose);
 	
 	
