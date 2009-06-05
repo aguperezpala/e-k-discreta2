@@ -401,8 +401,15 @@ void pa_print (parserArgs_t * pa)
 	printf ("FlowRepeat: %d\n", pa->maxFlowRepeat);
 }
 	
-	
 #endif
+
+bool pa_timeMeasurement(parseArgs_t *pa){
+	return true;
+}
+
+bool pa_cycleMeasurement(parseArgs_t *pa){
+	return true;
+}
 
 
 
