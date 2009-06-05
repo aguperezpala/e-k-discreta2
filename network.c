@@ -670,7 +670,11 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			/* Vamos a revisar los otros vértices del corte */
 			qt_avance (estado->cola);
 			q = qt_get_actual_node (estado->cola);
-			if (q == s) goto capacidad; /* El corte sólo tenía a 's' */
+			if (q == s) {
+			/* El corte sólo tenía a 's' */
+				printf ("}\n");
+				goto capacidad;
+			}
 			
 			/* Vamos imprimiendo todos los vértices del corte */
 			for (i = 0 ; i < nn-1 ; i++) {
@@ -733,7 +737,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	return result;
 }
 
-/* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
+/* PRE: {estado != NULL && verbosidad € {0, 1, 2} }
  * flujo = ImprimirFlujo (estado, verbosidad)
  * POS: { flujo >= 0 => (flujo == "flujo actual de (estado)"  &&
  *	  	         "se imprimió según (verbosidad)")
