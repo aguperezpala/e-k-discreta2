@@ -66,7 +66,7 @@ static int block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
 	verbose = pa_verbose (pa);
 	
 	/* tenemos que leer en forma de bloque */
-	while (!finish && err != 2) {
+	while (!finish) {
 		for (i = 0; i < blockReadSize && !finish; i++) {
 			/* leemos un lado y nos fijamos si debemos salir */
 			finish = LeerUnLado(estado, inputMode) == 0;
@@ -207,25 +207,32 @@ int main (int argc, char ** args)
 		err = normal_read (estado, pa, inputMode);
 	}
 	
+	
+	/** ### ### Para calcular el tiempo hay que setear verbose a 0 ### ### */
+	verbose = 0;
 	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
 	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
 	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
 		/* ahora lo que hacemos es aumentar el fucking flow */
+		/*! debemos inicializar esto! */
+		err = Inicializar(estado, inputMode);
 		while (err == 0)
 			err = AumentarFlujo (estado, verbose);
 		
 	}
+	
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)) {
 		/* ahora vamos a chequear cuantas veces deberiamos correr el
 		 * coloreo */
 		for (i = pa_colour_repeat (pa); i > 0; i--) {
-			/*! inicializamos aca siempre o no? */
+			/*!###	### <<<Inicializamos?????> ### ###*/
 			colours = ColorearNetwork (estado, verbose);
 		}
 	}
-	/* imprimimos el flujo */
-	ImprimirFlujo (estado, verbose);
+	/* imprimimos el flujo solo si verbose <= 1*/
+	if (verbose <= 1)
+		ImprimirFlujo (estado, verbose);
 	
 	
 	return 0;
