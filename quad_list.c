@@ -259,3 +259,25 @@ void qt_add_quad (quadList_t * qt,  u32 flow, u32 indexNode , edge_t * edge )
 	qt->plast = qt->plast->next;
 }
 
+#ifdef __DEBUG
+/* imprime la quad_list
+REQUIRES:
+qt != NULL
+*/
+void qt_print (quadList_t * qt)
+{
+	u32 node, flow;
+	int exit = 0;
+	
+	ASSERT (qt != NULL)
+	qt_start (qt);
+	
+	while (!exit) {
+		node = qt_get_actual_node (qt);
+		flow = qt_get_actual_flow (qt);
+		printf ("node: %u\t flow: %u\n", node, flow);
+		exit = qt_avance (qt);
+	}
+}
+	
+#endif
