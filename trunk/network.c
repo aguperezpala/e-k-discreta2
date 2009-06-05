@@ -647,6 +647,12 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			printf ("Corte Minimal: S={");
 			qt_start (estado->cola);
 			
+			if (estado->modoinput != 1)
+				/* debemos imprimir s al principio de todo SIEMPRE */
+				printf ("s, ");
+			
+			qt_avance (estado->cola);
+			qt_avance (estado->cola);
 			/* Vamos imprimiendo todos los vértices del corte */
 			for (i = 0 ; i < nn-1 ; i++) {
 				q = qt_get_actual_node (estado->cola);
@@ -656,10 +662,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				if (estado->modoinput == 1) /* Alfabético */
 					printf ("%c, ",q);
 				else {
-					if (q == s)
-						printf ("s, ");
-					else
-						printf ("%u, ",q);
+					printf ("%u, ",q);
 				}
 				
 				cap += (qt_get_actual_edge(estado->cola))->capacity;
