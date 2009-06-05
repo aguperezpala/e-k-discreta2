@@ -121,6 +121,7 @@ START_TEST ( test_start_avance_del_dinamic_el )
 	}
 
 	assert(el_get_size(el_din) == CANT_EDGES);
+	el_start(el_din);
 	do{
 		assert (i<= CANT_EDGES);
 		e = el_get_actual(el_din);

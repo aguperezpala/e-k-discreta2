@@ -5,16 +5,16 @@
 #include "node_stack.h"
 
 
-static Color greedy_max_color = 0;
+Color greedy_max_color = 0;
 
-
-static bool color_propio(u32 node_i , node_t * nodes)
+bool color_propio(u32 node_i , node_t * nodes)
 {
 	edge_t *edge = NULL;
 
 	/* Pre */
 	ASSERT(nodes != NULL)
-
+	ASSERT(greedy_max_color >= 0)
+	
 	/* Chequeo los colores de los vecinos forward */
 	el_start (nodes[node_i].forwardList);
 	do{

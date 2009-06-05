@@ -178,4 +178,7 @@ int el_avance (edgeList_t * el)
  * 	REQUIRES:
  *		el != NULL
  */
-void el_start (edgeList_t * el) { ASSERT (el != NULL); el->prev = &(el->first); }
+void el_start (edgeList_t * el) {
+	ASSERT (el != NULL);
+	el->prev = &(el->first);
+}
