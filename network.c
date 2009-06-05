@@ -199,6 +199,7 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	edgeList_t *fl = NULL; /* Lista de lados forward de modes[node] */
 	edge_t *edge = NULL;
 	int endList = 0;
+	u32 x = 0, y = 0, f = 0;
 	
 	/* La idea es imprimir todos los lados forward y con eso cubrir 
 	 * el network completo. Por eso si nos llamaron por 't' lo salteamos */
@@ -212,8 +213,13 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	
 	while (endList == 0) {
 		edge = el_get_actual (fl);
-		PrintFlowNum (edge->nodeOrig, edge->nodeDest, edge->flow);
-		/* Por PrintFlowNum ver consts.h */
+		x = edge->nodeOrig;
+		y = edge->nodeDest;
+		f = edge->flow;
+		
+		PrintFlowNum (x, y, f);
+		/* Por PrintFlowNum ver consts.h */	
+		
 		endList = el_avance (fl);
 	}
 }
@@ -351,14 +357,14 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (edge[2] != ' ') {
 			/* No había espacio tras los dos vértices */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
 			
 		if (strlen (edge+3)  > 10) {
 			/* Capacidad mayor que u32 */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -368,7 +374,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (*scan != '\0') {
 			/* La capacidad no era un entero */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -379,7 +385,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		
 		if (!IsAscii (v1) || !IsAscii (v2)){
 			/* Los vértices no eran letras */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		} 
@@ -401,7 +407,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1 = strchr (ptr2, ' ');
 		if (ptr1 == NULL) {
 			/* No había espacios en la cadena */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -410,14 +416,14 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1++;
 		if (strlen (ptr2) > 10) {
 			/* Nombre de vértice mayor que u32 */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}	 
 		v1 = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
 			/* El vértice 1 no era un entero */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -428,7 +434,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1 = strchr (ptr2, ' ');
 		if (ptr1 == NULL) {
 			/* No había espacios tras el 1º vértice */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -437,14 +443,14 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr1++;
 		if (strlen (ptr2) > 10) {
 			/* Nombre de vértice mayor que u32 */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
 		
 		v2 = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -454,7 +460,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		ptr2 = ptr1;
 		if (strlen (ptr2) > 10) {
 			/* Capacidad mayor que u32 */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
@@ -462,7 +468,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 		cap = (unsigned int) strtol (ptr2, &scan, 10);
 		if (*scan != '\0') {
 			/* Capacidad no era un entero */
-			PRINTERR ("Finalizó la lectura de lados\n");
+			PRINTERR ("Finalizó la lectura de lados\n\n");
 			estado->completo = true;
 			return 0;
 		}
