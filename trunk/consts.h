@@ -47,7 +47,7 @@
 typedef int Color;
 
 
-/** Algunos defines de utilidad */
+/** Algunos macros de utilidad */
 
 #define max(a, b) ((a>b) ? a : b)
 #define min(a, b) ((a<b) ? a : b)
@@ -64,7 +64,7 @@ typedef int Color;
 
 
 /* Inidica si un código numérico ASCII representa un caracter A-Z ó a-z */
-#define IsAscii(x)	( ((x > 64) && (x < 91)) || ((x > 97) && (x < 123)) )
+#define IsAscii(x)	( ((x > 64) && (x < 91)) || ((x > 95) && (x < 123)) )
 
 /* Indica si en nodo pertenece a dicho edge.
  * bool nIsFromEdge(u32 n , edge_t * e )
@@ -79,24 +79,23 @@ typedef int Color;
 /* Imprime la cadena: "Lado (x,y): Flujo f"
  * donde 'f', 'x' e 'y' son valores u32. Si 'x' o 'y' son '0' o '1'
  * son cambiados por los caracteres 's' o 't' respectivamente */
-#define   PrintFlowNum(x,y,f)  /*(((x != 0) && (x != 1) && (y != 0) && (y != 1)) ? \
-				(printf ("Lado (%u,%u): Flujo %u\n", x, y, f);)  \
+#define   PrintFlowNum(x,y,f)   ((x != 0) && (x != 1) && (y != 0) && (y != 1)) ? \
+				 printf ("Lado (%u,%u): Flujo %u\n", x, y, f)  \
 					 : ( \
 				((x == 0) && (y != 0) && (y != 1)) ? \
-				(printf ("Lado (s,%u): Flujo %u\n", y, f);) \
+				printf ("Lado (s,%u): Flujo %u\n", y, f) \
 					 : ( \
 				((x != 0) && (x != 1) && (y == 1)) ? \
-				(printf ("Lado (%u,t): Flujo %u\n", x, f);) \
+				printf ("Lado (%u,t): Flujo %u\n", x, f) \
 					 : ( \
 				((x == 1) && (y != 0) && (y != 1)) ? \
-				(printf ("Lado (t,%u): Flujo %u\n", y, f);) \
+				printf ("Lado (t,%u): Flujo %u\n", y, f) \
 					 : ( \
 				((x != 0) && (x != 1) && (y == 0)) ? \
-				(printf ("Lado (%u,s): Flujo %u\n", x, f);) \
+				printf ("Lado (%u,s): Flujo %u\n", x, f) \
 					 : ( \
-				(printf ("Lado (s,t): Flujo %u\n");) \
-					) ) ) ) ) \
-				)*/
+				printf ("Lado (s,t): Flujo %u\n", f) \
+					) ) ) ) )
 
 
 
