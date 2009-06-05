@@ -114,6 +114,8 @@ int pa_colour_repeat (parserArgs_t * pa);
 */
 void pa_print (parserArgs_t * pa);
 
+#endif
+
 /* ¿Pidieron medición de tiempo?
 	REQUIRES:
 		pa != NULL
@@ -121,7 +123,7 @@ void pa_print (parserArgs_t * pa);
 		true zi zi...
 		false zi no...
 */
-bool pa_timeMeasurement(parseArgs_t * pa);
+bool pa_timeMeasurement(parseArgs_t *pa);
 
 /* ¿Pidieron medición de ciclos de CPU?
 	REQUIRES:
@@ -130,10 +132,7 @@ bool pa_timeMeasurement(parseArgs_t * pa);
 		true zi zi...
 		false zi no...
 */
-bool pa_cycleMeasurement(parseArgs_t * pa);
-#endif
-
-
+bool pa_cycleMeasurement(parseArgs_t *pa);
 
 
 
