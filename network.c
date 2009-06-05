@@ -639,7 +639,9 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		
 		if (verbosidad == 2 || verbosidad == 3) {
 			/* Hay que imprimir el corte */
-			u32 cap = 0;
+			u32 cap = 0, vecino;
+			edgeList_t *vecinos;
+			bool endList = false;
 			register unsigned short i;
 			short nn = qt_get_size (estado->cola);
 			/* nn == nº de vértices del corte */
@@ -647,13 +649,29 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			printf ("Corte Minimal: S={");
 			qt_start (estado->cola);
 			
-			if (estado->modoinput != 1)
-				/* debemos imprimir s al principio de todo SIEMPRE */
-				printf ("s, ");
-			else
-				printf ("0, ");
+			/* Tiene que ser 's', sino está como el chori */
+			q = qt_get_actual_node (estado->cola);
+			ASSERT (q == s)
+			printf ("s, ");
 			
+			/* Actualizamos la capacidad del corte */
+			vecinos = estado->nodes[q].forwardList;
+			el_start (vecinos);
+			while (!endList) {
+				vecino = el_get_actual(vecinos)->nodeDest;
+				
+				if (estado->nodes[vecino].corrida != corrida)
+				/* Este vecino no apareció en la última corrida */
+					cap += el_get_actual(vecinos)->capacity;
+				
+				endList = el_avance (vecinos);
+			}
+			
+			/* Vamos a revisar los otros vértices del corte */
 			qt_avance (estado->cola);
+			q = qt_get_actual_node (estado->cola);
+			if (q == s) goto capacidad; /* El corte sólo tenía a 's' */
+			
 			/* Vamos imprimiendo todos los vértices del corte */
 			for (i = 0 ; i < nn-1 ; i++) {
 				q = qt_get_actual_node (estado->cola);
@@ -666,7 +684,18 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 					printf ("%u, ",q);
 				}
 				
-				cap += (qt_get_actual_edge(estado->cola))->capacity;
+				/* Actualizamos la capacidad del corte */
+				vecinos = estado->nodes[q].forwardList;
+				el_start (vecinos);
+				while (!endList) {
+					vecino = el_get_actual(vecinos)->nodeDest;
+				
+					if (estado->nodes[vecino].corrida != corrida)
+					/* No estaba en la cola => no está en el corte */
+						cap += el_get_actual(vecinos)->capacity;
+				
+					endList = el_avance (vecinos);
+				}
 				
 				qt_avance (estado->cola);
 			}
@@ -684,8 +713,19 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 					printf ("%u}\n",q);
 			}
 			
-			cap += (qt_get_actual_edge(estado->cola))->capacity;
+			/* Actualizamos la capacidad del corte por última vez */
+			vecinos = estado->nodes[q].forwardList;
+			el_start (vecinos);
+			while (!endList) {
+				vecino = el_get_actual(vecinos)->nodeDest;
+				
+				if (estado->nodes[vecino].corrida != corrida)
+					cap += el_get_actual(vecinos)->capacity;
+				
+				endList = el_avance (vecinos);
+			}
 			
+			capacidad:
 			printf ("Capacidad del corte: %u\n\n", cap);
 		}
 	}
