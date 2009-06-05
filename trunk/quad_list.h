@@ -160,4 +160,13 @@ void qt_add_quad (quadList_t * qt,  u32 flow, u32 indexNode , edge_t * edge);
 
 
 
+
+#ifdef __DEBUG
+/* imprime la quad_list
+	REQUIRES:
+		qt != NULL
+*/
+void qt_print (quadList_t * qt);
+#endif
+
 #endif

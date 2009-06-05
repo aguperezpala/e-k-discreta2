@@ -502,12 +502,12 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		return 2;
 	}
 	
-	/*if(estado->maximal){
-		No se puede aumentar el flujo
-		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");
+	if(estado->maximal){
+		/*No se puede aumentar el flujo
+		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");*/
 		return 1;
 	}
-	*/	
+	
 	if (estado->modoinput == 1) {
 		/** Modo alfabético */
 		s = 115; /* 115 == ASCII('s') */
