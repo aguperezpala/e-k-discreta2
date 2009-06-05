@@ -14,8 +14,7 @@ struct _parserArgs {
 	int verbose;		/* grado de verbosidad */
 	int incremental;	/* si tenemos que leer incrementalmente y cuantas lineas */
 	int partialRun;		/* corrimiento parcial, m */
-	bool timeMeasurement; /* pidieron medición del tiempo? */
-	bool cyclesMeasurement; /* pidieron medición de los ciclos de CPU? */
+	/*! tiempo */
 	int colourRepeat;	/* cantidad de repeticiones para el colore */
 	int maxFlowRepeat;	/* cantidad de repeticiones para el flujo */	
 };
@@ -23,17 +22,17 @@ struct _parserArgs {
 
 
 /*! Funciones internas */
-/* Revisa si la cadena string está compuesta sólo por caracteres numéricos.
- * En ese caso devuelve en num la conversión del string hacia decimales
+/* Revisa si la cadena string estÃ¡ compuesta sÃ³lo por caracteres numÃ©ricos.
+ * En ese caso devuelve en num la conversiÃ³n del string hacia decimales
  * 
  * PRE: string != NULL && num != NULL
  *
  *  res = is_int (string, num)
  *
  * POS: (res == true && num == int_format (string) &&
- *	  < V i : 0 <= i < strlen(string) : string[i] € {0, ..., 9} > )  ||
+ *	  < V i : 0 <= i < strlen(string) : string[i] â‚¬ {0, ..., 9} > )  ||
  * 	(res == false &&
- *	  < E i : 0 <= i < strlen(string) : string[i] ¬€ {0, ..., 9} > )
+ *	  < E i : 0 <= i < strlen(string) : string[i] Â¬â‚¬ {0, ..., 9} > )
  */
 static bool is_int (const char *string, long int *num)
 {
@@ -401,15 +400,8 @@ void pa_print (parserArgs_t * pa)
 	printf ("FlowRepeat: %d\n", pa->maxFlowRepeat);
 }
 	
+	
 #endif
-
-bool pa_timeMeasurement(parseArgs_t *pa){
-	return true;
-}
-
-bool pa_cycleMeasurement(parseArgs_t *pa){
-	return true;
-}
 
 
 
