@@ -21,6 +21,6 @@ Ht 25
 It 15
 Jt 7
 
-Flujo maximal de este network: 64
-Corte minimal de este network: {s, B, D, E, G, I, J}
+Flujo maximal de este network: 66
+Corte minimal de este network: {s}
 /* El corte es el que obtiene Dinic */

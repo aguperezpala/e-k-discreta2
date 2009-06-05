@@ -169,6 +169,8 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 	edge_t *edge;
 	int endList = 0;
 	
+	/* La idea es imprimir todos los lados forward y con eso cubrir 
+	* el network completo. Por eso si nos llamaron por 't' lo salteamos */
 	if (node_i == (int) 't') return;
 	
 	ASSERT (nodes != NULL)
@@ -198,8 +200,8 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	edge_t *edge;
 	int endList = 0;
 	
-	/* Si nos llamaron por 't' lo salteamos. La idea es imprimir todos
-	 * los lados forward y con eso cubrir todo el network*/
+	/* La idea es imprimir todos los lados forward y con eso cubrir 
+	 * el network completo. Por eso si nos llamaron por 't' lo salteamos */
 	if (node_i == 1) return;
 	
 	ASSERT (nodes != NULL)
