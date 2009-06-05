@@ -11,9 +11,10 @@
 #define CANT_NODES 20
 
 /* Variables locales */
-node_s ns = NULL;
-int i = 0;
-node_t nodes[CANT_NODES];
+static node_s ns = NULL;
+static int i = 0;
+static node_t nodes[CANT_NODES];
+
 /* Funciones para seteo de entorno */
 static void ImpresionColoresAlf (u32 node_i, node_t *nodes)
 {
