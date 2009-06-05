@@ -14,7 +14,8 @@ struct _parserArgs {
 	int verbose;		/* grado de verbosidad */
 	int incremental;	/* si tenemos que leer incrementalmente y cuantas lineas */
 	int partialRun;		/* corrimiento parcial, m */
-	/*! tiempo */
+	bool timeMeasurement; /* pidieron medición del tiempo? */
+	bool cyclesMeasurement; /* pidieron medición de los ciclos de CPU? */
 	int colourRepeat;	/* cantidad de repeticiones para el colore */
 	int maxFlowRepeat;	/* cantidad de repeticiones para el flujo */	
 };
