@@ -19,6 +19,8 @@
 
 #include "node.h"
 
+/* Configuracion del testing*/
+#define CANT_NODES 20
 
 typedef void (*node_cmd) (u32 node , node_t * nodes);
 typedef struct _node_s * node_s;

@@ -178,11 +178,11 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 	
 	fl = nodes[node_i].forwardList;
 	el_start (fl);
-	edge = el_get_actual (fl);
+	
 	
 	while (endList == 0) {
-		printf ("Lado (%c,%c): Flujo %u\n",
-			edge->nodeOrig, edge->nodeDest, edge->flow);
+		edge = el_get_actual (fl);
+		printf ("Lado (%c,%c): Flujo %u\n",edge->nodeOrig, edge->nodeDest, edge->flow);
 		endList = el_avance (fl);
 	}
 }
@@ -209,9 +209,9 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	
 	fl = nodes[node_i].forwardList;
 	el_start (fl);
-	edge = el_get_actual (fl);
 	
 	while (endList == 0) {
+		edge = el_get_actual (fl);
 		PrintFlowNum (edge->nodeOrig, edge->nodeDest, edge->flow);
 		/* Por PrintFlowNum ver consts.h */
 		endList = el_avance (fl);
