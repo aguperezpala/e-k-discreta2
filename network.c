@@ -699,10 +699,11 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				/* Actualizamos la capacidad del corte */
 				vecinos = estado->nodes[q].forwardList;
 				el_start (vecinos);
+				endList = 0;
 				while (!endList) {
 					vecino = el_get_actual(vecinos)->nodeDest;
-				
-					if (estado->nodes[vecino].corrida != corrida)
+					
+					if (NotInQueue((&estado->nodes[vecino]), corrida))
 					/* No estaba en la cola => no está en el corte */
 						cap += el_get_actual(vecinos)->capacity;
 				
