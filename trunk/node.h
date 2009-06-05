@@ -28,7 +28,7 @@
 typedef struct s_node {
 	edgeList_t *forwardList;	/* lista de aristas forward  */
 	edgeList_t *backwardList;	/* lista de aristas backward */
-	unsigned short corrida; 	/* Versión de corrida E-K para aumentar flujo */
+	unsigned short corrida; 	/* Nº de corrida E-K para aumentar flujo */
 	short degree;				/* Nº total de vecinos */
 	Color color;				/* Color del vertice */
 } node_t;
