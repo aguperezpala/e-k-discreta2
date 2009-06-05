@@ -169,6 +169,8 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 	edge_t *edge;
 	int endList = 0;
 	
+	if (node_i == (int) 't') return;
+	
 	ASSERT (nodes != NULL)
 	ASSERT (nodes[node_i].forwardList != NULL)
 	
@@ -195,6 +197,10 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	edgeList_t *fl; /* Lista de lados forward de modes[node] */
 	edge_t *edge;
 	int endList = 0;
+	
+	/* Si nos llamaron por 't' lo salteamos. La idea es imprimir todos
+	 * los lados forward y con eso cubrir todo el network*/
+	if (node_i == 1) return;
 	
 	ASSERT (nodes != NULL)
 	ASSERT (nodes[node_i].forwardList != NULL)
@@ -652,7 +658,6 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			/* Tiene que ser 's', sino está como el chori */
 			q = qt_get_actual_node (estado->cola);
 			ASSERT (q == s)
-			printf ("s, ");
 			
 			/* Actualizamos la capacidad del corte */
 			vecinos = estado->nodes[q].forwardList;
@@ -672,9 +677,10 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			q = qt_get_actual_node (estado->cola);
 			if (q == s) {
 			/* El corte sólo tenía a 's' */
-				printf ("}\n");
+				printf ("s}\n");
 				goto capacidad;
-			}
+			} else
+				printf ("s, ");
 			
 			/* Vamos imprimiendo todos los vértices del corte */
 			for (i = 0 ; i < nn-1 ; i++) {
@@ -754,6 +760,8 @@ long int ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 		return -1;
 	}
 	
+// 	qt_start (estado->cola);
+			
 	if (verbosidad == 2) {
 		printf ("Flujo:\n");
 		/* Llamamos a una función de node_stack (ns_cmd) que toma
