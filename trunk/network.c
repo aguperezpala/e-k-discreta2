@@ -516,7 +516,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");*/
 		
 		return 1;
-	}*/
+	}
 	
 	if (estado->modoinput == 1) {
 		/** Modo alfabético */
