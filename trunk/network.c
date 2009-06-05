@@ -514,8 +514,9 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	if(estado->maximal){
 		/*No se puede aumentar el flujo
 		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");*/
+		
 		return 1;
-	}
+	}*/
 	
 	if (estado->modoinput == 1) {
 		/** Modo alfabético */
@@ -699,6 +700,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				
 				/* Actualizamos la capacidad del corte */
 				vecinos = estado->nodes[q].forwardList;
+				if (vecinos == NULL)
+					continue;
 				el_start (vecinos);
 				endList = 0;
 				while (!endList) {
@@ -729,6 +732,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			
 			/* Actualizamos la capacidad del corte por última vez */
 			vecinos = estado->nodes[q].forwardList;
+			if (vecinos == NULL) goto noVecinos;
 			el_start (vecinos);
 			endList = 0;
 			while (!endList) {
@@ -739,7 +743,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				
 				endList = el_avance (vecinos);
 			}
-			
+			noVecinos:
 			capacidad:
 			printf ("Capacidad del corte: %u\n\n", cap);
 		}
