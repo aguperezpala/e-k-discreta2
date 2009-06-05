@@ -729,6 +729,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			/* Actualizamos la capacidad del corte por última vez */
 			vecinos = estado->nodes[q].forwardList;
 			el_start (vecinos);
+			endList = 0;
 			while (!endList) {
 				vecino = el_get_actual(vecinos)->nodeDest;
 				
