@@ -1,14 +1,13 @@
-
-/* MACK-EK versión 1.0
- * Implementación eficiente del algoritmo Edmonds-Karp para hallar un flujo
+/* MACK-EK versiÃ³n 1.0
+ * ImplementaciÃ³n eficiente del algoritmo Edmonds-Karp para hallar un flujo
  * maximal en un network
  *
  * Autores:  Budde, Carlos E.
  *	     Kondrasky, Alejandro
- *	     Pérez Paladini, Agustín
+ *	     PÃ©rez Paladini, AgustÃ­n
  *	     Soldevilla, Mallku R.
  *
- * Revisión: Penazzi, Daniel
+ * RevisiÃ³n: Penazzi, Daniel
  *
  */
 
@@ -21,7 +20,7 @@
 #include "parser_args.h"
 #include "consts.h"
 #include "network.h"
-#include "cycle_ms.h"
+
 
 
 
@@ -29,16 +28,15 @@ static void main_help (void)
 {
 	printf (
 	
-	"\n\n\t\t    Bienvenido a MACK-EK versión 1.0\n\nModo de uso:\n\n"
-	"  Para setear:  ·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
-	"		·verbosidad: -v <grado>\n\n"
-	"  Si vamos a calcular:  ·el flujo maximo: -max-flow\n"
-	"			·coloreo: -colour\n"
-	"			·parcialmente: -partial <m>\n\n"
+	"\n\n\t\t    Bienvenido a MACK-EK versiÃ³n 1.0\n\nModo de uso:\n\n"
+	"  Para setear:  Â·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
+	"		Â·verbosidad: -v <grado>\n\n"
+	"  Si vamos a calcular:  Â·el flujo maximo: -max-flow\n"
+	"			Â·coloreo: -colour\n"
+	"			Â·parcialmente: -partial <m>\n\n"
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
-	"  Para ejecutar n veces:  ·para medir el tiempo: -ctime <n>\n"
-	"									.para medir los ciclos consumidos: -ccycle <n>\n"
-	"			  ·para medir el flujo: -ftime <n>\n\n"
+	"  Para ejecutar n veces:  Â·para medir el tiempo: -ctime <n>\n"
+	"			  Â·para medir el flujo: -ftime <n>\n\n"
 	"NOTA: son obligatorios los campos <>\n"
 	       );
 }
@@ -153,18 +151,16 @@ int main (int argc, char ** args)
 	int result = 0, err = 0, inputMode, verbose, blockReadSize;
 	register int i = 0;
 	u32 colours = 0;
-	/* Para realizar la medición de tiempo */
-	clock_t start=0,end=0;
-	unsigned long long double res = 0;
-	/* Para realizar la medición de ciclos de CPU */
-	ticks
+	
+	
+	
 	/* creamos el parserArgs */
 	pa = pa_create ();
 
 
 	main_help ();
 	if (argc <= 1) {
-		printf ("\nError de ejecución: ¡se requieren argumentos!\n\n");
+		printf ("\nError de ejecuciÃ³n: Â¡se requieren argumentos!\n\n");
 		return -1;
 	}
 	
@@ -203,70 +199,33 @@ int main (int argc, char ** args)
 	 * normal los lados */
 	blockReadSize = pa_incremental (pa);
 	verbose = pa_verbose (pa);
-	/* Para no tener que calcular los ciclos (y el tiempo) consumidos
-		por un condicional, dejamos una copia del código en la rama
-		"else" para el caso en el que no se pidió una medición de
-		tiempo-ciclos consumidos ( o al revés, es lo mismo...)
-   */
-	if (pa_max_flow_repeat(pa) > 0){
-		/* {pa_timeMeasurement(pa) || pa_cycleMeasurement(pa)} */
-		if (pa_timeMeasurement(pa)){
-			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
-				/* ia! */
-				start = clock(); 
-				/* primero vamos a hacer una corrida normal y cargar el grafo */
-				if (blockReadSize > 0){
-					err = block_read (estado, pa, inputMode);
-				} else {
-					err = normal_read (estado, pa, inputMode);
-				}
-				
-				/* ahora lo que hacemos es aumentar el fucking flow */
-				while (err == 0)
-					err = AumentarFlujo (estado, verbose);
-				end = clock();
-				res +=((long double)(end-start))/CLOCKS_PER_SEC;
-			}
-			/* Calculamos un promedio */
-			res = res/pa_max_flow_repeat(pa);
-			printf("\nTiempo estimado: %llu\n",res);
-		}
-		else{
-			
-			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
-				/* ia! */
-				start = clock(); 
-				/* primero vamos a hacer una corrida normal y cargar el grafo */
-				if (blockReadSize > 0){
-					err = block_read (estado, pa, inputMode);
-				} else {
-					err = normal_read (estado, pa, inputMode);
-				}
-				
-				/* ahora lo que hacemos es aumentar el fucking flow */
-				while (err == 0)
-					err = AumentarFlujo (estado, verbose);
-				end = clock();
-				res +=((long double)(end-start))/CLOCKS_PER_SEC;
-			}
-			/* Calculamos un promedio */
-			res = res/pa_max_flow_repeat(pa);
-			printf("\nTiempo estimado: %llu\n",res);
-		}
+	
+	/* primero vamos a hacer una corrida normal y cargar el grafo */
+	if (blockReadSize > 0){
+		err = block_read (estado, pa, inputMode);
+	} else {
+		err = normal_read (estado, pa, inputMode);
+	}
+	
+	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
+	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
+	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
+		/* ahora lo que hacemos es aumentar el fucking flow */
+		while (err == 0)
+			err = AumentarFlujo (estado, verbose);
+		
 	}
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)) {
 		/* ahora vamos a chequear cuantas veces deberiamos correr el
-		* coloreo */
+		 * coloreo */
 		for (i = pa_colour_repeat (pa); i > 0; i--) {
 			/*! inicializamos aca siempre o no? */
 			colours = ColorearNetwork (estado, verbose);
 		}
 	}
 	/* imprimimos el flujo */
-	/* Corregir lo que se imprime mientras se realiza la medición */
 	ImprimirFlujo (estado, verbose);
-	
 	
 	
 	return 0;
