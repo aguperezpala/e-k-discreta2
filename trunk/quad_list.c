@@ -171,7 +171,7 @@ int qt_avance (quadList_t * qt)
 {
 	ASSERT (qt != NULL)
 			
-	if (qt->prev->next->next == NULL)
+	if (qt->prev == qt->plast)
 		return 1;
 	else {
 		qt->prev = qt->prev->next;
