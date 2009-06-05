@@ -382,11 +382,6 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			PRINTERR ("Finalizó la lectura de lados\n");
 			estado->completo = true;
 			return 0;
-		} else {
-			if (estado->coloreo)
-				AniadirLadoColor (estado, v1, v2, cap);
-			else
-				AniadirLado (estado, v1, v2, cap);
 		}
 		
 		if (estado->maximal) estado->maximal = false;
@@ -473,13 +468,13 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			return 0;
 		}
 		
-		if (estado->coloreo)
-			AniadirLadoColor (estado, v1, v2, cap);
-		else
-			AniadirLado (estado, v1, v2, cap);
-		
 		if (estado->maximal) estado->maximal = false;
 	}
+	
+	if (estado->coloreo)
+		AniadirLadoColor (estado, v1, v2, cap);
+	else
+		AniadirLado (estado, v1, v2, cap);
 	
 	return 1;
 }
