@@ -685,7 +685,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 				printf ("s, ");
 			
 			/* Vamos imprimiendo todos los vértices del corte */
-			for (i = 0 ; i < nn-1 ; i++) {
+			for (i = 0 ; i < nn-2 ; i++) {
 				q = qt_get_actual_node (estado->cola);
 				
 				ASSERT (q != t)
