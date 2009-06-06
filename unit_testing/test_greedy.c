@@ -35,36 +35,25 @@ START_TEST ( test_greedy )
 	node_s ns = ns_create();
 	u32 i=0 , j=0;
 	Color  c = 0;
-
-	for(i=0; i < GREEDY_CANT_NODES ; i++){
+	
+	/* esto es obligatorio aca lamentablemente :D */
+	for (i = 0; i < GREEDY_CANT_NODES; i++) {
+		nodes[i].forwardList = NULL;
+		nodes[i].backwardList = NULL;
 		nodes[i].color = 0;
 		nodes[i].corrida = 0;
-		ns_add_node(ns , i);
+		nodes[i].degree = 0;
 	}
 	
 	for(i=0; i < GREEDY_CANT_NODES ; i++){
-		nodes[i].forwardList = el_create();
-		for(j=(i+1); j <= GREEDY_CANT_EDGES ; j++){
-			e = edge_create(0 , i , j);
-			el_add_edge(nodes[i].forwardList, e);
-			e = el_get_actual(nodes[i].forwardList);
-			assert (i== e->nodeOrig);
-			assert (j== e->nodeDest);
-		}
-		nodes[i].backwardList = el_create();
-		for(j=(i+1); j <= GREEDY_CANT_EDGES ; j++){
-			e = edge_create(0 , j , i );
-			el_add_edge(nodes[i].backwardList, e);
-			e = el_get_actual(nodes[i].backwardList);
-			assert (j== e->nodeOrig);
-			assert (i== e->nodeDest);
-		}
-		printf("node:%u , propio?: %u\n" , i , color_propio(i , nodes));
+		for(j=0; j < GREEDY_CANT_NODES ; j++)
+			if(j != i)AniadirLado(nodes, ns, i, j, i+j);
+		/*printf("node:%u , propio?: %u\n" , i , color_propio(i , nodes));*/
 	}
-
+	
+	ns_cmd(ns , nodes , printcolores);
+	c = color_greedy(ns,nodes);
 	printf("Cantidad de colores usados: %u\n", c);
-	/*c = color_greedy(ns,nodes);
-	printf("Cantidad de colores usados: %u", c);*/
 	ns_cmd(ns , nodes , printcolores);
 }
 END_TEST
