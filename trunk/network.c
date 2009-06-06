@@ -117,7 +117,7 @@ static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			estado->nodes[v2].corrida = 0;
 			/** Para coloreo */
 			v2new = true;
-			estado->nodes[v2].degree = 0;
+			estado->nodes[v2].degree = 1;
 			
 			/* lo agregamos a la pila */
 			ns_add_node (estado->nstack, v2);

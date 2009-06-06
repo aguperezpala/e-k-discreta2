@@ -36,21 +36,11 @@ edgeList_t * el_create (void)
 */
 void el_dinamic_destroy (edgeList_t * el)
 {
-	struct edgeCeld * aux = NULL;
-	struct edgeCeld * delCeld = NULL;
-	
 	ASSERT (el != NULL)
 	
-	aux = el->first.next;
-	/* borramos todas las celdas */
-	while (aux != NULL){
-		free (aux->edge);
-		delCeld = aux;
-		aux = aux->next;
-		free(delCeld);
-	}
+	el_normal_destroy(el);
 	/* borramos la estructura */
-	free (el);
+	free (el);el = NULL;
 }
 
 /* destructor cuando la lista era estática
@@ -67,10 +57,12 @@ void el_normal_destroy (edgeList_t * el)
 	aux = el->first.next;
 	/* borramos todas las celdas */
 	while (aux != NULL){
-		free (aux->edge);
+		if (aux->edge != NULL)free (aux->edge);
+		aux->edge = NULL;
 		delCeld = aux;
 		aux = aux->next;
-		free(delCeld);
+		if (delCeld != NULL)free(delCeld);
+		delCeld = NULL;
 	}
 }
 

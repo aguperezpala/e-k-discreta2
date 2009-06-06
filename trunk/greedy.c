@@ -16,21 +16,24 @@ bool color_propio(u32 node_i , node_t * nodes)
 	ASSERT(greedy_max_color >= 0)
 	
 	/* Chequeo los colores de los vecinos forward */
-	el_start (nodes[node_i].forwardList);
-	do{
-		edge = el_get_actual(nodes[node_i].forwardList);
-		if ( nodes[edge->nodeDest].corrida == nodes[node_i].corrida )
-			if (nodes[edge->nodeDest].color == nodes[node_i].color) return false;
-	}while(el_avance(nodes[node_i].forwardList) == 0);
-
+	if (el_get_size(nodes[node_i].forwardList) > 0){
+		el_start (nodes[node_i].forwardList);
+		do{
+			edge = el_get_actual(nodes[node_i].forwardList);
+			if ( nodes[edge->nodeDest].corrida == nodes[node_i].corrida )
+				if (nodes[edge->nodeDest].color == nodes[node_i].color) return false;
+		}while(el_avance(nodes[node_i].forwardList) == 0);
+	}
+	
 	/* Chequeo los colores de los vecinos backward */
-	el_start (nodes[node_i].backwardList);
-	do{
-		edge = el_get_actual (nodes[node_i].backwardList);
-		if ( nodes[edge->nodeOrig].corrida == nodes[node_i].corrida )
-			if (nodes[edge->nodeOrig].color == nodes[node_i].color) return false;
-	}while(el_avance(nodes[node_i].backwardList) == 0);
-
+	if (el_get_size(nodes[node_i].backwardList) > 0){
+		el_start (nodes[node_i].backwardList);
+		do{
+			edge = el_get_actual (nodes[node_i].backwardList);
+			if ( nodes[edge->nodeOrig].corrida == nodes[node_i].corrida )
+				if (nodes[edge->nodeOrig].color == nodes[node_i].color) return false;
+		}while(el_avance(nodes[node_i].backwardList) == 0);
+	}
 	return true;
 }
 
@@ -55,19 +58,24 @@ void coloring_node(u32 node_i, node_t * nodes )
 	colors = (Color *) calloc ( (greedy_max_color ) + 1, sizeof(Color));
 
 	/* Obtengo los colores de los vecinos forward */
-	el_start (nodes[node_i].forwardList);
-	do{
-		if ( nodes[edge->nodeDest].corrida == nodes[node_i].corrida )
-			colors[(nodes[edge->nodeDest].color)]++;
-	}while(el_avance(nodes[node_i].forwardList) == 0);
-
+	if (el_get_size(nodes[node_i].forwardList) > 0){
+		el_start (nodes[node_i].forwardList);
+		do{
+			edge = el_get_actual (nodes[node_i].forwardList);
+			if ( nodes[edge->nodeDest].corrida == nodes[node_i].corrida )
+				colors[(nodes[edge->nodeDest].color)]++;
+		}while(el_avance(nodes[node_i].forwardList) == 0);
+	}
+	
 	/* Obtengo los colores de los vecinos backward */
-	el_start (nodes[node_i].backwardList);
-	do{
-		edge = el_get_actual (nodes[node_i].backwardList);
-		if ( nodes[edge->nodeOrig].corrida == nodes[node_i].corrida)
-			colors[(nodes[edge->nodeOrig].color)]++;
-	}while(el_avance(nodes[node_i].backwardList) == 0);
+	if (el_get_size(nodes[node_i].backwardList) > 0){
+		el_start (nodes[node_i].backwardList);
+		do{
+			edge = el_get_actual (nodes[node_i].backwardList);
+			if ( nodes[edge->nodeOrig].corrida == nodes[node_i].corrida)
+				colors[(nodes[edge->nodeOrig].color)]++;
+		}while(el_avance(nodes[node_i].backwardList) == 0);
+	}
 	
 	/* Buscando el minimo color no usado */
 
@@ -81,7 +89,7 @@ void coloring_node(u32 node_i, node_t * nodes )
 	/* Pos */
 	ASSERT(color_propio(node_i, nodes))
 
-	greedy_max_color = min (nodes[node_i].color, greedy_max_color);
+	greedy_max_color = max(nodes[node_i].color, greedy_max_color);
 }  
 
 Color color_greedy (node_s node_stack , node_t * nodes)
