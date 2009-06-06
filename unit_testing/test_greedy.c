@@ -28,22 +28,54 @@ static void printcolores (u32 node_i, node_t *nodes)
 		printf ("Vertice t: Color %d\n",  nodes[node_i].color);
 }
 
+static void AniadirLado (node_t * nodes, node_s ns, u32 v1, u32 v2, u32 cap)
+{
+	edge_t *edge = NULL;
+	
+	ASSERT (nodes != NULL)
+	
+	/* Generamos las listas forward y/o backward si es necesario */
+	
+	if (nodes[v1].forwardList == NULL) {
+		
+		nodes[v1].forwardList = el_create ();
+		
+		if (nodes[v1].backwardList == NULL) {
+			/* v1 es vértice nuevo */
+			nodes[v1].corrida = 0;
+			ns_add_node (ns, v1);
+			nodes[v1].degree = 0;
+		}
+	}
+	
+	if (nodes[v2].backwardList == NULL) {
+		nodes[v2].backwardList = el_create ();
+		
+		if (nodes[v2].forwardList == NULL) {
+			/* v2 es vértice nuevo */
+			nodes[v2].corrida = 0;
+			ns_add_node (ns, v2);
+			nodes[v2].degree = 0;
+		}
+	}
+	
+	/* creamos la arista */
+	edge = edge_create (cap, v1, v2);
+	
+	/* Agregamos a ambas listas */
+	el_add_edge (nodes[v1].forwardList, edge);
+	nodes[v1].degree++;
+	el_add_edge (nodes[v2].backwardList, edge);
+	nodes[v2].degree++;
+	
+}
+
 START_TEST ( test_greedy )
 {
-	edge_t * e = NULL;
-	node_t nodes[GREEDY_CANT_NODES];
+	node_t * nodes = (node_t *) calloc (GREEDY_CANT_NODES , sizeof(node_t));
 	node_s ns = ns_create();
-	u32 i=0 , j=0;
+	u32 i=0, j=0;
 	Color  c = 0;
-	
-	/* esto es obligatorio aca lamentablemente :D */
-	for (i = 0; i < GREEDY_CANT_NODES; i++) {
-		nodes[i].forwardList = NULL;
-		nodes[i].backwardList = NULL;
-		nodes[i].color = 0;
-		nodes[i].corrida = 0;
-		nodes[i].degree = 0;
-	}
 	
 	for(i=0; i < GREEDY_CANT_NODES ; i++){
 		for(j=0; j < GREEDY_CANT_NODES ; j++)
@@ -55,6 +87,20 @@ START_TEST ( test_greedy )
 	c = color_greedy(ns,nodes);
 	printf("Cantidad de colores usados: %u\n", c);
 	ns_cmd(ns , nodes , printcolores);
+
+	for (i = 0; i < GREEDY_CANT_NODES; i++) {
+		if(nodes[i].forwardList != NULL)
+			el_dinamic_destroy(nodes[i].forwardList);
+		nodes[i].forwardList = NULL;
+		if(nodes[i].backwardList != NULL)
+			el_dinamic_destroy(nodes[i].backwardList);
+		nodes[i].backwardList = NULL;
+	}
+
+	ns_destroy(ns);
+	ns=NULL;
+	free(nodes);
+	nodes = NULL;
 }
 END_TEST
 
