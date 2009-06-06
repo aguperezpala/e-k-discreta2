@@ -34,18 +34,17 @@ typedef struct s_edgeList edgeList_t;
  */
 edgeList_t * el_create (void);
 
-/* destructor para la lista allocada dinamicamente
+/* Destruye la lista pero no libera su contenido
 	REQUIRES:
 		el != NULL
 */
-void el_dinamic_destroy (edgeList_t * el);
+void el_destroy (edgeList_t * el);
 
-/* destructor para la lista NO allocada dinamicamente, osea practicamente libera
- * todas las celdas de la lista, menos la estructura misma de la celda
+/* Destruye unicamente el contenido de la lista.
 	REQUIRES:
 		el != NULL
 */
-void el_normal_destroy (edgeList_t * el);
+void el_clean (edgeList_t * el);
 
 
 /* Funcion que obtiene el edge acutal al que actualmente apunta la lista 
