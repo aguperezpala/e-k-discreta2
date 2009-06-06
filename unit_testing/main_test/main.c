@@ -1,19 +1,17 @@
-#include "test_greedy.h"
-#include "../edge_list.h"
-#include "../edge.h"
-#include "../consts.h"
-#include "../node_stack.h"
-#include "../node.h"
-#include "../greedy.h"
+
+#include "../../edge_list.h"
+#include "../../edge.h"
+#include "../../consts.h"
+#include "../../node_stack.h"
+#include "../../node.h"
+#include "../../greedy.h"
 #include <signal.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-/* Configuracion del testing*/
-#define GREEDY_CANT_EDGES 5 
-#define GREEDY_CANT_NODES 20
+#define GREEDY_CANT_NODES 4
 
 
 static void printcolores (u32 node_i, node_t *nodes)
@@ -70,8 +68,7 @@ static void AniadirLado (node_t * nodes, node_s ns, u32 v1, u32 v2, u32 cap)
 	
 }
 
-START_TEST ( test_greedy )
-{
+int main (void){
 	node_t * nodes = (node_t *) calloc (GREEDY_CANT_NODES , sizeof(node_t));
 	node_s ns = ns_create();
 	u32 i=0, j=0;
@@ -100,16 +97,6 @@ START_TEST ( test_greedy )
 	ns=NULL;
 	free(nodes);
 	nodes = NULL;
-}
-END_TEST
 
-Suite *greedy_suite (void)
-{
-	Suite *s = suite_create ("greedy");
-	TCase *tc_commands = tcase_create ("Operationes");
-
-	/* Comandos */
-	suite_add_tcase (s,tc_commands);
-	tcase_add_test (tc_commands, test_greedy);
-	return s;
+	return 0;
 }

@@ -30,39 +30,45 @@ edgeList_t * el_create (void)
 }
 	
 
-/* destructor cuando la lista era dinámica
+/* Destruye la lista pero no libera su contenido
 	REQUIRES:
 		el != NULL
 */
-void el_dinamic_destroy (edgeList_t * el)
-{
-	ASSERT (el != NULL)
-	
-	el_normal_destroy(el);
-	/* borramos la estructura */
-	free (el);el = NULL;
-}
-
-/* destructor cuando la lista era estática
-	REQUIRES:
-		el != NULL
-*/
-void el_normal_destroy (edgeList_t * el)
+void el_destroy (edgeList_t * el)
 {
 	struct edgeCeld * aux = NULL;
 	struct edgeCeld * delCeld = NULL;
 	
 	ASSERT (el != NULL)
-	
+
+	/* borramos las celdas , pero no su contenido */
 	aux = el->first.next;
-	/* borramos todas las celdas */
 	while (aux != NULL){
-		if (aux->edge != NULL)free (aux->edge);
-		aux->edge = NULL;
 		delCeld = aux;
 		aux = aux->next;
 		if (delCeld != NULL)free(delCeld);
 		delCeld = NULL;
+	}
+
+	free (el);el = NULL;
+}
+
+/* Destruye unicamente el contenido de la lista.
+	REQUIRES:
+		el != NULL
+*/
+void el_clean (edgeList_t * el)
+{
+	struct edgeCeld * aux = NULL;
+	
+	ASSERT (el != NULL)
+	
+	/* borramos solo el contenido de las celdas */
+	aux = el->first.next;
+	while (aux != NULL){
+		if (aux->edge != NULL)free (aux->edge);
+		aux->edge = NULL;
+		aux = aux->next;
 	}
 }
 

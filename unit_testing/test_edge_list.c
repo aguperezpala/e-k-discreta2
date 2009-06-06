@@ -18,17 +18,17 @@ static u32 i = 0;
 
 /* Funciones para seteo de entorno */
 
-START_TEST ( test_create_destroy_dinamic_empty_el )
+START_TEST ( test_create_destroy_empty_el )
 {
 	el_din = el_create ();
 	assert (el_din != NULL);
-	el_dinamic_destroy(el_din);
+	el_destroy(el_din);
 	el_din= NULL;
 }
 END_TEST
 
 
-START_TEST (test_add_edge_dinamic_el)
+START_TEST (test_add_edge_el)
 {
 	el_din = el_create ();
 	assert (el_din != NULL);
@@ -41,7 +41,7 @@ START_TEST (test_add_edge_dinamic_el)
 END_TEST
 
 
-START_TEST (test_create_destroy_dinamic_el)
+START_TEST (test_create_clean_destroy_el)
 {
 	el_din = el_create ();
 	assert (el_din != NULL);
@@ -50,13 +50,14 @@ START_TEST (test_create_destroy_dinamic_el)
 		e = edge_create(i , i , i+1);
 		el_add_edge(el_din, e);
 	}
-
-	el_dinamic_destroy(el_din);
+	
+	el_clean(el_din);
+	el_destroy(el_din);
 	el_din= NULL;
 }
 END_TEST
 
-START_TEST ( test_check_size_dinamic_el )
+START_TEST ( test_check_size_el )
 {
 	el_din = el_create ();
 	assert (el_din != NULL);
@@ -68,14 +69,15 @@ START_TEST ( test_check_size_dinamic_el )
 
 	assert(el_get_size(el_din) == CANT_EDGES);
 	
-	el_dinamic_destroy(el_din);
+	el_clean(el_din);
+	el_destroy(el_din);
 	el_din= NULL;
 	assert(el_get_size(el_din) == 0);
 	
 }
 END_TEST
 
-START_TEST ( test_start_avance_dinamic_el )
+START_TEST ( test_start_avance_el )
 {
 	el_din = el_create ();
 	assert (el_din != NULL);
@@ -99,14 +101,15 @@ START_TEST ( test_start_avance_dinamic_el )
 		printf ("nodeDest = %u\n", e->nodeDest);
 	}while(el_avance(el_din)== 0);
 	
-	el_dinamic_destroy(el_din);
+	el_clean(el_din);
+	el_destroy(el_din);
 	el_din= NULL;
 	assert(el_get_size(el_din) == 0);
 }
 END_TEST
 
 
-START_TEST ( test_start_avance_del_dinamic_el )
+START_TEST ( test_start_avance_del_el )
 {
 	el_din = el_create ();
 	assert (el_din != NULL);
@@ -135,7 +138,8 @@ START_TEST ( test_start_avance_del_dinamic_el )
 	}
 
 	assert(el_get_size(el_din) == 10);
-	el_dinamic_destroy(el_din);
+	el_clean(el_din);
+	el_destroy(el_din);
 	el_din= NULL;
 	assert(el_get_size(el_din) == 0);
 	
@@ -148,12 +152,12 @@ Suite *edge_list_suite (void)
 	TCase *tc_commands = tcase_create ("Operationes");
 
 	/* Comandos */
-	tcase_add_test (tc_commands, test_create_destroy_dinamic_empty_el);
-	tcase_add_test (tc_commands, test_add_edge_dinamic_el);
-	tcase_add_test (tc_commands, test_create_destroy_dinamic_el);
-	tcase_add_test (tc_commands, test_check_size_dinamic_el);
-	tcase_add_test (tc_commands, test_start_avance_dinamic_el);
-	tcase_add_test (tc_commands, test_start_avance_del_dinamic_el);
+	tcase_add_test (tc_commands, test_create_destroy_empty_el);
+	tcase_add_test (tc_commands, test_add_edge_el);
+	tcase_add_test (tc_commands, test_create_clean_destroy_el);
+	tcase_add_test (tc_commands, test_check_size_el);
+	tcase_add_test (tc_commands, test_start_avance_el);
+	tcase_add_test (tc_commands, test_start_avance_del_el);
 	suite_add_tcase (s,tc_commands);
 
 	return s;
