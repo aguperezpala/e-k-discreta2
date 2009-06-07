@@ -163,8 +163,10 @@ int main (int argc, char ** args)
 	u32 colours = 0;
 	/* Para medir ciclos de CPU consumidos */
 	ticks residuo = 0,t1 = 0, t2 = 0;
+	ticks *mediciones = NULL;
+	ticks moda = 0;
 	/* Para medir tiempo de procesador empleado */
-	clock_t start,end;
+	clock_t start=0,end=0;
 	/* Resultado final de las mediciones */
 	long double measure = 0;
 	
@@ -229,6 +231,7 @@ int main (int argc, char ** args)
 			printf("\nTiempo estimado: %Lf\n",measure);
 		}
 		if(pa_cycleMeasurement(pa)){
+			mediciones = (ticks*)calloc(pa_max_flow_repeat (pa),sizeof(ticks));
 			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
 			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
 			   "or" bit a bit. 
@@ -245,11 +248,11 @@ int main (int argc, char ** args)
 					err = AumentarFlujo (estado, verbose);
 
 				t2=getticks();
-				measure += (t2-t1)-residuo;
+				mediciones[i] = (t2-t1)-residuo;
 			}
-			/* Calculamos un promedio */
-			measure = measure/pa_max_flow_repeat(pa);
-			printf("\nCiclos de CPU consumidos: %Lf\n",measure);
+			moda = calcularModa(mediciones,pa_max_flow_repeat (pa));
+			
+			printf("\nCiclos de CPU consumidos: %llu\n",moda);
 		}
 		if(!pa_max_flow_repeat (pa)){
 			/* {No han pedido realizar medición alguna} */
