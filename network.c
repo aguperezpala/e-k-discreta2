@@ -122,14 +122,14 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 	int endList = 0;
 	
 	/* La idea es imprimir todos los lados forward y con eso cubrir 
-	* el network completo. Por eso si nos llamaron por 't' lo salteamos */
-	if (node_i == (int) 't') return;
+	* el network completo. */
 	
 	ASSERT (nodes != NULL)
 			
 	if (nodes[node_i].forwardList == NULL)
 		return;
 // 	ASSERT (nodes[node_i].forwardList != NULL)
+// 	se quitó esta precondición para soportar la impresión "en bloques"
 	
 	fl = nodes[node_i].forwardList;
 	el_start (fl);
@@ -157,14 +157,14 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	u32 x = 0, y = 0, f = 0;
 	
 	/* La idea es imprimir todos los lados forward y con eso cubrir 
-	 * el network completo. Por eso si nos llamaron por 't' lo salteamos */
-	if (node_i == 1) return;
+	 * el network completo. */
 	
 	ASSERT (nodes != NULL)
 	
 	if (nodes[node_i].forwardList == NULL)
 		return;
 // 	ASSERT (nodes[node_i].forwardList != NULL)
+// 	se quitó esta precondición para soportar la impresión "en bloques"
 	
 	fl = nodes[node_i].forwardList;
 	el_start (fl);
