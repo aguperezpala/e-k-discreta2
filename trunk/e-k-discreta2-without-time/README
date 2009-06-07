@@ -1,0 +1,17 @@
+***********	COSAS PA TENE EN CUENTA!	************
+* Flags de compilacion (algunos acelera otro hacen mas lento el programa).
+* Funciones inline (o definir "macros" y estructuras visibles).
+* Fijarse que con calloc inicializa todo en '\0' (si sirve tanto para inicializar
+  punteros como para inicializar tamaños?) o si no nos sirve un choripan.
+  
+* Sacar el flag __DEBUG (para quitar los ASSERTS y otras verduras)
+
+
+* HACER el tema de los lados backward an fordward, tener en cuenta esto en el 
+  momento de agregar a la cola (estado->cola, de la quad_list). Usando los define
+  que setean las el "bit" de fordward o backward
+
+
+Inline functions:
+  [1] http://publib.boulder.ibm.com/infocenter/lnxpcomp/v7v91/index.jsp?topic=/com.ibm.vacpp7l.doc/language/ref/clrc07cplr243.htm
+  [2] http://www.greenend.org.uk/rjk/2003/03/inline.html  

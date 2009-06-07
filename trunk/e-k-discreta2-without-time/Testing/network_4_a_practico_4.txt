@@ -1,0 +1,26 @@
+sA 1
+sB 5
+sC 30
+sD 10
+sE 20
+AF 18
+CA 17
+BG 4
+BH 1
+CI 20
+CH 20
+DH 8
+DI 1
+DJ 7
+EH 2
+EI 16
+EJ 7
+GI 5
+Ft 30
+Ht 25
+It 15
+Jt 7
+
+Flujo maximal de este network: 66
+Corte minimal de este network: {s}
+/* El corte es el que obtiene Dinic */

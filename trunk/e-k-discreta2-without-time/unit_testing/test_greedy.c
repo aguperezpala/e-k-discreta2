@@ -1,0 +1,117 @@
+#include "test_greedy.h"
+#include "../edge_list.h"
+#include "../edge.h"
+#include "../consts.h"
+#include "../node_stack.h"
+#include "../node.h"
+#include "../greedy.h"
+#include <signal.h>
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+/* Configuracion del testing*/
+#define GREEDY_CANT_NODES 5000
+
+
+static void printcolores (u32 node_i, node_t *nodes)
+{
+	ASSERT (nodes != NULL)
+	
+	if (node_i != 0 && node_i != 1)
+		printf ("Vertice %u: Color %d\n", node_i, nodes[node_i].color);
+	else if (node_i == 0)
+		printf ("Vertice s: Color %d\n",  nodes[node_i].color);
+	else
+		printf ("Vertice t: Color %d\n",  nodes[node_i].color);
+}
+
+static void AniadirLado (node_t * nodes, node_s ns, u32 v1, u32 v2, u32 cap)
+{
+	edge_t *edge = NULL;
+	
+	ASSERT (nodes != NULL)
+	
+	/* Generamos las listas forward y/o backward si es necesario */
+	
+	if (nodes[v1].forwardList == NULL) {
+		
+		nodes[v1].forwardList = el_create ();
+		
+		if (nodes[v1].backwardList == NULL) {
+			/* v1 es vértice nuevo */
+			nodes[v1].corrida = 0;
+			ns_add_node (ns, v1);
+			nodes[v1].degree = 0;
+		}
+	}
+	
+	if (nodes[v2].backwardList == NULL) {
+		nodes[v2].backwardList = el_create ();
+		
+		if (nodes[v2].forwardList == NULL) {
+			/* v2 es vértice nuevo */
+			nodes[v2].corrida = 0;
+			ns_add_node (ns, v2);
+			nodes[v2].degree = 0;
+		}
+	}
+	
+	/* creamos la arista */
+	edge = edge_create (cap, v1, v2);
+	
+	/* Agregamos a ambas listas */
+	el_add_edge (nodes[v1].forwardList, edge);
+	nodes[v1].degree++;
+	el_add_edge (nodes[v2].backwardList, edge);
+	nodes[v2].degree++;
+	
+}
+
+START_TEST ( test_greedy )
+{
+	node_t * nodes = (node_t *) calloc (GREEDY_CANT_NODES , sizeof(node_t));
+	node_s ns = ns_create();
+	u32 i=0, j=0;
+	Color  c = 0;
+	
+	/* Añado los lados del grafo completo */
+	for(i=0; i < GREEDY_CANT_NODES ; i++){
+		for(j=i+1; j < GREEDY_CANT_NODES ; j++)
+			AniadirLado(nodes, ns, i, j, i+j);
+	}
+
+	/* Realizo el coloreo */
+	ns_cmd(ns , nodes , printcolores);
+	c = color_greedy(ns,nodes);
+	printf("Cantidad de colores usados: %u\n", c);
+	ns_cmd(ns , nodes , printcolores);
+
+	/* Destruyo todos los lados */
+	for (i = 0; i < GREEDY_CANT_NODES; i++) {
+		if(el_get_size(nodes[i].forwardList) > 0) el_clean(nodes[i].forwardList);
+		if((nodes[i].forwardList) != NULL) el_destroy(nodes[i].forwardList);
+		nodes[i].forwardList = NULL;
+		if(nodes[i].backwardList != NULL) el_destroy(nodes[i].backwardList);
+		nodes[i].backwardList = NULL;
+	}
+
+	/* Destruyo ns y nodes */
+	ns_destroy(ns);
+	ns=NULL;
+	free(nodes);
+	nodes = NULL;
+}
+END_TEST
+
+Suite *greedy_suite (void)
+{
+	Suite *s = suite_create ("greedy");
+	TCase *tc_commands = tcase_create ("Operationes");
+
+	/* Comandos */
+	suite_add_tcase (s,tc_commands);
+	tcase_add_test (tc_commands, test_greedy);
+	return s;
+}

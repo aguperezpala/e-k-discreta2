@@ -1,0 +1,17 @@
+sA 10
+sB 5
+sC 20
+AD 20
+BA 7
+BE 5
+CB 5
+CE 10
+CF 5
+Dt 20
+ED 1
+Et 10
+Ft 5
+
+Flujo maximal de este network: 33
+Corte minimal de este network: {s, B, C, E}
+/* El corte es el que obtiene Edmonds-Karp */
