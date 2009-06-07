@@ -18,4 +18,5 @@ ticks getticks(void);
 */
 ticks getResiduo (void);
 
+ticks calcularModa(ticks *array, int longitudArray);
 #endif
