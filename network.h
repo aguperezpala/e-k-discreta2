@@ -49,7 +49,7 @@ typedef struct s_estado_network {
  * POS : {(ret != NULL => ret es un objeto EstadoNetwork vacío) && 
  *		(ret == NULL => no hay memoria para el objeto EstadoNetwork)}
  */
-EstadoNetwork *network_create(void);
+EstadoNetwork *network_create(bool coloreo);
 
 
 /* PRE : {estado != NULL && (modmoinput==1 || modoinput==2)}

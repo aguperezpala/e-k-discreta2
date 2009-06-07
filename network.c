@@ -221,7 +221,7 @@ static void ImpresionColoresNum (u32 node_i, node_t *nodes)
  * POS : {(ret != NULL => ret es un objeto EstadoNetwork vacío) && 
  *		(ret == NULL => no hay memoria para el objeto EstadoNetwork)}
  */
-EstadoNetwork *network_create (void)
+EstadoNetwork *network_create (bool coloreo)
 {
 	EstadoNetwork *ret = NULL;
 	register int i;
@@ -236,6 +236,7 @@ EstadoNetwork *network_create (void)
 		/*ret->mayor  = 0;*/
 		ret->delta  = 0;
 		ret->colores = 0;
+		ret->coloreo = coloreo;
 		ret->l_con  = el_create ();
 		ret->nstack = ns_create ();
 		
