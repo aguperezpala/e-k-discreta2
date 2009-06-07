@@ -5,7 +5,7 @@ LDFLAGS=-lcheck `pkg-config --libs glib-2.0`-D_DEBUG
 SOURCES=$(shell echo *.c)
 OBJECTS=$(SOURCES:.c=.o)
 # Aquí no usamos un wildcard para no traer el main
-TESTED_OBJECTS= ../node_stack.o ../edge_list.o ../edge.o ../greedy.o
+TESTED_OBJECTS= ../node_stack.o ../edge_list.o ../edge.o ../greedy.o  ../network.o  ../quad_list.o ../print_stack.o ../first_coloring.o
 
 all: $(TARGET)
 

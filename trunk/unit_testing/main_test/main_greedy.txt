@@ -1,18 +1,16 @@
-#include "test_greedy.h"
-#include "../edge_list.h"
-#include "../edge.h"
-#include "../consts.h"
-#include "../node_stack.h"
-#include "../node.h"
-#include "../greedy.h"
+#include "../../edge_list.h"
+#include "../../edge.h"
+#include "../../consts.h"
+#include "../../node_stack.h"
+#include "../../node.h"
+#include "../../greedy.h"
 #include <signal.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-/* Configuracion del testing*/
-#define GREEDY_CANT_NODES 5000
+#define GREEDY_CANT_NODES 2000
 
 
 static void printcolores (u32 node_i, node_t *nodes)
@@ -40,7 +38,7 @@ static void AniadirLado (node_t * nodes, node_s ns, u32 v1, u32 v2, u32 cap)
 		nodes[v1].forwardList = el_create ();
 		
 		if (nodes[v1].backwardList == NULL) {
-			/* v1 es vértice nuevo */
+			/* v1 es vÃ©rtice nuevo */
 			nodes[v1].corrida = 0;
 			ns_add_node (ns, v1);
 			nodes[v1].degree = 0;
@@ -51,7 +49,7 @@ static void AniadirLado (node_t * nodes, node_s ns, u32 v1, u32 v2, u32 cap)
 		nodes[v2].backwardList = el_create ();
 		
 		if (nodes[v2].forwardList == NULL) {
-			/* v2 es vértice nuevo */
+			/* v2 es vÃ©rtice nuevo */
 			nodes[v2].corrida = 0;
 			ns_add_node (ns, v2);
 			nodes[v2].degree = 0;
@@ -69,26 +67,22 @@ static void AniadirLado (node_t * nodes, node_s ns, u32 v1, u32 v2, u32 cap)
 	
 }
 
-START_TEST ( test_greedy )
-{
+int main (void){
 	node_t * nodes = (node_t *) calloc (GREEDY_CANT_NODES , sizeof(node_t));
 	node_s ns = ns_create();
 	u32 i=0, j=0;
 	Color  c = 0;
 	
-	/* Añado los lados del grafo completo */
 	for(i=0; i < GREEDY_CANT_NODES ; i++){
 		for(j=i+1; j < GREEDY_CANT_NODES ; j++)
 			AniadirLado(nodes, ns, i, j, i+j);
 	}
-
-	/* Realizo el coloreo */
+	
 	ns_cmd(ns , nodes , printcolores);
 	c = color_greedy(ns,nodes);
 	printf("Cantidad de colores usados: %u\n", c);
 	ns_cmd(ns , nodes , printcolores);
 
-	/* Destruyo todos los lados */
 	for (i = 0; i < GREEDY_CANT_NODES; i++) {
 		if(el_get_size(nodes[i].forwardList) > 0) el_clean(nodes[i].forwardList);
 		if((nodes[i].forwardList) != NULL) el_destroy(nodes[i].forwardList);
@@ -97,21 +91,11 @@ START_TEST ( test_greedy )
 		nodes[i].backwardList = NULL;
 	}
 
-	/* Destruyo ns y nodes */
 	ns_destroy(ns);
 	ns=NULL;
 	free(nodes);
 	nodes = NULL;
-}
-END_TEST
 
-Suite *greedy_suite (void)
-{
-	Suite *s = suite_create ("greedy");
-	TCase *tc_commands = tcase_create ("Operationes");
-
-	/* Comandos */
-	suite_add_tcase (s,tc_commands);
-	tcase_add_test (tc_commands, test_greedy);
-	return s;
+	return 0;
 }
+

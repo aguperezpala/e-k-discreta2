@@ -15,19 +15,6 @@
 
 /**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
 /** ~~~~~~~~~~~~~~~~~~ FUNCIONES STATIC (DE USO INTERNO) ~~~~~~~~~~~~~~~~~~~~ */
-
-/* Funcion de inicializacion de vertices 
-	REQUIRES;
-		nodes != NULL
-		node < MAX_N_NODES
-
-static void initialize_node (u32 node , node_t * nodes)
-{
-	ASSERT (nodes != NULL)
-	ASSERT (node < MAX_N_NODES)
-	
-	nodes[node].corrida = 0;
-}*/
 	
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
@@ -77,8 +64,6 @@ static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	
 }
 
-
-
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión tiene en cuenta el coloreo incremental de los vértices.
  *
@@ -87,73 +72,40 @@ static void AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32 m = 0;
-	edge_t *edge = NULL;
-	bool v1new = false, v2new = false;
+	Color max_color = 0;
 	
 	ASSERT (estado != NULL)
 	
-	/* Generamos las listas forward y/o backward si es necesario */
-	
-	if (estado->nodes[v1].forwardList == NULL) {
-		
-		estado->nodes[v1].forwardList = el_create ();
-		
-		if (estado->nodes[v1].backwardList == NULL) {
-			/* v1 es vértice nuevo */
-			estado->nodes[v1].corrida = 0;
-			/** Para coloreo */
-			v1new = true;
-			estado->nodes[v1].degree = 0;
-			ns_add_node (estado->nstack, v1);
-		}
-	}
-	
-	if (estado->nodes[v2].backwardList == NULL) {
-		
-		estado->nodes[v2].backwardList = el_create ();
-		
-		if (estado->nodes[v1].forwardList == NULL) {
-			/* v2 es vértice nuevo */
-			estado->nodes[v2].corrida = 0;
-			/** Para coloreo */
-			v2new = true;
-			estado->nodes[v2].degree = 1;
+	/* LLamamos a AniadirLado */
+	AniadirLado(estado, v1, v2, cap);
+	ASSERT( estado->nodes[v1].degree > 12 && estado->nodes[v2].degree > 0)
 			
-			/* lo agregamos a la pila */
-			ns_add_node (estado->nstack, v2);
-		}
-	}
-	
-	/* creamos la arista */
-	edge = edge_create (cap, v1, v2);
-	
-	/* Agregamos a ambas listas */
-	el_add_edge (estado->nodes[v1].forwardList, edge);
-	estado->nodes[v1].degree++;
-	el_add_edge (estado->nodes[v2].backwardList, edge);
-	estado->nodes[v2].degree++;
-	
-	/** De acá para abajo, para coloreo */
 	/* Seteamos el delta de todo el network/grafo */
 	m = max (estado->nodes[v1].degree, estado->nodes[v2].degree);
 	if ((unsigned)estado->delta < m) estado->delta = m;
 	
-	
-	if (v1new) {
+	/* Mediante los grados vemos cuales son los vertices nuevos */
+	if (estado->nodes[v1].degree == 1) {
 		
-		if (v2new) {
+		if (estado->nodes[v2].degree == 1) {
 			/* Ambos vértices eran nuevos */
 			estado->nodes[v1].color = 1;
 			estado->nodes[v2].color = 2;
-		} else
+		} else{
 			/* v1 es nuevo, lo coloreamos sin conflicto */
 			estado->nodes[v1].color = 3 - estado->nodes[v2].color;
-	} else if (v2new)
+		}
+	} else if (estado->nodes[v2].degree == 1){
 		/* v2 es nuevo, lo coloreamos sin conflicto */
 		estado->nodes[v2].color = 3 - estado->nodes[v1].color;
-	else
+	}else{
 		/* Ningún vértice es nuevo => lado conflictivo */
-		el_add_edge (estado->l_con, edge);
+		el_add_edge (estado->l_con, el_get_actual(estado->nodes[v1].forwardList));
+	}
+
+	/* Actualizamos el color */
+	max_color = max(estado->nodes[v1].color , estado->nodes[v2].color);
+	estado->colores = max (estado->colores , max_color);
 }
 
 
@@ -253,9 +205,6 @@ static void ImpresionColoresNum (u32 node_i, node_t *nodes)
 	else
 		printf ("Vertice t: Color %d\n",  nodes[node_i].color);
 }
-
-
-
 
 
 /**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
@@ -488,7 +437,7 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 /* PRE: {estado != NULL && verbosidad € {0, 1, 2, 3} }
  * ret = AumentarFlujo (estado, verbosidad)
  * POS: {(ret == 0 => Se pudo aumentar el flujo)	&&
- *	 (ret == 1 => No se pudo aumentar el flujo)	&&
+ *	 (ret == 1 => No se pudo aumentar el flujo)		&&
  *	 (ret == 2 => Se produjo un error)			 }
  */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
@@ -770,7 +719,7 @@ long int ImprimirFlujo (EstadoNetwork *estado, int verbosidad)
 		return -1;
 	}
 	
-// 	qt_start (estado->cola);
+ 	qt_start (estado->cola);
 			
 	if (verbosidad == 2) {
 		printf ("Flujo:\n");

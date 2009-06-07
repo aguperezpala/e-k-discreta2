@@ -159,7 +159,7 @@ int main (int argc, char ** args)
 	FILE * file = NULL;
 	GList * network = NULL;
 	GList * side = NULL;
-	
+
 	help();
 	if (argc < 5)
 		return -1;

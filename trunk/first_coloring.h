@@ -35,5 +35,4 @@
  */
 unsigned short ResolverConflictos (EstadoNetwork *estado);
 
-
 #endif

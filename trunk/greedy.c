@@ -86,8 +86,14 @@ void coloring_node(u32 node_i, node_t * nodes )
 	free (colors);
 	colors = NULL;
 
-	/* Pos */
-	ASSERT(color_propio(node_i, nodes))
+
+#ifdef __DEBUG
+	if (!color_propio(node_i, nodes)) {
+		   fprintf (stderr, "Se generó un conflicto al buscar un"
+				    " color para el vértice %u\nSe le otorgó"
+				    " el color %d\n", node_i, (int) i);
+	}
+#endif
 
 	greedy_max_color = max(nodes[node_i].color, greedy_max_color);
 }  
