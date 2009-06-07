@@ -762,8 +762,16 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 	node_cmd printNC; /* Comando para imprimir el nodo y su color */
 
 	/* Precondiciones */
-	ASSERT(!VerbosidadInvalidaColorear(verbosidad))
-	ASSERT(estado->coloreo)
+	if ( VerbosidadInvalidaColorear (verbosidad)  ) {
+		/* Verbosidad no valida */
+		PRINTERR ("API: ColorearNetwork: verbosidad inválida\n");
+		return 0;
+	}
+	if ( !estado->coloreo ) {
+		/* Verbosidad no valida */
+		PRINTERR ("API: ColorearNetwork: Error interno\n");
+		return 0;
+	}
 	
 	/* Imprimo el coloreo obtenido por first_coloring */
 	printNC = ( estado->modoinput == 1 ) ? &ImpresionColoresAlf : &ImpresionColoresNum;
