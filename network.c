@@ -113,7 +113,7 @@ static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
  * del elemendo de "nodes" que está en la posición "node_i"
  * Considera a los vértices como caracteres alfabéticos (ascii)
  *
- * PRE: nodes != NULL  &&  nodes[node].forardList != NULL
+ * PRE: nodes != NULL
  */
 static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 {
@@ -126,7 +126,10 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
 	if (node_i == (int) 't') return;
 	
 	ASSERT (nodes != NULL)
-	ASSERT (nodes[node_i].forwardList != NULL)
+			
+	if (nodes[node_i].forwardList == NULL)
+		return;
+// 	ASSERT (nodes[node_i].forwardList != NULL)
 	
 	fl = nodes[node_i].forwardList;
 	el_start (fl);
@@ -144,7 +147,7 @@ static void ImpresionFlujosAlf (u32 node_i, node_t *nodes)
  * del elemendo de "nodes" que está en la posición "node_i"
  * Considera a los vértices como números (u32)
  *
- * PRE: nodes != NULL  &&  nodes[node].forardList != NULL
+ * PRE: nodes != NULL
  */ 
 static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 {
@@ -158,7 +161,10 @@ static void ImpresionFlujosNum (u32 node_i, node_t *nodes)
 	if (node_i == 1) return;
 	
 	ASSERT (nodes != NULL)
-	ASSERT (nodes[node_i].forwardList != NULL)
+	
+	if (nodes[node_i].forwardList == NULL)
+		return;
+// 	ASSERT (nodes[node_i].forwardList != NULL)
 	
 	fl = nodes[node_i].forwardList;
 	el_start (fl);
