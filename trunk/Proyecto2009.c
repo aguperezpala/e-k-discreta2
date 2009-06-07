@@ -193,7 +193,7 @@ int main (int argc, char ** args)
 #endif
 	
 	/* creamos el network */
-	estado = network_create ();
+	estado = network_create (pa_work_colour(pa));
 	if (estado == NULL) {
 		printf ("No se pudo crear el network, memoria insuficiente\n");
 		return 1;
@@ -273,7 +273,6 @@ int main (int argc, char ** args)
 	
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)){
-		estado->coloreo = true;
 		if(pa_timeMeasurement(pa)){
 			/* ahora vamos a chequear cuantas veces deberiamos correr el
 			* coloreo */
