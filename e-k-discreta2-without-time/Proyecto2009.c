@@ -28,15 +28,15 @@ static void main_help (void)
 {
 	printf (
 	
-	"\n\n\t\t    Bienvenido a MACK-EK versiÃƒÂ³n 1.0\n\nModo de uso:\n\n"
-	"  Para setear:  Ã‚Â·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
-	"		Ã‚Â·verbosidad: -v <grado>\n\n"
-	"  Si vamos a calcular:  Ã‚Â·el flujo maximo: -max-flow\n"
-	"			Ã‚Â·coloreo: -colour\n"
-	"			Ã‚Â·parcialmente: -partial <m>\n\n"
+	"\n\n\t\t    Bienvenido a MACK-EK version 1.0\n\nModo de uso:\n\n"
+	"  Para setear:  ·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
+	"		·verbosidad: -v <grado>\n\n"
+	"  Si vamos a calcular:  ·el flujo maximo: -max-flow\n"
+	"			·coloreo: -colour\n"
+	"			·parcialmente: -partial <m>\n\n"
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
-	"  Para ejecutar n veces:  Ã‚Â·para medir el tiempo: -ctime <n>\n"
-	"			  Ã‚Â·para medir el flujo: -ftime <n>\n\n"
+	"  Para ejecutar n veces:  ·para medir el tiempo: -ctime <n>\n"
+	"			  ·para medir el flujo: -ftime <n>\n\n"
 	"NOTA: son obligatorios los campos <>\n"
 	       );
 }

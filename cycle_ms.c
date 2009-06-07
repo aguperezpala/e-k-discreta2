@@ -1,7 +1,7 @@
 #include "cycle_ms.h"
 #include "consts.h"
 
-INLINE ticks getticks(void){
+ticks getticks(void){
 	 unsigned int a, d;
 		
 	__asm__("cpuid");
@@ -13,7 +13,7 @@ INLINE ticks getticks(void){
 	return (((ticks)a) | (((ticks)d)<<32));
 }
 
-INLINE ticks getResiduo (void){
+ticks getResiduo (void){
 	ticks t1,t2,limpio,shift,cpuid,rdtsc;
 	unsigned a,d;/* Para acceder al contenido de los registros a y d */
 	

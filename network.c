@@ -78,7 +78,7 @@ static void AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 	
 	/* LLamamos a AniadirLado */
 	AniadirLado(estado, v1, v2, cap);
-	ASSERT( estado->nodes[v1].degree > 12 && estado->nodes[v2].degree > 0)
+	ASSERT( estado->nodes[v1].degree > 0 && estado->nodes[v2].degree > 0)
 			
 	/* Seteamos el delta de todo el network/grafo */
 	m = max (estado->nodes[v1].degree, estado->nodes[v2].degree);
@@ -759,7 +759,7 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 	ASSERT(estado->coloreo)
 	
 	/* Imprimo el coloreo obtenido por first_coloring */
-	printNC = ( verbosidad == 1 ) ? &ImpresionColoresAlf : &ImpresionColoresNum;
+	printNC = ( estado->modoinput == 1 ) ? &ImpresionColoresAlf : &ImpresionColoresNum;
 	
 	if (estado->colores > 0){
 		/*Se realizo un coloreo previo */
@@ -767,9 +767,9 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 		ASSERT (K>0)
 
 		if ( verbosidad == 1 ) {
-			printf("Coloreo con First Coloring : %d" , K );  
+			printf("Coloreo con First Coloring : %d\n" , K );  
 			ns_cmd (estado->nstack , estado->nodes, printNC );
-			printf("Cantidad de Colores utilizados: %d" , K ); 
+			printf("Cantidad de Colores utilizados: %d\n" , K ); 
 		}
 		if ( K <= estado->delta )return K;
 	}
@@ -780,9 +780,9 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 	   NOTA!: Los colores se imprimen en negativo , luego lo arreglare con una
 		  funcion aparte. */
 	if ( verbosidad == 1 ) {
-		printf("Coloreo con Greedy : %d" , K );  
+		printf("Coloreo con Greedy : %d\n" , K );  
 		ns_cmd (estado->nstack , estado->nodes, printNC );
-		printf("Cantidad de Colores utilizados: %d" , K ); 
+		printf("Cantidad de Colores utilizados: %d\n" , K ); 
 	}
 	
 	return K;

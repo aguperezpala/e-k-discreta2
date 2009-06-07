@@ -29,17 +29,17 @@ static void main_help (void)
 {
 	printf (
 	
-	"\n\n\t\t    Bienvenido a MACK-EK versiÃ³n 1.0\n\nModo de uso:\n\n"
-	"  Para setear:  Â·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
-	"		Â·verbosidad: -v <grado>\n\n"
-	"  Si vamos a calcular:  Â·el flujo maximo: -max-flow\n"
-	"			Â·coloreo: -colour\n"
-	"			Â·parcialmente: -partial <m>\n\n"
+	"\n\n\t\t    Bienvenido a MACK-EK version 1.0\n\nModo de uso:\n\n"
+	"  Para setear:  ·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
+	"		·verbosidad: -v <grado>\n\n"
+	"  Si vamos a calcular:  ·el flujo maximo: -max-flow\n"
+	"			·coloreo: -colour\n"
+	"			·parcialmente: -partial <m>\n\n"
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
-	"  Para ejecutar n veces:  Â·colorear y medir el tiempo: -ctime <n>\n"
-			"					.colorear y medir ciclos de cpu empleados: -ccycles <n>\n"
-	"			  Â·buscar flujo maximal y medir el tiempo: -ftime <n>\n\n"
-	"			  Â·buscar flujo maximal y medir ciclos de cpu empleados: -fcycles <n>\n\n"
+	"  Para ejecutar n veces:  ·colorear y medir el tiempo: -ctime <n>\n"
+	"			  .colorear y medir ciclos de cpu empleados: -ccycles <n>\n"
+	"			  ·buscar flujo maximal y medir el tiempo: -ftime <n>\n\n"
+	"			  ·buscar flujo maximal y medir ciclos de cpu empleados: -fcycles <n>\n\n"
 	"NOTA: son obligatorios los campos <>\n"
 	       );
 }
@@ -168,7 +168,7 @@ int main (int argc, char ** args)
 
 	main_help ();
 	if (argc <= 1) {
-		printf ("\nError de ejecuciÃ³n: Â¡se requieren argumentos!\n\n");
+		printf ("\nError de ejecucion: ¡se requieren argumentos!\n\n");
 		return -1;
 	}
 	
@@ -265,6 +265,7 @@ int main (int argc, char ** args)
 	
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)){
+		estado->coloreo = true;
 		if(pa_timeMeasurement(pa)){
 			/* ahora vamos a chequear cuantas veces deberiamos correr el
 			* coloreo */
