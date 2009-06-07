@@ -95,6 +95,13 @@ static int block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
 			/* simplemente aumentamos el flujo */
 			while (err == 0)
 				err = AumentarFlujo (estado, verbose);
+			
+		if (finish)
+			estado->maximal = true;
+		else
+			estado->maximal = false;
+		/* imprimimos el flujo */
+		ImprimirFlujo (estado, verbose);
 	}
 	return err;
 }
@@ -258,8 +265,9 @@ int main (int argc, char ** args)
 			while (err == 0)
 				err = AumentarFlujo (estado, verbose);
 			
-			/* imprimimos el flujo */
-			ImprimirFlujo (estado, verbose);
+			if (blockReadSize <= 0)
+				/* imprimimos el flujo */
+				ImprimirFlujo (estado, verbose);
 		}
 	}
 	
