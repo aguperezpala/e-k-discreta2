@@ -91,6 +91,10 @@ static int pa_map_arg (char * arg)
 		result = 6;
 	else if (strcmp (arg, F_FLOW_TIME) == 0)
 		result = 7;
+	else if (strcmp (arg, F_FLOW_CYCLES) == 0)
+		result = 8;
+	else if (strcmp (arg, F_COLOUR_CYCLES) == 0)
+		result = 9;
 	else 
 		result = -1;
 	
@@ -166,7 +170,18 @@ static int pa_real_parse (char ** args, int argc, int i)
 			else
 				result = -3;
 			break;
-			
+		case 8:
+			if (i + 1 < argc && is_int (args[i+1], &param))
+				result = (int) param;
+			else
+				result = -3;
+			break;
+		case 9:
+			if (i + 1 < argc && is_int (args[i+1], &param))
+				result = (int) param;
+			else
+				result = -3;
+			break;
 		default:
 			result = -3;
 			break;
@@ -275,16 +290,31 @@ int pa_parse (parserArgs_t * pa, int argc, char ** args)
 			case 6:
 				if (result >= 0) {
 					pa->colourRepeat = result;
+					pa->timeMeasurement = true;
 					i++;
 				}
 				break;
 			case 7:
 				if (result >= 0) {
 					pa->maxFlowRepeat = result;
+					pa->timeMeasurement = true;
 					i++;
 				}
 				break;
-				
+			case 8:
+				if (result >= 0) {
+					pa->maxFlowRepeat = result;
+					pa->cyclesMeasurement = true;
+					i++;
+				}
+				break;
+			case 9:
+				if (result >= 0) {
+					pa->colourRepeat = result;
+					pa->cyclesMeasurement = true;
+					i++;
+				}
+				break;	
 			default:
 				result = -3;
 				break;

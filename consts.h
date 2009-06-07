@@ -144,8 +144,9 @@ typedef int Color;
 #define F_INCREMENTAL		"-inc"			/* calculamos incrementalmente */
 #define F_PARTIAL		"-partial"		/* si vamos a calcular parcialmente */
 #define F_COLOUR_TIME		"-ctime"		/* calculamos n veces el tiempo para coloreo*/
-#define F_FLOW_TIME		"-ftime"		/* calc n veces flow */
-
+#define F_COLOUR_CYCLES		"-ccycles"		/* calculamos n veces el tiempo para coloreo*/
+#define F_FLOW_TIME		"-ftime"		/* calc n veces flow y medir tiempo */
+#define F_FLOW_CYCLES		"-fcycles"		/* calc n veces flow y medir ciclos */
 
 
 
