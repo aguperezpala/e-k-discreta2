@@ -17,10 +17,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include "parser_args.h"
 #include "consts.h"
 #include "network.h"
-
+#include "cycle_ms.h"
 
 
 
@@ -36,6 +37,7 @@ static void main_help (void)
 	"			Â·parcialmente: -partial <m>\n\n"
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
 	"  Para ejecutar n veces:  Â·para medir el tiempo: -ctime <n>\n"
+			"					.para medir los ciclos de CPU: -cycles <n>\n"
 	"			  Â·para medir el flujo: -ftime <n>\n\n"
 	"NOTA: son obligatorios los campos <>\n"
 	       );
@@ -151,7 +153,12 @@ int main (int argc, char ** args)
 	int result = 0, err = 0, inputMode, verbose, blockReadSize;
 	register int i = 0;
 	u32 colours = 0;
-	
+	/* Para medir ciclos de CPU consumidos */
+	ticks residuo = 0,t1 = 0, t2 = 0;
+	/* Para medir tiempo de procesador empleado */
+	clock_t start,end;
+	/* Resultado final de las mediciones */
+	long double measure = 0;
 	
 	
 	/* creamos el parserArgs */
@@ -194,46 +201,124 @@ int main (int argc, char ** args)
 	/* inicializamos el network */
 	err = Inicializar(estado, inputMode);
 	
-	
-	/* Ahora vamos a verificar si debemos ingresar en forma de bloques o en forma
-	 * normal los lados */
-	blockReadSize = pa_incremental (pa);
-	verbose = pa_verbose (pa);
-	
-	/* primero vamos a hacer una corrida normal y cargar el grafo */
-	if (blockReadSize > 0){
-		err = block_read (estado, pa, inputMode);
-	} else {
-		err = normal_read (estado, pa, inputMode);
-	}
-	
-	
-	/** ### ### Para calcular el tiempo hay que setear verbose a 0 ### ### */
-	/*verbose = 0;*/
-	/*! HACERLO EFICIENTE A ESTO!, falta calcular el tiempo */
-	/* ahora vamos a ver cuantas veces tenemos que repetir esto */
-	for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--) {
-		/* ahora lo que hacemos es aumentar el fucking flow */
-		/*! debemos inicializar esto! */
-		err = Inicializar(estado, inputMode);
-		while (err == 0)
-			err = AumentarFlujo (estado, verbose);
-		
+	if(pa_work_flow (pa)){
+		if (pa_timeMeasurement(pa)){
+			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+				/* ia! */
+				start = clock(); 
+				/* primero vamos a hacer una corrida normal y cargar 
+					el grafo */
+				err = normal_read (estado, pa, inputMode);
+				/* ahora lo que hacemos es aumentar el fucking flow */
+				while (err == 0)
+					err = AumentarFlujo (estado, verbose);
+				/* Listo. Paramos el reloj */
+				end = clock();
+				measure +=((long double)(end-start))/CLOCKS_PER_SEC;
+			}
+			/* Calculamos un promedio */
+			measure = measure/pa_max_flow_repeat(pa);
+			printf("\nTiempo estimado: %Lf\n",measure);
+		}
+		if(pa_cycleMeasurement(pa)){
+			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
+			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
+			   "or" bit a bit. 
+			*/
+			residuo = getResiduo ();
+			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+				t1=getticks();
+				/* primero vamos a hacer una corrida normal y cargar el 
+					grafo */
+				err = normal_read (estado, pa, inputMode);
+				
+				/* ahora lo que hacemos es aumentar el fucking flow */
+				while (err == 0)
+					err = AumentarFlujo (estado, verbose);
+
+				t2=getticks();
+				measure += (t2-t1)-residuo;
+			}
+			/* Calculamos un promedio */
+			measure = measure/pa_max_flow_repeat(pa);
+			printf("\nCiclos de CPU consumidos: %Lf\n",measure);
+		}
+		if(!pa_max_flow_repeat (pa)){
+			/* {No han pedido realizar medición alguna} */
+			blockReadSize = pa_incremental (pa);
+			verbose = pa_verbose (pa);
+			/* primero vamos a hacer una corrida normal y cargar el grafo */
+			if (blockReadSize > 0){
+				err = block_read (estado, pa, inputMode);
+			} else {
+				err = normal_read (estado, pa, inputMode);
+			}
+			/* ahora lo que hacemos es aumentar el fucking flow */
+			while (err == 0)
+				err = AumentarFlujo (estado, verbose);
+			
+			/* imprimimos el flujo */
+			ImprimirFlujo (estado, verbose);
+		}
 	}
 	
 	/* ahora vamos a verificar si debemos buscar color o no */
-	if (pa_work_colour (pa)) {
-		/* ahora vamos a chequear cuantas veces deberiamos correr el
-		 * coloreo */
-		for (i = pa_colour_repeat (pa); i > 0; i--) {
-			/*!###	### <<<Inicializamos?????> ### ###*/
+	if (pa_work_colour (pa)){
+		if(pa_timeMeasurement(pa)){
+			/* ahora vamos a chequear cuantas veces deberiamos correr el
+			* coloreo */
+			for (i = pa_colour_repeat (pa); i > 0; i--) {
+				/* ia! */
+				start = clock(); 
+				/* primero vamos a hacer una corrida normal y cargar 
+					el grafo */
+				err = normal_read (estado, pa, inputMode);
+				colours = ColorearNetwork (estado, verbose);
+				/* Listo. Paramos el reloj */
+				end = clock();
+				measure +=((long double)(end-start))/CLOCKS_PER_SEC;
+			}
+			/* Calculamos un promedio */
+			measure = measure/pa_max_flow_repeat(pa);
+			printf("\nTiempo estimado: %Lf\n",measure);
+		}
+		if(pa_cycleMeasurement(pa)){
+			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
+			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
+			   "or" bit a bit. 
+			*/
+			residuo = getResiduo ();
+			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+				t1=getticks();
+				/* primero vamos a hacer una corrida normal y cargar el 
+					grafo */
+				err = normal_read (estado, pa, inputMode);
+				
+				colours = ColorearNetwork (estado, verbose);
+
+				t2=getticks();
+				measure += (t2-t1)-residuo;
+			}
+			/* Calculamos un promedio */
+			measure = measure/pa_max_flow_repeat(pa);
+			printf("\nCiclos de CPU consumidos: %Lf\n",measure);
+		}
+		if(!pa_max_flow_repeat (pa)){
+			/* {No han pedido realizar medición alguna} */
+			/* Ahora vamos a verificar si debemos ingresar en forma de 
+			 bloques o en forma normal los lados */
+			blockReadSize = pa_incremental (pa);
+			verbose = pa_verbose (pa);
+			/* primero vamos a hacer una corrida normal y cargar el grafo */
+			if (blockReadSize > 0){
+				err = block_read (estado, pa, inputMode);
+			} else {
+				err = normal_read (estado, pa, inputMode);
+			}
+			/* ahora lo que hacemos es aumentar el fucking flow */
 			colours = ColorearNetwork (estado, verbose);
 		}
 	}
-	/* imprimimos el flujo solo si verbose <= 1*/
-	if (verbose <= 2)
-		ImprimirFlujo (estado, verbose);
-	
 	
 	return 0;
 }

@@ -104,7 +104,23 @@ int pa_max_flow_repeat (parserArgs_t * pa);
 */
 int pa_colour_repeat (parserArgs_t * pa);
 
+/* ¿Pidieron medición de tiempo?
+	REQUIRES:
+		pa != NULL
+	RETURN
+		true zi zi...
+		false zi no...
+*/
+bool pa_timeMeasurement (parserArgs_t * pa);
 
+/* ¿Pidieron medición de ciclos de CPU?
+	REQUIRES:
+		pa != NULL
+	RETURN
+		true zi zi...
+		false zi no...
+*/
+bool pa_cycleMeasurement (parserArgs_t * pa);
 
 #ifdef __DEBUG
 
