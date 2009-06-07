@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 /* Configuracion del testing*/
-#define FIRST_COLORING_CANT_NODES 444
+#define FIRST_COLORING_CANT_NODES 500
 
 static void frt_printcolores (u32 node_i, node_t *nodes)
 {
@@ -43,7 +43,6 @@ static void frt_AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 			estado->nodes[v1].corrida = 0;
 			ns_add_node (estado->nstack, v1);
 			estado->nodes[v1].degree = 0;
-
 		}
 	}
 	
@@ -73,7 +72,6 @@ static void frt_AniadirLado (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 static void frt_AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap)
 {
 	u32 m = 0;
-	Color max_color = 0;
 	
 	ASSERT (estado != NULL)
 	
@@ -92,7 +90,6 @@ static void frt_AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap
 			/* Ambos vértices eran nuevos */
 			estado->nodes[v1].color = 1;
 			estado->nodes[v2].color = 2;
-
 		} else{
 			/* v1 es nuevo, lo coloreamos sin conflicto */
 			estado->nodes[v1].color = 3 - estado->nodes[v2].color;
@@ -104,10 +101,6 @@ static void frt_AniadirLadoColor (EstadoNetwork *estado, u32 v1, u32 v2, u32 cap
 		/* Ningún vértice es nuevo => lado conflictivo */
 		el_add_edge (estado->l_con, el_get_actual(estado->nodes[v1].forwardList));
 	}
-
-	/* Actualizamos el color */
-	max_color = max(estado->nodes[v1].color , estado->nodes[v2].color);
-	estado->colores = max (estado->colores , max_color);
 }
 
 int main(void)
@@ -140,4 +133,3 @@ int main(void)
 
 	return 0;
 }
-
