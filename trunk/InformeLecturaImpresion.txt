@@ -1,0 +1,92 @@
+________________________________________________________________________________
+LeerUnLAdo
+
+   Esta función carga una *línea* leída desde stdin al EstadoNetwork según el
+modo especificado como argumento: 1 (alfabético) o 2 (numérico)
+
+switch (modoinput) {
+	case 1:
+		  Las líneas deben tener el formato "xy z", tras lo cual debe
+		haber un salto de línea. 'x' representa el vértice de origen del
+		lado, 'y' el vértice destino y 'z' la capacidad del lado.
+		  'x' e 'y' deben ser caracteres a-z ó A-Z sin incluir la ñ. 'z'
+		debe ser un número positivo < 2^32
+		   Al 1º lado que no respete el formato se finaliza toda lectura
+		
+		break;
+	
+	case 2:
+		   Las líneas deben tener el formato "x y z", tras lo cual debe
+		haber un salto de línea. 'x' representa el vértice de origen del
+		lado, 'y' el vértice destino y 'z' la capacidad del lado.
+		   Los tres deben ser números positivos < 2^32
+		   Al 1º lado que no respete el formato se finaliza toda lectura
+		
+		break;
+
+	default:
+		   Error
+		break;
+}
+
+   Un detalle es que el agregado de un lado tiene en cuenta si fue seteada la
+opción de coloreo. Esto se debe a que el algoritmo "FirstColoring" empleado en
+la búsqueda de un coloreo propio del network/grafo va coloreando los vértices
+a medida que éstos se agregan. Es evidente que esto añadiría una sobrecarga
+inútil si la opción de coloreo no es deseada. Por ello fue necesario distinguir
+entre ambos casos en esta parte del algoritmo.
+
+
+NOTA IMPORTANTE: Los archivos deben ser pasados al algoritmo sin la
+transformación intermedia de un editor de texto. Sucede que muchos editores
+introducen caraceteres "invisibles" para manejo interno de sintaxis, que
+resultarán en fallos y comportamiento errático del algoritmo.
+		 Se realizaron varias pruebas con los networks de ejemplo
+provistos en la página[1], y los reslultados fueron:
+	·Si se corría el algoritmo sobre los archivos HTML descargados de manera
+directa desde la página éste funcionaba como está previsto
+	·Si se intentaba guardar los networks en formatos especiales (ie: *.txt)
+se generaban múltiples aserciones tanto al leer lados como al aumentar flujo.
+
+
+
+[1] http://www.famaf.unc.edu.ar/~penazzi/Discreta09.html
+
+________________________________________________________________________________
+ImprimirFlujo
+
+   Esta función debe imprimir el flujo final en cada uno de los lados del network
+cuando termina de correr el algoritmo. Si se especifica la opción de lectura
+en bloques se imprime además el flujo parcial tras la lectura de cada bloque.
+
+   Notar que el hecho de que aún no se hayan agregado cierto nº de lados hace
+que se considere al flujo como parcial, si bien su valor puede ser el mismo que
+el del flujo maximal (sería el caso en el que los lados agregados después no
+generan ningún camino nuevo s--t)
+
+   Para realizar su cometido hace uso de una función del TAD "node_stack", en
+particular de node_cmd. La ventaja de esa función es que sólo aplica la rutina
+provista (ImpresionFujosNum ó ImpresionFujosAlf) a los lugares del arreglo de
+vértices del EstadoNetwork que realmente contienen un vértice (recordar que la
+estructura se genera con el arreglo completo de vértices posibles).
+
+   O sea que node_cmd aplica una rutina de impresión sobre cada lado que fue
+agregado mediante LeerUnLado al EstadoNetwork. En realidad lo que node_stack nos
+asegura es que recorrerá sólo los vértices efectivamente agregados al network.
+Lo que hace la rutina de impresión es estudiar los lados forward de cada vértice
+del network, e imprimir todos los que encuentre. Esto cubre todos los lados.
+
+
+________________________________________________________________________________
+Impresión de colores
+
+   Si bien las técnicas de coloreo están muy alejadas de todo lo que es la
+búsqueda del flujo maximal en el network, los métodos empleados para imprimir
+el color final de cada vértice son los mismos en ambos casos.
+
+   Entonces para imprimir el color hallado para cada vértice (ya sea que fue
+obtenido mediante FirstColoring ó Greedy) se aplica una rutina de simpleza
+extrema a cada vértice presente del network/grafo.
+
+
+
