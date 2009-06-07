@@ -1,13 +1,13 @@
-/* MACK-EK versiÃƒÂ³n 1.0
- * ImplementaciÃƒÂ³n eficiente del algoritmo Edmonds-Karp para hallar un flujo
+/* MACK-EK versiÃ³n 1.0
+ * ImplementaciÃ³n eficiente del algoritmo Edmonds-Karp para hallar un flujo
  * maximal en un network
  *
  * Autores:  Budde, Carlos E.
  *	     Kondrasky, Alejandro
- *	     PÃƒÂ©rez Paladini, AgustÃƒÂ­n
+ *	     PÃ©rez Paladini, AgustÃ­n
  *	     Soldevilla, Mallku R.
  *
- * RevisiÃƒÂ³n: Penazzi, Daniel
+ * RevisiÃ³n: Penazzi, Daniel
  *
  */
 
@@ -29,16 +29,17 @@ static void main_help (void)
 {
 	printf (
 	
-	"\n\n\t\t    Bienvenido a MACK-EK versiÃƒÂ³n 1.0\n\nModo de uso:\n\n"
-	"  Para setear:  Ã‚Â·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
-	"		Ã‚Â·verbosidad: -v <grado>\n\n"
-	"  Si vamos a calcular:  Ã‚Â·el flujo maximo: -max-flow\n"
-	"			Ã‚Â·coloreo: -colour\n"
-	"			Ã‚Â·parcialmente: -partial <m>\n\n"
+	"\n\n\t\t    Bienvenido a MACK-EK versiÃ³n 1.0\n\nModo de uso:\n\n"
+	"  Para setear:  Â·modo numerico: -numeric (por defecto es modo alfanumerico)\n"
+	"		Â·verbosidad: -v <grado>\n\n"
+	"  Si vamos a calcular:  Â·el flujo maximo: -max-flow\n"
+	"			Â·coloreo: -colour\n"
+	"			Â·parcialmente: -partial <m>\n\n"
 	"  Si vamos a agregar bloques de forma incremental: -inc <n>\n\n"
-	"  Para ejecutar n veces:  Ã‚Â·para medir el tiempo: -ctime <n>\n"
-			"					.para medir los ciclos de CPU: -cycles <n>\n"
-	"			  Ã‚Â·para medir el flujo: -ftime <n>\n\n"
+	"  Para ejecutar n veces:  Â·colorear y medir el tiempo: -ctime <n>\n"
+			"					.colorear y medir ciclos de cpu empleados: -ccycles <n>\n"
+	"			  Â·buscar flujo maximal y medir el tiempo: -ftime <n>\n\n"
+	"			  Â·buscar flujo maximal y medir ciclos de cpu empleados: -fcycles <n>\n\n"
 	"NOTA: son obligatorios los campos <>\n"
 	       );
 }
@@ -167,7 +168,7 @@ int main (int argc, char ** args)
 
 	main_help ();
 	if (argc <= 1) {
-		printf ("\nError de ejecuciÃƒÂ³n: Ã‚Â¡se requieren argumentos!\n\n");
+		printf ("\nError de ejecuciÃ³n: Â¡se requieren argumentos!\n\n");
 		return -1;
 	}
 	
@@ -222,7 +223,7 @@ int main (int argc, char ** args)
 		}
 		if(pa_cycleMeasurement(pa)){
 			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
-			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" mÃ¡s el 
+			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
 			   "or" bit a bit. 
 			*/
 			residuo = getResiduo ();
@@ -244,7 +245,7 @@ int main (int argc, char ** args)
 			printf("\nCiclos de CPU consumidos: %Lf\n",measure);
 		}
 		if(!pa_max_flow_repeat (pa)){
-			/* {No han pedido realizar mediciÃ³n alguna} */
+			/* {No han pedido realizar medición alguna} */
 			blockReadSize = pa_incremental (pa);
 			verbose = pa_verbose (pa);
 			/* primero vamos a hacer una corrida normal y cargar el grafo */
@@ -284,7 +285,7 @@ int main (int argc, char ** args)
 		}
 		if(pa_cycleMeasurement(pa)){
 			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
-			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" mÃ¡s el 
+			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
 			   "or" bit a bit. 
 			*/
 			residuo = getResiduo ();
@@ -304,7 +305,7 @@ int main (int argc, char ** args)
 			printf("\nCiclos de CPU consumidos: %Lf\n",measure);
 		}
 		if(!pa_max_flow_repeat (pa)){
-			/* {No han pedido realizar mediciÃ³n alguna} */
+			/* {No han pedido realizar medición alguna} */
 			/* Ahora vamos a verificar si debemos ingresar en forma de 
 			 bloques o en forma normal los lados */
 			blockReadSize = pa_incremental (pa);
