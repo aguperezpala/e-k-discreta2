@@ -96,5 +96,11 @@ long int ImprimirFlujo (EstadoNetwork *estado, int verbosidad);
 u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad);
 
 
+/* PRE:	{estado != NULL}
+ * POS: {estado == NULL && "memoria libre :D"}
+ */
+void DestruirNetwork (EstadoNetwork * estado);
+
+
 
 #endif
