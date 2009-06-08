@@ -273,8 +273,6 @@ static void network_init_forward_edges (u32 node_i , node_t * nodes)
 		do{
 			e = el_get_actual (fordward);
 			e->flow =0;
-			nodes[e->nodeOrig].corrida = 0;
-			nodes[e->nodeDest].corrida = 0;
 			nodes[e->nodeOrig].color = 0;
 			nodes[e->nodeDest].color = 0;
 		}while(el_avance(fordward) == 0);
