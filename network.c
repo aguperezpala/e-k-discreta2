@@ -845,8 +845,6 @@ static void network_edgelist_destroy (u32 node_i , node_t * nodes)
 
 	fordward = nodes[node_i].forwardList;
 	backward = nodes[node_i].backwardList;
-	el_start (fordward);
-	el_start (backward);
 	if (fordward != NULL) {
 		el_clean (fordward);
 		el_destroy (fordward);
