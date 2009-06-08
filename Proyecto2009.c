@@ -334,7 +334,7 @@ int main (int argc, char ** args)
 			printf("\nTiempo estimado: %Lf\n",measure);
 		}
 		if(pa_cycleMeasurement(pa)){
-			mediciones = (ticks*)calloc(pa_max_flow_repeat (pa),sizeof(ticks));
+			mediciones = (ticks*)calloc(pa_colour_repeat (pa),sizeof(ticks));
 			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
 			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
 			   "or" bit a bit. 
