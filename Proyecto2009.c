@@ -370,7 +370,8 @@ int main (int argc, char ** args)
 		}
 	}
 	/* Liberamos recursos */
-	DestruirNetwork (estado);
+	pa_destroy(pa); pa = NULL;
+	network_destroy (estado); estado = NULL;
 	
 	return 0;
 }

@@ -15,6 +15,11 @@
 
 /**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
 /** ~~~~~~~~~~~~~~~~~~ FUNCIONES STATIC (DE USO INTERNO) ~~~~~~~~~~~~~~~~~~~~ */
+
+/* Permite destruir toda la lista de aristas de un determinado nodo.
+ *
+ */
+static void network_edgelist_destroy (u32 node_i , node_t * nodes);
 	
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
@@ -255,7 +260,7 @@ EstadoNetwork *network_create (bool coloreo)
  * ret = Inicializar(estado,modoinput);
  * POS : {(ret == 1 => estado tiene capacidad, según modoinput para almacenar 
  *		nodos) && (ret == 0 => no hay memoria para alojar los nodos)}
- *//*! Falta terminar!!*/
+ */
 int Inicializar (EstadoNetwork *estado, int modoinput)
 {
 	/* Precondiciones */
@@ -268,6 +273,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	estado->modoinput = modoinput;
 	estado->colores = 0;
 	estado->flow_value = 0;
+	el_clean(estado->l_con);
 	estado->maximal = false;
 
 	return 0;
@@ -317,7 +323,6 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
 			estado->completo = true;
 			return 0;
 		}
-			
 		if (strlen (edge+3)  > 10) {
 			/* Capacidad mayor que u32 */
 			PRINTERR ("Finalizó la lectura de lados\n\n");
@@ -786,6 +791,7 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 			ns_cmd (estado->nstack , estado->nodes, printNC );
 			printf("Cantidad de Colores utilizados: %d\n" , K ); 
 		}
+		estado->colores = K;
 		if ( K <= estado->delta )return K;
 	}
 	
@@ -799,47 +805,50 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 		ns_cmd (estado->nstack , estado->nodes, printNC );
 		printf("Cantidad de Colores utilizados: %d\n" , K ); 
 	}
+
+	estado->colores = K;
 	
 	return K;
 }
 
 
+static void network_edgelist_destroy (u32 node_i , node_t * nodes)
+{
+	edgeList_t * fordward = NULL, * backward = NULL;
+
+	fordward = nodes[node_i].forwardList;
+	backward = nodes[node_i].backwardList;
+
+	if (fordward != NULL) {
+		el_clean (fordward);
+		el_destroy (fordward);
+		fordward = NULL;
+	}
+	if (backward != NULL) {
+		el_destroy (backward);
+		backward = NULL;
+	}
+}
+
 /* PRE:	{estado != NULL}
 * POS: {estado == NULL && "memoria libre :D"}
 */
-void DestruirNetwork (EstadoNetwork * estado)
+void network_destroy  (EstadoNetwork * estado)
 {
-	int i = 0;
-	edgeList_t * fordward = NULL, * backward = NULL;
-	
 	/* pre */
 	ASSERT (estado != NULL)
 	
-	
-	
-	/* limpiamos todos los nodos */
-	for (i = MAX_N_NODES - 1; i >= 0; i--) {
-		fordward = estado->nodes[i].forwardList;
-		backward = estado->nodes[i].backwardList;
-		if (fordward != NULL) {
-			el_clean (fordward);
-			el_destroy (fordward);
-			fordward = NULL;
-		}
-		if (backward != NULL) {
-			el_destroy (backward);
-			backward = NULL;
-		}
-	}
-	/* eliminamos ahora la cola */
-	if (estado->cola != NULL)
-		qt_dinamic_destroy (estado->cola);
+	/* Destruimos las aristas de la lista de nodos */
+	ns_cmd(estado->nstack , estado->nodes ,network_edgelist_destroy);
+	/* eliminamos el stack */
+	if (estado->nstack != NULL) ns_destroy (estado->nstack);
+	estado->nstack = NULL;
 	/* eliminamos la lista de conflictivos */
-	if (estado->l_con != NULL)
-		el_destroy (estado->l_con);
-	/* eliminamos el estaco */
-	if (estado->nstack != NULL)
-		ns_destroy (estado->nstack);
+	if (estado->l_con != NULL) el_destroy (estado->l_con);
+	estado->l_con = NULL;
+	/* eliminamos ahora la cola */
+	if (estado->cola != NULL) qt_dinamic_destroy (estado->cola);
+	estado->cola = NULL;
 	/* eliminamos el network */
 	free (estado); estado = NULL;
 }
