@@ -292,7 +292,7 @@ int main (int argc, char ** args)
 				return 1;
 			}
 		}
-		if(!pa_max_flow_repeat (pa)){
+		if(pa_max_flow_repeat (pa) == 0){
 			/* {No han pedido realizar medición alguna} */
 			blockReadSize = pa_incremental (pa);
 			verbose = pa_verbose (pa);

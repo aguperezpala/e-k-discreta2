@@ -96,7 +96,7 @@ void moda(ticks *array, int desde, int hasta, int *ocurrenciasModa,
 ticks calcularModa(ticks *array, int longitudArray){
 	int ocurrenciasModa=0,posModa=0;
 	
-	moda(array, 0, longitudArray, &ocurrenciasModa, &posModa);
+	moda(array, 0, longitudArray-1, &ocurrenciasModa, &posModa);
 	
 	return array[posModa];
 }
