@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast \
 	-Wcast-qual -Wstrict-prototypes -Wmissing-declarations \
-	-Wmissing-prototypes -Werror -D__DEBUG -std=iso9899:1999
+	-Wmissing-prototypes -Werror -std=iso9899:1999
 # ¡¡¡¡¡¡¡¡¡¡ ELIMINAR EL -D__DEBUG !!!!!!!!!!!!!
 # Analizar qué banderas dejar
 TARGET = EK!
