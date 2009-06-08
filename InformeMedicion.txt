@@ -12,4 +12,4 @@
 * Empleamos la función clock() de la libC para obtener el tiempo de CPU consumido por nuestro programa. Básicamente tomamos los ciclos consumidos al comienzo del programa, efectuamos el cómputo, y al final volvemos a ejecutar clock(). Restamos los valores y, al largo obtenido del intervalo, lo dividimos por CLOCKS_PER_SEC: el número de ticks (o pulsos de reloj) por segundo que mide la función clock(). Es decir, su precisión.
 
 Estimación de tiempo:
-	* En grafos pequeños (alrededor de 20 nodos) el algoritmo es lo suficientemente veloz como para que no alcance la presición de la función clock(). En estos grafos se invierten alrededor de 5000 ciclos de CPU .
+	* Hicimos algunas pruebas con el programa. Para networks de hasta 30 nodos, tarda alrededor de 0.000050. Se emplean alrededor de 100000 ciclos de CPU. Al saltar a networks de cientos de nodos (por ejemplo Penazzi_num_2), se tardan  0.009 segundos, empleando alrededor de 24000000 ciclos de CPU. 
