@@ -234,7 +234,6 @@ int main (int argc, char ** args)
 				/* Listo. Paramos el reloj */
 				end = clock();
 				measure +=((long double)(end-start))/((long double)CLOCKS_PER_SEC);
-				printf("\nTiempo en una vuelta: %Lf\n",((long double)(end-start))/CLOCKS_PER_SEC);
 			}
 			/* Calculamos un promedio */
 			measure = measure/pa_max_flow_repeat(pa);
@@ -254,7 +253,6 @@ int main (int argc, char ** args)
 			t1=getticks();
 			err = normal_read (estado, pa, inputMode);
 			t2=getticks();
-			printf("\nt2-t1: %llu\n",t2-t1-residuo);
 			mediciones[pa_max_flow_repeat (pa)-1] = (t2-t1)-residuo;
 			
 			/* Las siguientes iteraciones consistirán en Inicializar el network
@@ -273,7 +271,6 @@ int main (int argc, char ** args)
 				
 				
 				t2=getticks();
-				printf("\nt2-t1: %llu\n",t2-t1-residuo);
 				mediciones[i-1] = (t2-t1)-residuo;
 			}
 			moda = calcularModa(mediciones,pa_max_flow_repeat (pa));
@@ -312,13 +309,13 @@ int main (int argc, char ** args)
 			err = normal_read (estado, pa, inputMode);
 			colours = ColorearNetwork (estado, 0);
 			end = clock();
-			measure +=((long double)(end-start))/((long double)CLOCKS_PER_SEC);
+			printf("\nFirst Coloring - Tiempo estimado: %Lf\n",((long double)(end-start))/((long double)CLOCKS_PER_SEC));
 			
 			/* Las siguientes iteraciones consistirán en Inicializar el grafo
 				y colorear
 			 */
 			
-			for (i = pa_colour_repeat (pa)-1; i > 0; i--) {
+			for (i = pa_colour_repeat (pa); i > 0; i--) {
 				/* ia! */
 				start = clock(); 
 				
@@ -347,9 +344,9 @@ int main (int argc, char ** args)
 			err = normal_read (estado, pa, inputMode);
 			colours = ColorearNetwork (estado, 0);			
 			t2=getticks();
-			mediciones[pa_colour_repeat (pa)-1] = (t2-t1)-residuo;
+			printf("\nFirst Coloring - Ciclos de CPU consumidos: %llu",(t2-t1)-residuo);
 		
-			for (i = pa_colour_repeat (pa)-1; i > 0 && err != 2; i--){
+			for (i = pa_colour_repeat (pa); i > 0 && err != 2; i--){
 				t1=getticks();
 
 				err = Inicializar(estado, inputMode);
@@ -381,8 +378,8 @@ int main (int argc, char ** args)
 		}
 	}
 	/* Liberamos recursos */
-	pa_destroy(pa); pa = NULL;
-	network_destroy (estado); estado = NULL;
+	/*pa_destroy(pa); pa = NULL;
+	network_destroy (estado); estado = NULL;*/
 	
 	return 0;
 }
