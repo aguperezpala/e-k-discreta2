@@ -20,6 +20,10 @@
  *
  */
 static void network_edgelist_destroy (u32 node_i , node_t * nodes);
+/* Inicializa el flujo de todas las aristas forward de un determinado nodo.
+ *
+ */
+static void network_init_forward_edges (u32 node_i , node_t * nodes);
 	
 /* Añade un lado al EstadoNetwork, actualizando todos los campos necesarios.
  * Esta versión no tiene en cuenta el coloreo.
@@ -256,6 +260,28 @@ EstadoNetwork *network_create (bool coloreo)
 	return ret;
 }
 
+
+static void network_init_forward_edges (u32 node_i , node_t * nodes)
+{
+	edgeList_t * fordward = NULL;
+	edge_t * e = NULL;
+
+	fordward = nodes[node_i].forwardList;
+
+	if (el_get_size(fordward) > 0){
+		el_start (fordward);
+		do{
+			e = el_get_actual (fordward);
+			e->flow =0;
+			nodes[e->nodeOrig].corrida = 0;
+			nodes[e->nodeDest].corrida = 0;
+			nodes[e->nodeOrig].color = 0;
+			nodes[e->nodeDest].color = 0;
+		}while(el_avance(fordward) == 0);
+	}
+	
+}
+
 /* PRE : {estado != NULL && (modmoinput==1 || modoinput==2)}
  * ret = Inicializar(estado,modoinput);
  * POS : {(ret == 1 => estado tiene capacidad, según modoinput para almacenar 
@@ -270,6 +296,9 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 		return 1;
 	}
 
+	/* Inicializo los nodos y sus aristas */
+	ns_cmd (estado->nstack , estado->nodes , network_init_forward_edges);
+	
 	estado->modoinput = modoinput;
 	estado->colores = 0;
 	estado->flow_value = 0;
