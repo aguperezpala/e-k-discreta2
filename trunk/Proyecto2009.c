@@ -121,8 +121,6 @@ static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 	register int i = 0;
 	int err, verbose, flowsRun;
 	
-	
-	
 	ASSERT (estado != NULL)
 	ASSERT (pa != NULL)
 	
@@ -213,18 +211,30 @@ int main (int argc, char ** args)
 	
 	if(pa_work_flow (pa)){
 		if (pa_timeMeasurement(pa)){
-			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
-				/* ia! */
-				start = clock(); 
-				/* primero vamos a hacer una corrida normal y cargar 
+			/* primero vamos a hacer una corrida normal y cargar 
 					el grafo */
-				err = normal_read (estado, pa, inputMode);
+			start = clock(); 
+			err = normal_read (estado, pa, inputMode);
+			end = clock();
+			measure +=((long double)(end-start))/CLOCKS_PER_SEC;
+			
+			/* Las siguientes iteraciones consistirán en Inicializar el network
+				y buscar el flujo maximal
+			 */
+			
+			for (i = pa_max_flow_repeat (pa)-1; i > 0 && err != 2; i--){
+				/* ia! */
+				start = clock();
+				
+				err = Inicializar(estado, inputMode);
+			
 				/* ahora lo que hacemos es aumentar el fucking flow */
 				while (err == 0)
-					err = AumentarFlujo (estado, verbose);
+					err = AumentarFlujo (estado, 0);
 				/* Listo. Paramos el reloj */
 				end = clock();
-				measure +=((long double)(end-start))/CLOCKS_PER_SEC;
+				measure +=((long double)(end-start))/((long double)CLOCKS_PER_SEC);
+				printf("\nTiempo en una vuelta: %Lf\n",((long double)(end-start))/((long double)CLOCKS_PER_SEC));
 			}
 			/* Calculamos un promedio */
 			measure = measure/pa_max_flow_repeat(pa);
@@ -237,22 +247,32 @@ int main (int argc, char ** args)
 			   "or" bit a bit. 
 			*/
 			residuo = getResiduo ();
-			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+			
+			/* primero vamos a hacer una corrida normal y cargar 
+				el grafo */
+			t1=getticks();
+			err = normal_read (estado, pa, inputMode);
+			t2=getticks();
+			mediciones[pa_max_flow_repeat (pa)-1] = (t2-t1)-residuo;
+			
+			/* Las siguientes iteraciones consistirán en Inicializar el network
+				y buscar el flujo maximal
+			 */
+			
+			for (i = pa_max_flow_repeat (pa)-1; i > 0 && err != 2; i--){
 				t1=getticks();
-				/* primero vamos a hacer una corrida normal y cargar el 
-					grafo */
-				err = normal_read (estado, pa, inputMode);
-				
-				/* ahora lo que hacemos es aumentar el fucking flow */
+				err = Inicializar(estado, inputMode);
+			
+				/* ahora lo que hacemos es aumentar el flujo */
 				while (err == 0)
-					err = AumentarFlujo (estado, verbose);
+					err = AumentarFlujo (estado, 0);
 
 				t2=getticks();
-				mediciones[i] = (t2-t1)-residuo;
+				mediciones[i-1] = (t2-t1)-residuo;
 			}
 			moda = calcularModa(mediciones,pa_max_flow_repeat (pa));
 			
-			printf("\nCiclos de CPU consumidos: %llu\n",moda);
+			printf("\nCiclos de CPU empleados: %llu\n",moda);
 		}
 		if(!pa_max_flow_repeat (pa)){
 			/* {No han pedido realizar medición alguna} */
@@ -277,45 +297,63 @@ int main (int argc, char ** args)
 	/* ahora vamos a verificar si debemos buscar color o no */
 	if (pa_work_colour (pa)){
 		if(pa_timeMeasurement(pa)){
-			/* ahora vamos a chequear cuantas veces deberiamos correr el
-			* coloreo */
-			for (i = pa_colour_repeat (pa); i > 0; i--) {
+			/* primero vamos a hacer una corrida normal y cargar 
+				el grafo */
+			start = clock(); 
+			err = normal_read (estado, pa, inputMode);
+			colours = ColorearNetwork (estado, 0);
+			end = clock();
+			measure +=((long double)(end-start))/((long double)CLOCKS_PER_SEC);
+			
+			/* Las siguientes iteraciones consistirán en Inicializar el grafo
+				y colorear
+			 */
+			
+			for (i = pa_colour_repeat (pa)-1; i > 0; i--) {
 				/* ia! */
 				start = clock(); 
-				/* primero vamos a hacer una corrida normal y cargar 
-					el grafo */
-				err = normal_read (estado, pa, inputMode);
-				colours = ColorearNetwork (estado, verbose);
+				
+				err = Inicializar(estado, inputMode);
+				colours = ColorearNetwork (estado, 0);
+								
 				/* Listo. Paramos el reloj */
 				end = clock();
-				measure +=((long double)(end-start))/CLOCKS_PER_SEC;
+				measure +=((long double)(end-start))/((long double)CLOCKS_PER_SEC);
 			}
 			/* Calculamos un promedio */
 			measure = measure/pa_max_flow_repeat(pa);
 			printf("\nTiempo estimado: %Lf\n",measure);
 		}
 		if(pa_cycleMeasurement(pa)){
+				mediciones = (ticks*)calloc(pa_max_flow_repeat (pa),sizeof(ticks));
 			/* Los ciclos que debemos restar son los necesarios para ejecutar 2 
 			   veces CPUID, 2 veces RDTSC y 2 veces el "left-shifting" más el 
 			   "or" bit a bit. 
 			*/
 			residuo = getResiduo ();
-			for (i = pa_max_flow_repeat (pa); i > 0 && err != 2; i--){
+			
+			/* primero vamos a hacer una corrida normal y cargar 
+				el grafo */
+			t1=getticks();
+			err = normal_read (estado, pa, inputMode);
+			colours = ColorearNetwork (estado, 0);			
+			t2=getticks();
+			mediciones[pa_colour_repeat (pa)-1] = (t2-t1)-residuo;
+		
+			for (i = pa_colour_repeat (pa)-1; i > 0 && err != 2; i--){
 				t1=getticks();
-				/* primero vamos a hacer una corrida normal y cargar el 
-					grafo */
-				err = normal_read (estado, pa, inputMode);
-				
-				colours = ColorearNetwork (estado, verbose);
 
+				err = Inicializar(estado, inputMode);
+				colours = ColorearNetwork (estado, 0);
+																					
 				t2=getticks();
-				measure += (t2-t1)-residuo;
+				mediciones[i-1] = (t2-t1)-residuo;
 			}
-			/* Calculamos un promedio */
-			measure = measure/pa_max_flow_repeat(pa);
-			printf("\nCiclos de CPU consumidos: %Lf\n",measure);
+			moda = calcularModa(mediciones,pa_colour_repeat (pa));
+			
+			printf("\nCiclos de CPU consumidos: %llu\n",moda);
 		}
-		if(!pa_max_flow_repeat (pa)){
+		if(!pa_colour_repeat (pa)){
 			/* {No han pedido realizar medición alguna} */
 			/* Ahora vamos a verificar si debemos ingresar en forma de 
 			 bloques o en forma normal los lados */
@@ -331,6 +369,8 @@ int main (int argc, char ** args)
 			colours = ColorearNetwork (estado, verbose);
 		}
 	}
+	/* Liberamos recursos */
+	DestruirNetwork (estado);
 	
 	return 0;
 }
