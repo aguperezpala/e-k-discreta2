@@ -33,12 +33,8 @@
 
 
 /* Impresión de errores, para debuggeo */
-#ifdef __DEBUG
-	#include <stdio.h>
-	#define PRINTERR(x)	fprintf(stderr, x)
-#else
-	#define PRINTERR(x)
-#endif
+#include <stdio.h>
+#define PRINTERR(x)	fprintf(stderr, x)
 
 
 /* Tipo que es solo para wrapping para el color.
