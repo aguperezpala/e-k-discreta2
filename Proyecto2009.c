@@ -68,6 +68,7 @@ static int block_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode)
 	flowsRun = pa_partial (pa);
 	verbose = pa_verbose (pa);
 	
+	
 	/* tenemos que leer en forma de bloque */
 	while (!finish) {
 		for (i = 0; i < blockReadSize && !finish; i++) {
@@ -126,7 +127,10 @@ static int normal_read (EstadoNetwork * estado, parserArgs_t * pa, int inputMode
 	
 	
 	flowsRun = pa_partial (pa);
-	verbose = pa_verbose (pa);
+	if (pa_cycleMeasurement (pa) || pa_timeMeasurement(pa))
+		verbose = 0;
+	else
+		verbose = pa_verbose (pa);
 	
 	/* tomamos primero todos los lados */
 	while (!finish)
