@@ -802,3 +802,47 @@ u32 ColorearNetwork (EstadoNetwork *estado, int verbosidad)
 	
 	return K;
 }
+
+
+/* PRE:	{estado != NULL}
+* POS: {estado == NULL && "memoria libre :D"}
+*/
+void DestruirNetwork (EstadoNetwork * estado)
+{
+	int i = 0;
+	edgeList_t * fordward = NULL, * backward = NULL;
+	
+	/* pre */
+	ASSERT (estado != NULL)
+	
+	
+	
+	/* limpiamos todos los nodos */
+	for (i = MAX_N_NODES - 1; i >= 0; i--) {
+		fordward = estado->nodes[i].forwardList;
+		backward = estado->nodes[i].backwardList;
+		if (fordward != NULL) {
+			el_clean (fordward);
+			el_destroy (fordward);
+			fordward = NULL;
+		}
+		if (backward != NULL) {
+			el_destroy (backward);
+			backward = NULL;
+		}
+	}
+	/* eliminamos ahora la cola */
+	if (estado->cola != NULL)
+		qt_dinamic_destroy (estado->cola);
+	/* eliminamos la lista de conflictivos */
+	if (estado->l_con != NULL)
+		el_destroy (estado->l_con);
+	/* eliminamos el estaco */
+	if (estado->nstack != NULL)
+		ns_destroy (estado->nstack);
+	/* eliminamos el network */
+	free (estado); estado = NULL;
+}
+	
+		
+

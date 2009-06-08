@@ -148,7 +148,7 @@ NOTE: cuando terminamos t se encuentra en el ultimo lugar, primero debemos
  
 /*! ~~~~~~~~~~~~~~~~  Funciones de agregado/quitado ~~~~~~~~~~~~~~~~~~~ */
 
-/* Funcion que agrega una quintupleta (nodo, padre, flow, edge , is_backward).
+/* Funcion que agrega una quintupleta (nodo, padre, flow, edge ).
  NOTE: tener en cuenta que el padre va a ser el elemento actual
 	REQUIRES:
 		qt		!= NULL
