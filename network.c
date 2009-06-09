@@ -10,7 +10,19 @@
 #include "print_stack.h"
 
 
+/* Variables globales para AumentarFlujo */
+int result;		/* Resultado de AumentarFlujo (0, 1 ó 2) */
+u32 s, t, q, flujo;	/* Variables del algoritmo */
+unsigned short corrida;	/* Nº de corrida (ie: 1º camino ó 2º camino ó ...) */
+bool empty;		/* Si la cola de EK está vacía */
+int endList;		/* Si la lista de lados forward de un nodo se acabó */
+print_s *ps = NULL;	/* Pila para imprimir el camino hallado */
+node_t *actual, *vecino;/* Vértices de una vuelta del ciclo interno de EK */
+edge_t *edge;		/* Lado compuesto por los vértices actual y vecino */
 
+/* Variables globales para LeerUnLado */
+u32 v1, v2, cap;	/* Parámetros del lado leído */
+char *scan = NULL;	/* Variable para saber si lo leído está bien */
 
 
 /**  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###  */
@@ -314,8 +326,7 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 */
 int LeerUnLado(EstadoNetwork *estado, int modoinput)
 {
-	u32 v1 = 0, v2 = 0, cap = 0;
-	char *scan = NULL;
+	scan = NULL;
 	
 	ASSERT (estado != NULL)
 			
@@ -482,14 +493,8 @@ int LeerUnLado(EstadoNetwork *estado, int modoinput)
  */
 int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 {
-	int result = 0;
-	u32 s, t, q, flujo = 0;
-	unsigned short corrida;
-	node_t *actual, *vecino;
-	edge_t *edge;
-	bool empty = false;
-	int endList = 0;
-	print_s * ps;
+	result = 0;	/* Por defecto corrimos bien */
+	empty = false;	/* En un comienzo siempre tenemos {s} */
 	
 	/* Precondiciones */
 	ASSERT (estado != NULL)
@@ -501,8 +506,8 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 	}
 	
 	if(estado->maximal){
-		/*No se puede aumentar el flujo
-		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");*/
+		/*No se puede aumentar el flujo*/
+		PRINTERR ("API: AumentarFlujo: No se pudo aumentar flujo\n");
 		
 		return 1;
 	}
@@ -630,6 +635,7 @@ int AumentarFlujo (EstadoNetwork *estado, int verbosidad)
 			/* Imprimimos el camino hallado */
 			ps_print (ps, estado->modoinput, flujo);
 			ps_destroy (ps);
+			ps = NULL;
 		}
 		
 	} else {

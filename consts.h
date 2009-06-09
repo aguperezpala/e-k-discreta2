@@ -34,8 +34,12 @@
 
 /* Impresión de errores, para debuggeo */
 #include <stdio.h>
-#define PRINTERR(x)	fprintf(stderr, x)
 
+#ifdef __DEBUG
+  #define   PRINTERR(x)   fprintf(stderr, x)
+#else
+  #define   PRINTERR(x)
+#endif
 
 /* Tipo que es solo para wrapping para el color.
  * Permito colores negativos para el coloreo greedy.
@@ -126,9 +130,9 @@ typedef int Color;
 
 #ifndef INLINE
 # if __GNUC__
-#  define INLINE extern inline
-# else
 #  define INLINE inline
+# else
+#  define INLINE
 # endif
 #endif
 
