@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast \
 	-Wcast-qual -Wstrict-prototypes -Wmissing-declarations \
-	-Wmissing-prototypes -Werror -std=iso9899:1999
-# ¡¡¡¡¡¡¡¡¡¡ ELIMINAR EL -D__DEBUG !!!!!!!!!!!!!
-# Analizar qué banderas dejar
+	-Wmissing-prototypes -std=iso9899:1999
+# Si se quiere trabajar con debuggeo incluir -D__DEBUG entre las banderas
+
 TARGET = EK!
 SOURCES = $(shell echo *.c)
 OBJECTS = $(SOURCES:%.c=%.o)

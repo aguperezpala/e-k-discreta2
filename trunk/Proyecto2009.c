@@ -242,7 +242,7 @@ int main (int argc, char ** args)
 			}
 			/* Calculamos un promedio */
 			measure = measure/pa_max_flow_repeat(pa);
-			printf("\nTiempo estimado: %Lf\n",measure);
+			printf("\nTiempo estimado: %Lf s\n",measure);
 		
 		}
 		if(pa_cycleMeasurement(pa)){
