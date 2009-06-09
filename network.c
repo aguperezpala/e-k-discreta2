@@ -263,19 +263,21 @@ EstadoNetwork *network_create (bool coloreo)
 
 static void network_init_forward_edges (u32 node_i , node_t * nodes)
 {
-	edgeList_t * fordward = NULL;
+	edgeList_t * forward = NULL;
 	edge_t * e = NULL;
 
-	fordward = nodes[node_i].forwardList;
-
-	if (el_get_size(fordward) > 0){
-		el_start (fordward);
+	/* Inicializamos el i-esimo nodo */
+	nodes[node_i].color = 0;
+	nodes[node_i].corrida = 0;
+	
+	forward = nodes[node_i].forwardList;
+	
+	if (el_get_size(forward) > 0){
+		el_start (forward);
 		do{
-			e = el_get_actual (fordward);
+			e = el_get_actual (forward);
 			e->flow =0;
-			nodes[e->nodeOrig].color = 0;
-			nodes[e->nodeDest].color = 0;
-		}while(el_avance(fordward) == 0);
+		}while(el_avance(forward) == 0);
 	}
 	
 }
@@ -300,7 +302,6 @@ int Inicializar (EstadoNetwork *estado, int modoinput)
 	estado->modoinput = modoinput;
 	estado->colores = 0;
 	estado->flow_value = 0;
-	el_clean(estado->l_con);
 	estado->maximal = false;
 
 	return 0;
